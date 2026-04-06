@@ -36,3 +36,6 @@ oh_modules/
 
 # Misc
 *.log
+
+# Temporary Office lock files
+~$*
