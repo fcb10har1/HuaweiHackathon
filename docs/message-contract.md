@@ -4,7 +4,7 @@ Communication protocol between the phone app (Android) and the watch app (Harmon
 
 ## Overview
 
-All messages are exchanged over the Huawei phone-watch messaging bridge. Each message is a JSON object with a `type` field that identifies the message and an optional `payload` object containing message-specific data.
+All messages are exchanged over the Huawei phone-watch messaging bridge. Each message is a JSON object with a `type` field that identifies the message and a `payload` object.
 
 ```json
 {
@@ -17,37 +17,95 @@ All messages are exchanged over the Huawei phone-watch messaging bridge. Each me
 
 ## Watch → Phone Messages
 
-| Type | Description | Payload |
-|------|-------------|---------|
-| `PING` | Heartbeat / connectivity check from watch | `{}` |
-| `REQUEST_NEXT_STEP` | Watch requests the next arrival checklist step | `{}` |
-| `REQUEST_CONTEXT_ALERT` | Watch requests the current context-aware alert | `{ "location": string }` |
-| `REQUEST_CONVO_OPTIONS` | Watch requests conversation assist phrase options | `{ "locale": string }` |
+| Type | Description | Payload Schema |
+|------|-------------|----------------|
+| `PING` | Heartbeat from watch | `{}` |
+| `REQUEST_NEXT_STEP` | Request next checklist step | `{ "country": string, "currentStepIndex": number }` |
+| `REQUEST_CONTEXT_ALERT` | Request alert for current location | `{ "locationType": string }` |
+| `REQUEST_CONVO_OPTIONS` | Request phrases for context | `{ "context": string, "locale": string }` |
+
+### Watch → Phone Examples
+
+**REQUEST_NEXT_STEP**
+```json
+{
+  "type": "REQUEST_NEXT_STEP",
+  "payload": {
+    "country": "Japan",
+    "currentStepIndex": 0
+  }
+}
+```
+
+**REQUEST_CONTEXT_ALERT**
+```json
+{
+  "type": "REQUEST_CONTEXT_ALERT",
+  "payload": {
+    "locationType": "temple"
+  }
+}
+```
 
 ---
 
 ## Phone → Watch Messages
 
-| Type | Description | Payload |
-|------|-------------|---------|
-| `PONG` | Heartbeat response to a PING | `{}` |
-| `ARRIVAL_STEP` | Next step in the arrival checklist | `{ "stepIndex": number, "title": string, "description": string, "riskLevel": "LOW" \| "MEDIUM" \| "HIGH" }` |
-| `CONTEXT_ALERT` | Context-aware cultural or legal alert | `{ "alertId": string, "message": string, "riskLevel": "LOW" \| "MEDIUM" \| "HIGH" }` |
-| `CONVO_OPTIONS` | Conversation assist phrase options | `{ "phrases": string[] }` |
-| `ERROR` | Error response for any failed request | `{ "code": string, "message": string }` |
+| Type | Description | Payload Schema |
+|------|-------------|----------------|
+| `PONG` | Heartbeat response | `{}` |
+| `ARRIVAL_STEP` | A checklist step | `{ "stepIndex": number, "title": string, "description": string, "riskLevel": "NORM" \| "SENSITIVE" \| "LEGAL" }` |
+| `CONTEXT_ALERT` | A cultural/legal alert | `{ "alertId": string, "message": string, "riskLevel": "NORM" \| "SENSITIVE" \| "LEGAL" }` |
+| `CONVO_OPTIONS` | Suggested phrases | `{ "phrases": string[] }` |
+| `ERROR` | Error notification | `{ "code": string, "message": string }` |
+
+### Phone → Watch Examples
+
+**ARRIVAL_STEP**
+```json
+{
+  "type": "ARRIVAL_STEP",
+  "payload": {
+    "stepIndex": 1,
+    "title": "Immigration Queue",
+    "description": "Have your passport and landing card ready. Follow the floor markings.",
+    "riskLevel": "NORM"
+  }
+}
+```
+
+**CONTEXT_ALERT**
+```json
+{
+  "type": "CONTEXT_ALERT",
+  "payload": {
+    "alertId": "temple_shoes",
+    "message": "Remove shoes before entering the main hall. Pointing feet at the Buddha is disrespectful.",
+    "riskLevel": "SENSITIVE"
+  }
+}
+```
+
+**CONVO_OPTIONS**
+```json
+{
+  "type": "CONVO_OPTIONS",
+  "payload": {
+    "phrases": [
+      "How much to the airport?",
+      "Please use the meter.",
+      "Keep the change."
+    ]
+  }
+}
+```
 
 ---
 
-## Message Types Reference
+## Risk Levels
 
-| Constant | Direction | Purpose |
-|----------|-----------|---------|
-| `PING` | Watch → Phone | Heartbeat / connectivity check |
-| `PONG` | Phone → Watch | Heartbeat response |
-| `REQUEST_NEXT_STEP` | Watch → Phone | Request next arrival checklist step |
-| `ARRIVAL_STEP` | Phone → Watch | Deliver next arrival checklist step |
-| `REQUEST_CONTEXT_ALERT` | Watch → Phone | Request current context alert |
-| `CONTEXT_ALERT` | Phone → Watch | Deliver context-aware alert |
-| `REQUEST_CONVO_OPTIONS` | Watch → Phone | Request conversation phrase options |
-| `CONVO_OPTIONS` | Phone → Watch | Deliver conversation phrase options |
-| `ERROR` | Phone → Watch | Signal a processing error |
+| Level | Haptic Feedback | Description |
+|-------|-----------------|-------------|
+| `NORM` | None | General cultural information or etiquette. |
+| `SENSITIVE` | 2x Soft Pulse | High social sensitivity. Mistakes cause offense. |
+| `LEGAL` | 3x Firm Buzz | Legal requirement. Mistakes may lead to fines/arrest. |
