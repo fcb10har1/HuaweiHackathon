@@ -1,0 +1,299 @@
+{
+  "countryCode": "JP",
+  "name": "Japan",
+  "flag": "🇯🇵",
+  "tagline": "Precision, respect, and quiet discipline",
+  "language": {
+    "name": "Japanese",
+    "locale": "ja-JP",
+    "nativeScriptName": "日本語"
+  },
+  "scenarios": [
+    {
+      "id": "airport",
+      "displayName": "Airport Arrival",
+      "icon": "✈️",
+      "description": "Immigration, customs, and arrival procedures",
+      "geofence": "airport_arrivals",
+      "locationKeywords": ["airport", "arrivals", "terminal", "narita", "haneda", "kansai"],
+      "arrivalSteps": [
+        {
+          "stepIndex": 0,
+          "title": "Complete Visit Japan Web / Arrival Card",
+          "description": "Before or on the flight, register on Visit Japan Web (vjw-lp.digital.go.jp) to pre-register your immigration and customs info, or fill out the paper Disembarkation Card for Foreigner provided on board. Provide name, passport number, flight number, intended address in Japan, and purpose of visit.",
+          "riskLevel": "NORM"
+        },
+        {
+          "stepIndex": 1,
+          "title": "Quarantine / Health Screening",
+          "description": "Proceed through the health/quarantine checkpoint after deplaning. COVID-era requirements have been lifted as of 2024. Declare any restricted items (fresh produce, meat) on your customs form.",
+          "riskLevel": "NORM"
+        },
+        {
+          "stepIndex": 2,
+          "title": "Immigration (Passport Control)",
+          "description": "Join the foreigner queue at Immigration Control. Present your passport, disembarkation card (or Visit Japan Web QR code), and any required visa. All visitors aged 16+ must provide fingerprint scans and a facial photograph.",
+          "riskLevel": "SENSITIVE"
+        },
+        {
+          "stepIndex": 3,
+          "title": "Baggage Claim",
+          "description": "Collect your checked baggage from the designated carousel. Keep your baggage claim tags as officers may check them against bags before you exit the hall.",
+          "riskLevel": "NORM"
+        },
+        {
+          "stepIndex": 4,
+          "title": "Customs Declaration",
+          "description": "Submit the Customs Declaration form (one per family). Declare cash exceeding JPY 1,000,000, gifts over JPY 200,000 duty-free value, and any restricted goods. The Visit Japan Web QR code can be used for the electronic declaration lane.",
+          "riskLevel": "LEGAL"
+        },
+        {
+          "stepIndex": 5,
+          "title": "Plant / Animal Quarantine (if applicable)",
+          "description": "If carrying fresh fruit, vegetables, meat, or live animals, present them at the Quarantine counter before the customs exit. Undeclared prohibited agricultural items can result in fines or deportation.",
+          "riskLevel": "LEGAL"
+        }
+      ],
+      "fallbackAlerts": [
+        {
+          "alertId": "jp_airport_bow",
+          "message": "A slight bow (15°) is appropriate when greeting immigration and customs officials.",
+          "riskLevel": "NORM"
+        },
+        {
+          "alertId": "jp_airport_queue",
+          "message": "Queues are strictly observed. Do not skip ahead — it is considered deeply rude.",
+          "riskLevel": "SENSITIVE"
+        },
+        {
+          "alertId": "jp_airport_declare",
+          "message": "Failure to declare food, drugs, or large amounts of cash at customs is a criminal offence.",
+          "riskLevel": "LEGAL"
+        }
+      ],
+      "phrases": [
+        {
+          "english": "Where is the immigration counter?",
+          "nativeScript": "入国審査はどこですか？",
+          "romanized": "Nyūkoku shinsa wa doko desu ka?"
+        },
+        {
+          "english": "I have nothing to declare.",
+          "nativeScript": "申告するものはありません。",
+          "romanized": "Shinkoku suru mono wa arimasen."
+        },
+        {
+          "english": "Excuse me, could you help me?",
+          "nativeScript": "すみません、手伝っていただけますか？",
+          "romanized": "Sumimasen, tetsudatte itadakemasu ka?"
+        }
+      ]
+    },
+    {
+      "id": "temple",
+      "displayName": "Temple / Shrine",
+      "icon": "⛩️",
+      "description": "Sacred sites, dress codes, and ritual etiquette",
+      "geofence": "temple_zone",
+      "locationKeywords": ["temple", "shrine", "jinja", "torii", "senso", "fushimi", "kinkaku", "meiji", "sacred"],
+      "arrivalSteps": [
+        {
+          "stepIndex": 0,
+          "title": "Remove Shoes if Required",
+          "description": "Look for a sign or a rack of shoes. If present, remove yours before entering the inner hall.",
+          "riskLevel": "SENSITIVE"
+        },
+        {
+          "stepIndex": 1,
+          "title": "Purify at the Temizuya",
+          "description": "At the water basin, rinse left hand, right hand, then mouth (do not drink). Use the ladle.",
+          "riskLevel": "NORM"
+        },
+        {
+          "stepIndex": 2,
+          "title": "Bow at the Torii Gate",
+          "description": "Bow once before passing through the torii gate as a sign of respect.",
+          "riskLevel": "NORM"
+        }
+      ],
+      "fallbackAlerts": [
+        {
+          "alertId": "jp_temple_shoes",
+          "message": "Remove shoes before entering inner halls. A rack at the entrance signals this is required.",
+          "riskLevel": "SENSITIVE"
+        },
+        {
+          "alertId": "jp_temple_photo",
+          "message": "Photography inside main halls is usually prohibited. Look for no-camera signs.",
+          "riskLevel": "SENSITIVE"
+        },
+        {
+          "alertId": "jp_temple_voice",
+          "message": "Speak quietly and avoid loud behaviour — these are active places of worship.",
+          "riskLevel": "SENSITIVE"
+        }
+      ],
+      "phrases": [
+        {
+          "english": "Is photography allowed here?",
+          "nativeScript": "ここで写真を撮っていいですか？",
+          "romanized": "Koko de shashin wo totte ii desu ka?"
+        },
+        {
+          "english": "Where should I remove my shoes?",
+          "nativeScript": "靴はどこで脱げばいいですか？",
+          "romanized": "Kutsu wa doko de nugeba ii desu ka?"
+        }
+      ]
+    },
+    {
+      "id": "taxi",
+      "displayName": "Taxi / Transport",
+      "icon": "🚕",
+      "description": "Taxis, trains, and transit etiquette",
+      "geofence": "taxi_stand",
+      "locationKeywords": ["taxi", "cab", "transport", "train", "station", "shinkansen", "metro", "subway"],
+      "arrivalSteps": [
+        {
+          "stepIndex": 0,
+          "title": "Do Not Open the Door",
+          "description": "Taxi doors in Japan open and close automatically. Never touch the door handle.",
+          "riskLevel": "NORM"
+        },
+        {
+          "stepIndex": 1,
+          "title": "Show the Address in Japanese",
+          "description": "Most drivers do not speak English. Show a printed or phone address in Japanese characters.",
+          "riskLevel": "NORM"
+        },
+        {
+          "stepIndex": 2,
+          "title": "No Eating or Calls in Trains",
+          "description": "Eating and loud phone calls are strongly discouraged on trains and buses.",
+          "riskLevel": "SENSITIVE"
+        }
+      ],
+      "fallbackAlerts": [
+        {
+          "alertId": "jp_taxi_door",
+          "message": "Taxi doors open and close automatically — never touch the handle or you may cause damage.",
+          "riskLevel": "NORM"
+        },
+        {
+          "alertId": "jp_taxi_quiet",
+          "message": "Phone calls on trains and buses are frowned upon. Set your phone to silent mode.",
+          "riskLevel": "SENSITIVE"
+        }
+      ],
+      "phrases": [
+        {
+          "english": "Please take me to this address.",
+          "nativeScript": "この住所まで連れて行ってください。",
+          "romanized": "Kono jūsho made tsurete itte kudasai."
+        },
+        {
+          "english": "How much will it cost?",
+          "nativeScript": "いくらかかりますか？",
+          "romanized": "Ikura kakarimasu ka?"
+        },
+        {
+          "english": "Please stop here.",
+          "nativeScript": "ここで止めてください。",
+          "romanized": "Koko de tomete kudasai."
+        }
+      ]
+    },
+    {
+      "id": "restaurant",
+      "displayName": "Restaurant",
+      "icon": "🍜",
+      "description": "Dining customs, tipping culture, and table etiquette",
+      "geofence": "restaurant_zone",
+      "locationKeywords": ["restaurant", "izakaya", "ramen", "sushi", "kaiseki", "dining", "food", "eat"],
+      "arrivalSteps": [
+        {
+          "stepIndex": 0,
+          "title": "Do Not Tip",
+          "description": "Tipping is not customary in Japan and may be refused or cause embarrassment.",
+          "riskLevel": "SENSITIVE"
+        },
+        {
+          "stepIndex": 1,
+          "title": "Say 'Itadakimasu' Before Eating",
+          "description": "This phrase (いただきます) expresses gratitude before a meal. It is polite to say it.",
+          "riskLevel": "NORM"
+        }
+      ],
+      "fallbackAlerts": [
+        {
+          "alertId": "jp_restaurant_tip",
+          "message": "Do NOT tip in Japan — it is considered rude and may be returned to you.",
+          "riskLevel": "SENSITIVE"
+        },
+        {
+          "alertId": "jp_restaurant_slurp",
+          "message": "Slurping noodles is perfectly acceptable and even complimentary to the chef.",
+          "riskLevel": "NORM"
+        }
+      ],
+      "phrases": [
+        {
+          "english": "One table for two, please.",
+          "nativeScript": "二人用のテーブルをお願いします。",
+          "romanized": "Futari-yō no tēburu wo onegai shimasu."
+        },
+        {
+          "english": "The bill, please.",
+          "nativeScript": "お会計をお願いします。",
+          "romanized": "Okaikei wo onegai shimasu."
+        }
+      ]
+    },
+    {
+      "id": "immigration",
+      "displayName": "Immigration Desk",
+      "icon": "🛂",
+      "description": "Passport control and visa requirements",
+      "geofence": "airport_immigration",
+      "locationKeywords": ["immigration", "customs", "border", "passport", "visa", "control"],
+      "arrivalSteps": [
+        {
+          "stepIndex": 0,
+          "title": "Biometric Registration",
+          "description": "All visitors must provide fingerprints and a photo at immigration. This is mandatory.",
+          "riskLevel": "LEGAL"
+        },
+        {
+          "stepIndex": 1,
+          "title": "Declare Medications",
+          "description": "Some medications common abroad (e.g. pseudoephedrine, certain ADHD drugs) are illegal in Japan. Declare them.",
+          "riskLevel": "LEGAL"
+        }
+      ],
+      "fallbackAlerts": [
+        {
+          "alertId": "jp_immigration_drugs",
+          "message": "Several common medications are controlled substances in Japan. Undeclared prescription drugs can result in arrest.",
+          "riskLevel": "LEGAL"
+        },
+        {
+          "alertId": "jp_immigration_biometric",
+          "message": "Biometric fingerprinting is mandatory for all foreign visitors entering Japan.",
+          "riskLevel": "LEGAL"
+        }
+      ],
+      "phrases": [
+        {
+          "english": "I am here for tourism.",
+          "nativeScript": "観光のために来ました。",
+          "romanized": "Kankō no tame ni kimashita."
+        },
+        {
+          "english": "I will stay for 7 days.",
+          "nativeScript": "7日間滞在します。",
+          "romanized": "Nanoka-kan taizai shimasu."
+        }
+      ]
+    }
+  ]
+}

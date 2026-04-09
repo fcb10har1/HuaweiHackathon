@@ -1,0 +1,41 @@
+# Gradle
+.gradle/
+build/
+*.apk
+*.aab
+
+# Android
+.idea/
+.DS_Store
+*.iml
+local.properties
+
+# Node/npm
+node_modules/
+npm-debug.log
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Build artifacts
+out/
+dist/
+target/
+
+# IDE
+.vscode/
+*.swp
+*.swo
+*~
+
+# HarmonyOS/OHOS
+oh_modules/
+.ohostest/
+
+# Misc
+*.log
+
+# Temporary Office lock files
+~$*

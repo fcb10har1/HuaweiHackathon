@@ -1,0 +1,222 @@
+{
+  "countryCode": "VN",
+  "name": "Vietnam",
+  "flag": "🇻🇳",
+  "tagline": "Ancient temples, bustling streets, and pho",
+  "language": {
+    "name": "Vietnamese",
+    "locale": "vi-VN",
+    "nativeScriptName": "Tiếng Việt"
+  },
+  "scenarios": [
+    {
+      "id": "airport",
+      "displayName": "Airport Arrival",
+      "icon": "✈️",
+      "description": "Immigration and customs at Vietnamese airports",
+      "geofence": "airport_arrivals",
+      "locationKeywords": ["airport", "arrivals", "terminal", "noi bai", "tan son nhat", "da nang", "phu quoc"],
+      "arrivalSteps": [
+        {
+          "stepIndex": 0,
+          "title": "Visa Preparation / E-Visa",
+          "description": "Vietnam's e-Visa (90-day single or multiple entry) is available to citizens of all countries via evisa.xuatnhapcanh.gov.vn. Apply at least 3 business days before travel. Many nationalities receive visa-free entry for 30–90 days (policy expanded in 2023). Print or save your e-Visa approval letter.",
+          "riskLevel": "LEGAL"
+        },
+        {
+          "stepIndex": 1,
+          "title": "Health Declaration (if applicable)",
+          "description": "Complete the health and quarantine declaration form if required (currently only mandatory for passengers from disease-alert regions). A combined entry declaration form may be available on board or at the terminal.",
+          "riskLevel": "NORM"
+        },
+        {
+          "stepIndex": 2,
+          "title": "Passport Control",
+          "description": "Join the foreigners queue. Present your passport, e-Visa (or visa exemption document), and completed arrival card. Officers will stamp your passport with the permitted duration of stay. State the exact address of your first accommodation as it will be recorded.",
+          "riskLevel": "SENSITIVE"
+        },
+        {
+          "stepIndex": 3,
+          "title": "Biometrics",
+          "description": "Fingerprints are collected at the immigration counter for most foreign nationals. This is standard procedure and takes under one minute.",
+          "riskLevel": "SENSITIVE"
+        },
+        {
+          "stepIndex": 4,
+          "title": "Baggage Claim",
+          "description": "Collect your baggage from the designated carousel. Keep the baggage claim stubs as they may be checked before you exit.",
+          "riskLevel": "NORM"
+        },
+        {
+          "stepIndex": 5,
+          "title": "Customs Declaration",
+          "description": "Duty-free: gifts up to VND 10 million, 200 cigarettes, 1.5L spirits over 20%, or 2L spirits 20% and below. Declare cash/gold above USD 5,000 equivalent. Prohibited: narcotics (death penalty), weapons, reactionary literature, and certain electronics requiring import permits.",
+          "riskLevel": "LEGAL"
+        }
+      ],
+      "fallbackAlerts": [
+        {
+          "alertId": "vn_airport_tout",
+          "message": "Ignore taxi touts at the airport exit. Use the official taxi desk inside arrivals or book via the Grab app.",
+          "riskLevel": "NORM"
+        },
+        {
+          "alertId": "vn_airport_drugs",
+          "message": "Drug trafficking in Vietnam carries the death penalty. Do not carry packages for strangers.",
+          "riskLevel": "LEGAL"
+        }
+      ],
+      "phrases": [
+        {
+          "english": "Where is the taxi desk?",
+          "nativeScript": "Quầy taxi ở đâu?",
+          "romanized": "Quầy taxi ở đâu?"
+        },
+        {
+          "english": "I have nothing to declare.",
+          "nativeScript": "Tôi không có gì cần khai báo.",
+          "romanized": "Toi khong co gi can khai bao."
+        }
+      ]
+    },
+    {
+      "id": "temple",
+      "displayName": "Temple / Pagoda",
+      "icon": "🏯",
+      "description": "Pagoda etiquette, dress codes, and offering customs",
+      "geofence": "temple_zone",
+      "locationKeywords": ["temple", "pagoda", "chua", "den", "dinh", "shrine", "buddhist", "sacred"],
+      "arrivalSteps": [
+        {
+          "stepIndex": 0,
+          "title": "Remove Shoes at the Entrance",
+          "description": "Shoes must be removed before entering the main prayer hall. Leave them neatly at the rack.",
+          "riskLevel": "SENSITIVE"
+        },
+        {
+          "stepIndex": 1,
+          "title": "Dress Modestly",
+          "description": "Cover shoulders and knees. Many temples will refuse entry to visitors in shorts or sleeveless tops.",
+          "riskLevel": "SENSITIVE"
+        },
+        {
+          "stepIndex": 2,
+          "title": "Do Not Touch Statues",
+          "description": "Do not touch, climb on, or take selfies with Buddha statues — this is deeply disrespectful.",
+          "riskLevel": "SENSITIVE"
+        }
+      ],
+      "fallbackAlerts": [
+        {
+          "alertId": "vn_temple_incense",
+          "message": "Incense is an offering, not decoration. Handle it with both hands and bow slightly when placing it.",
+          "riskLevel": "NORM"
+        },
+        {
+          "alertId": "vn_temple_photo",
+          "message": "Ask permission before photographing monks or people praying. Many find it intrusive.",
+          "riskLevel": "SENSITIVE"
+        }
+      ],
+      "phrases": [
+        {
+          "english": "May I enter?",
+          "nativeScript": "Tôi có thể vào không?",
+          "romanized": "Toi co the vao khong?"
+        },
+        {
+          "english": "Is photography allowed?",
+          "nativeScript": "Có được chụp ảnh không?",
+          "romanized": "Co duoc chup anh khong?"
+        }
+      ]
+    },
+    {
+      "id": "taxi",
+      "displayName": "Taxi / Motorbike",
+      "icon": "🛵",
+      "description": "Grab bikes, metered taxis, and road safety",
+      "geofence": "taxi_stand",
+      "locationKeywords": ["taxi", "grab", "xe om", "motorbike", "bike", "transport", "cab", "ride"],
+      "arrivalSteps": [
+        {
+          "stepIndex": 0,
+          "title": "Use Grab App",
+          "description": "Grab is the dominant ride app and displays fixed prices upfront. Far safer than hailing on the street.",
+          "riskLevel": "NORM"
+        },
+        {
+          "stepIndex": 1,
+          "title": "Wear a Helmet on Motorbikes",
+          "description": "Wearing a helmet on motorbike taxis is legally required and can save your life in busy traffic.",
+          "riskLevel": "LEGAL"
+        },
+        {
+          "stepIndex": 2,
+          "title": "Cross Roads Carefully",
+          "description": "Traffic lights are often ignored. When crossing on foot, walk slowly and steadily — traffic flows around you.",
+          "riskLevel": "NORM"
+        }
+      ],
+      "fallbackAlerts": [
+        {
+          "alertId": "vn_taxi_helmet",
+          "message": "Helmet use is legally required on all motorbike taxis. Refuse the ride if no helmet is provided.",
+          "riskLevel": "LEGAL"
+        },
+        {
+          "alertId": "vn_taxi_fare",
+          "message": "Agree on a price or use the meter before boarding any unapp'd taxi. Ask the driver to turn it on.",
+          "riskLevel": "NORM"
+        }
+      ],
+      "phrases": [
+        {
+          "english": "Please take me to this address.",
+          "nativeScript": "Vui lòng đưa tôi đến địa chỉ này.",
+          "romanized": "Vui long dua toi den dia chi nay."
+        },
+        {
+          "english": "How much does it cost?",
+          "nativeScript": "Bao nhiêu tiền?",
+          "romanized": "Bao nhieu tien?"
+        }
+      ]
+    },
+    {
+      "id": "market",
+      "displayName": "Market / Street Food",
+      "icon": "🛒",
+      "description": "Bargaining, food safety, and vendor etiquette",
+      "geofence": "market_zone",
+      "locationKeywords": ["market", "cho", "ben thanh", "dong xuan", "night market", "street food", "food"],
+      "arrivalSteps": [
+        {
+          "stepIndex": 0,
+          "title": "Bargaining is Normal",
+          "description": "At wet markets and souvenir stalls, prices are negotiable. Smile, start low, be friendly.",
+          "riskLevel": "NORM"
+        }
+      ],
+      "fallbackAlerts": [
+        {
+          "alertId": "vn_market_counterfeit",
+          "message": "Counterfeit branded goods are widespread. Purchasing them is technically illegal, though rarely enforced for tourists.",
+          "riskLevel": "NORM"
+        }
+      ],
+      "phrases": [
+        {
+          "english": "How much is this?",
+          "nativeScript": "Cái này bao nhiêu tiền?",
+          "romanized": "Cai nay bao nhieu tien?"
+        },
+        {
+          "english": "Can you lower the price?",
+          "nativeScript": "Bạn có thể giảm giá không?",
+          "romanized": "Ban co the giam gia khong?"
+        }
+      ]
+    }
+  ]
+}
