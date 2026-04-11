@@ -18,8 +18,8 @@
  *   Replace the TODO blocks with your WearEngine P2pClient calls.
  */
 
-import sensor from '@ohos.sensor';
-import vibrator from '@ohos.vibrator';
+import { sensor, vibrator } from '@kit.SensorServiceKit';
+import wearEngine from '@ohos.wearEngine';
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -115,6 +115,11 @@ struct Index {
   // Gesture
   @State gestureZoneActive: boolean = false;
 
+  // ── WearEngine P2P ───────────────────────────────────────────────────────────
+  private p2pClient: wearEngine.P2pClient | null = null;
+  private targetDevice: wearEngine.Device | null = null;
+  private readonly APP_ID: string                = 'com.arrivalritual.app';
+
   // ── Sensor state (not @State — updated at high frequency) ────────────────────
   private gravity: number[]  = [0, 0, 0];
   private gyroX: number      = 0;
@@ -126,13 +131,31 @@ struct Index {
 
   aboutToAppear() {
     this.startSensors();
-    // TODO: Connect to Huawei WearEngine P2pClient and register onMessage listener
-    // p2pClient.registerReceiver(this.appId, (message) => this.onPhoneMessage(message));
+    try {
+      this.p2pClient = wearEngine.getP2pClient();
+      const devices = wearEngine.getConnectedDevices();
+      if (devices?.length) {
+        this.targetDevice = devices[0];
+      }
+      this.p2pClient.registerReceiver(this.APP_ID, (message: wearEngine.Message) => {
+        const raw = String.fromCharCode(...new Uint8Array(message.data));
+        this.parseAndRoute(raw);
+      });
+    } catch (err) {
+      console.error('[WearEngine] Init failed:', JSON.stringify(err));
+    }
   }
 
   aboutToDisappear() {
     this.stopSensors();
-    // TODO: p2pClient.unregisterReceiver(this.appId);
+    try {
+      this.p2pClient?.unregisterReceiver(this.APP_ID);
+    } catch (err) {
+      console.error('[WearEngine] Cleanup failed:', JSON.stringify(err));
+    } finally {
+      this.p2pClient    = null;
+      this.targetDevice = null;
+    }
   }
 
   // ── Sensor setup ──────────────────────────────────────────────────────────────
@@ -192,10 +215,10 @@ struct Index {
 
   // ── Gesture callback ──────────────────────────────────────────────────────────
 
-  private onCameraLiftDetected() {
+  private async onCameraLiftDetected() {
     // Immediately show red warning screen
     this.screen = 'gesture_warning';
-    hapticForRisk('LEGAL');
+    await hapticForRisk('LEGAL');
 
     // Notify phone to fetch the applicable rule
     this.sendToPhone('GESTURE_DETECTED', {
@@ -211,21 +234,21 @@ struct Index {
 
   // ── Phone message handler ─────────────────────────────────────────────────────
 
-  private onPhoneMessage(type: string, payload: object) {
+  private async onPhoneMessage(type: string, payload: object) {
     switch (type) {
       case 'ARRIVAL_STEP': {
         const p = payload as ArrivalStep;
         this.currentStep = p;
         this.stepIndex   = p.stepIndex;
         this.screen      = 'checklist';
-        hapticForRisk(p.riskLevel);
+        await hapticForRisk(p.riskLevel);
         break;
       }
       case 'CONTEXT_ALERT': {
         const p = payload as ContextAlert;
         this.activeAlert = p;
         this.screen      = 'alert';
-        hapticForRisk(p.riskLevel);
+        await hapticForRisk(p.riskLevel);
         // If this came from a gesture, replace the red screen with the real alert
         break;
       }
@@ -255,11 +278,62 @@ struct Index {
 
   private sendToPhone(type: string, payload: object) {
     const message = JSON.stringify({ type, payload });
-    // TODO: Replace with actual Huawei WearEngine P2P send:
-    // p2pClient.send(targetDevice, { data: new Uint8Array(Buffer.from(message)) })
-    //   .then(() => console.log('Sent:', type))
-    //   .catch(err => console.error('Send failed:', err));
-    console.log('[Watch→Phone]', message);
+    if (!this.p2pClient || !this.targetDevice) {
+      console.warn('[Watch→Phone] No WearEngine connection, dropping:', type);
+      return;
+    }
+    try {
+      this.p2pClient.send(this.targetDevice, { data: new Uint8Array(Buffer.from(message)) });
+    } catch (err) {
+      console.error('[Watch→Phone] Send failed:', JSON.stringify(err));
+    }
+  }
+
+  // ── Message router ────────────────────────────────────────────────────────────
+
+  private parseAndRoute(raw: string) {
+    // Wire format: TRIGGER:SCREEN:CONTEXT_JSON
+    // e.g. TRIGGER:checklist:{"stepIndex":0,"title":"Passport Control","riskLevel":"LEGAL"}
+    if (!raw.startsWith('TRIGGER:')) {
+      console.warn('[WearEngine] Unexpected message format:', raw);
+      return;
+    }
+    const firstSep  = raw.indexOf(':');
+    const secondSep = raw.indexOf(':', firstSep + 1);
+    if (secondSep === -1) {
+      console.warn('[WearEngine] Malformed TRIGGER message (missing context):', raw);
+      return;
+    }
+    const targetScreen = raw.substring(firstSep + 1, secondSep);
+    // Context JSON may itself contain colons, so rejoin everything after the second separator
+    const contextJson  = raw.substring(secondSep + 1);
+
+    try {
+      const ctx = JSON.parse(contextJson);
+      switch (targetScreen) {
+        case 'checklist':
+          this.onPhoneMessage('ARRIVAL_STEP', ctx as object);
+          break;
+        case 'alert':
+          this.onPhoneMessage('CONTEXT_ALERT', ctx as object);
+          break;
+        case 'convo':
+          this.onPhoneMessage('CONVO_OPTIONS', ctx as object);
+          break;
+        case 'speech_result':
+          this.onPhoneMessage('SPEECH_ASSIST_RESULT', ctx as object);
+          break;
+        case 'idle':
+          if (ctx.country) this.country     = ctx.country as string;
+          if (ctx.flag)    this.countryFlag = ctx.flag as string;
+          this.screen = 'idle';
+          break;
+        default:
+          console.warn('[WearEngine] Unknown screen target:', targetScreen);
+      }
+    } catch (e) {
+      console.error('[WearEngine] Context JSON parse failed for:', raw);
+    }
   }
 
   // ── Request helpers ───────────────────────────────────────────────────────────
@@ -278,7 +352,7 @@ struct Index {
     });
   }
 
-  private startSpeechAssist() {
+  private async startSpeechAssist() {
     this.isListening = true;
     this.screen      = 'listening';
     this.sendToPhone('REQUEST_SPEECH_ASSIST', {
@@ -286,7 +360,7 @@ struct Index {
       locationType: this.activeAlert?.alertId ?? 'general',
       locale:       'en'
     });
-    hapticForRisk('NORM');
+    await hapticForRisk('NORM');
   }
 
   // ── Build ─────────────────────────────────────────────────────────────────────
