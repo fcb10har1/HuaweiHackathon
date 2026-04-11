@@ -22,24 +22,69 @@
         "exported": true,
         "skills": [
           {
-            "entities": [
-              "entity.system.home"
-            ],
-            "actions": [
-              "ohos.want.action.home"
-            ]
+            "entities": ["entity.system.home"],
+            "actions": ["ohos.want.action.home"]
           }
         ]
       }
     ],
     "requestPermissions": [
-      { "name": "ohos.permission.ACCELEROMETER" },
-      { "name": "ohos.permission.GYROSCOPE" },
-      { "name": "ohos.permission.VIBRATE" },
-      { "name": "ohos.permission.MICROPHONE" },
-      { "name": "ohos.permission.INTERNET" },
-      { "name": "ohos.permission.LOCATION" },
-      { "name": "ohos.permission.APPROXIMATELY_LOCATION" }
+      {
+        "name": "ohos.permission.ACCELEROMETER",
+        "reason": "$string:permission_reason_sensor",
+        "usedScene": {
+          "abilities": ["EntryAbility"],
+          "when": "inuse"
+        }
+      },
+      {
+        "name": "ohos.permission.GYROSCOPE",
+        "reason": "$string:permission_reason_sensor",
+        "usedScene": {
+          "abilities": ["EntryAbility"],
+          "when": "inuse"
+        }
+      },
+      {
+        "name": "ohos.permission.VIBRATE",
+        "reason": "$string:permission_reason_vibrate",
+        "usedScene": {
+          "abilities": ["EntryAbility"],
+          "when": "inuse"
+        }
+      },
+      {
+        "name": "ohos.permission.MICROPHONE",
+        "reason": "$string:permission_reason_microphone",
+        "usedScene": {
+          "abilities": ["EntryAbility"],
+          "when": "inuse"
+        }
+      },
+      {
+        "name": "ohos.permission.INTERNET",
+        "reason": "$string:permission_reason_internet",
+        "usedScene": {
+          "abilities": ["EntryAbility"],
+          "when": "always"
+        }
+      },
+      {
+        "name": "ohos.permission.LOCATION",
+        "reason": "$string:permission_reason_location",
+        "usedScene": {
+          "abilities": ["EntryAbility"],
+          "when": "inuse"
+        }
+      },
+      {
+        "name": "ohos.permission.APPROXIMATELY_LOCATION",
+        "reason": "$string:permission_reason_location",
+        "usedScene": {
+          "abilities": ["EntryAbility"],
+          "when": "inuse"
+        }
+      }
     ],
     "extensionAbilities": [
       {
@@ -52,7 +97,7 @@
             "name": "ohos.extension.backup",
             "resource": "$profile:backup_config"
           }
-        ],
+        ]
       }
     ]
   }

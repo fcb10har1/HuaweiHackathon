@@ -10,7 +10,27 @@
     },
     {
       "name": "EntryAbility_label",
-      "value": "label"
+      "value": "Arrival Ritual"
+    },
+    {
+      "name": "permission_reason_sensor",
+      "value": "Required for motion detection and gesture recognition"
+    },
+    {
+      "name": "permission_reason_vibrate",
+      "value": "Required for haptic feedback alerts"
+    },
+    {
+      "name": "permission_reason_microphone",
+      "value": "Required for voice capture in Convo Assist"
+    },
+    {
+      "name": "permission_reason_internet",
+      "value": "Required for translation and real-time updates"
+    },
+    {
+      "name": "permission_reason_location",
+      "value": "Required for arrival detection and location-based alerts"
     }
   ]
 }

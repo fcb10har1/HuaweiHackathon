@@ -1,41 +1,26 @@
-# Gradle
-.gradle/
-build/
-*.apk
-*.aab
-
-# Android
-.idea/
-.DS_Store
-*.iml
-local.properties
-
-# Node/npm
+# Node
 node_modules/
-npm-debug.log
+web-ui/node_modules/
+web-ui/dist/
 
-# OS
-.DS_Store
-Thumbs.db
-desktop.ini
+# Android build
+phone-app/build/
+phone-app/.gradle/
+phone-app/local.properties
+*.keystore
 
-# Build artifacts
-out/
-dist/
-target/
+# HarmonyOS build
+watch-app/build/
+watch-app/.caches/
+watch-app/.preview/
 
 # IDE
+.idea/
+*.iml
+.DS_Store
 .vscode/
-*.swp
-*.swo
-*~
 
-# HarmonyOS/OHOS
-oh_modules/
-.ohostest/
-
-# Misc
-*.log
-
-# Temporary Office lock files
-~$*
+# Secrets — never commit
+*.env
+local.properties
+Key
