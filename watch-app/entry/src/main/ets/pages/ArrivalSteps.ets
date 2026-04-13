@@ -112,7 +112,7 @@ struct ArrivalSteps {
           // Step number indicator
           Row({ space: 6 }) {
             ForEach(this.steps, (_: ArrivalStep, idx: number) => {
-              Box()
+              Row()
                 .width(idx === this.currentIdx ? 14 : 6)
                 .height(6)
                 .borderRadius(3)
