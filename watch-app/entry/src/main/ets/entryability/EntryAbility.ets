@@ -1,48 +1,65 @@
+/**
+ * EntryAbility.ets
+ * Requests runtime permissions on first launch.
+ * No phone/WearEngine communication — the watch app is fully standalone.
+ */
 import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.AbilityKit';
-import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
+import { hilog } from '@kit.PerformanceAnalysisKit';
+import abilityAccessCtrl, { Permissions } from '@ohos.abilityAccessCtrl';
 
 const DOMAIN = 0x0000;
 
+const REQUIRED_PERMISSIONS: Permissions[] = [
+  'ohos.permission.LOCATION',
+  'ohos.permission.APPROXIMATELY_LOCATION',
+  'ohos.permission.MICROPHONE',
+];
+
 export default class EntryAbility extends UIAbility {
+
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     try {
       this.context.getApplicationContext().setColorMode(ConfigurationConstant.ColorMode.COLOR_MODE_NOT_SET);
     } catch (err) {
-      hilog.error(DOMAIN, 'testTag', 'Failed to set colorMode. Cause: %{public}s', JSON.stringify(err));
+      hilog.error(DOMAIN, 'ArrivalRitual', 'Failed to set colorMode: %{public}s', JSON.stringify(err));
     }
-    hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onCreate');
+    hilog.info(DOMAIN, 'ArrivalRitual', 'Ability onCreate');
   }
 
   onDestroy(): void {
-    hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onDestroy');
+    hilog.info(DOMAIN, 'ArrivalRitual', 'Ability onDestroy');
   }
 
   onWindowStageCreate(windowStage: window.WindowStage): void {
-    // Main window is created, set main page for this ability
-    hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onWindowStageCreate');
+    hilog.info(DOMAIN, 'ArrivalRitual', 'Ability onWindowStageCreate');
+
+    // Request runtime permissions
+    const atManager = abilityAccessCtrl.createAtManager();
+    atManager.requestPermissionsFromUser(this.context, REQUIRED_PERMISSIONS).then(() => {
+      hilog.info(DOMAIN, 'ArrivalRitual', 'Permissions granted');
+    }).catch((err: Error) => {
+      hilog.warn(DOMAIN, 'ArrivalRitual', 'Permission request failed: %{public}s', err.message);
+    });
 
     windowStage.loadContent('pages/Index', (err) => {
       if (err.code) {
-        hilog.error(DOMAIN, 'testTag', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err));
+        hilog.error(DOMAIN, 'ArrivalRitual', 'Failed to load content: %{public}s', JSON.stringify(err));
         return;
       }
-      hilog.info(DOMAIN, 'testTag', 'Succeeded in loading the content.');
+      hilog.info(DOMAIN, 'ArrivalRitual', 'Content loaded successfully');
     });
   }
 
   onWindowStageDestroy(): void {
-    // Main window is destroyed, release UI related resources
-    hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onWindowStageDestroy');
+    hilog.info(DOMAIN, 'ArrivalRitual', 'Ability onWindowStageDestroy');
   }
 
   onForeground(): void {
-    // Ability has brought to foreground
-    hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onForeground');
+    hilog.info(DOMAIN, 'ArrivalRitual', 'Ability onForeground');
   }
 
   onBackground(): void {
-    // Ability has back to background
-    hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onBackground');
+    hilog.info(DOMAIN, 'ArrivalRitual', 'Ability onBackground');
   }
 }

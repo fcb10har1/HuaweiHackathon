@@ -1,0 +1,258 @@
+{
+  "countryCode": "AE",
+  "name": "United Arab Emirates",
+  "flag": "🇦🇪",
+  "tagline": "Modern luxury meets ancient tradition",
+  "language": {
+    "name": "Arabic",
+    "locale": "ar-AE",
+    "nativeScriptName": "العربية"
+  },
+  "scenarios": [
+    {
+      "id": "airport",
+      "displayName": "Airport Arrival",
+      "icon": "✈️",
+      "description": "Immigration, customs, and arrival procedures",
+      "geofence": "airport_arrivals",
+      "locationKeywords": ["airport", "arrivals", "terminal", "dubai", "abu dhabi", "dxb", "auh", "sharjah"],
+      "arrivalSteps": [
+        {
+          "stepIndex": 0,
+          "title": "Visa Verification / Visa on Arrival",
+          "description": "Citizens of 60+ countries receive a free visa on arrival valid for 30–90 days (varies by nationality). Check the ICP portal (icp.gov.ae) for your country's eligibility. Other nationalities must hold a pre-arranged UAE visa. Passport must have at least 6 months validity.",
+          "riskLevel": "LEGAL"
+        },
+        {
+          "stepIndex": 1,
+          "title": "Smart Gate / Passport Control",
+          "description": "UAE citizens and registered residents use Smart Gates with Emirates ID. Tourists queue at manual immigration counters or e-Gates if enabled for their passport. Present your passport and boarding pass; an entry stamp is issued upon clearance.",
+          "riskLevel": "SENSITIVE"
+        },
+        {
+          "stepIndex": 2,
+          "title": "Biometric Enrollment",
+          "description": "All first-time visitors provide iris scans and fingerprints at the immigration counter. These are stored against your passport for future visits and linked to your visa record.",
+          "riskLevel": "SENSITIVE"
+        },
+        {
+          "stepIndex": 3,
+          "title": "Baggage Claim",
+          "description": "Collect your luggage from the designated carousel. UAE airports use a monitored baggage exit; retain your claim stubs as they may be checked.",
+          "riskLevel": "NORM"
+        },
+        {
+          "stepIndex": 4,
+          "title": "Customs Declaration",
+          "description": "Duty-free allowance: 4L of alcohol (or 2 cases of beer) for non-Muslims aged 18+, 400 cigarettes, gifts up to AED 3,000. Declare cash over AED 100,000. Prohibited: narcotics, pork products (at some ports), sexually explicit material, items from sanctioned countries. Penalties are severe.",
+          "riskLevel": "LEGAL"
+        },
+        {
+          "stepIndex": 5,
+          "title": "Exit to Arrivals Hall",
+          "description": "After customs clearance, proceed to the arrivals hall. Taxis, pre-booked rides (Careem, Uber), and the Dubai Metro are available from Dubai International (DXB). Keep your passport accessible as spot checks occur near the exit.",
+          "riskLevel": "NORM"
+        }
+      ],
+      "fallbackAlerts": [
+        {
+          "alertId": "ae_airport_drugs",
+          "message": "Carrying even trace amounts of illegal drugs — including cannabis — results in mandatory imprisonment under UAE law.",
+          "riskLevel": "LEGAL"
+        },
+        {
+          "alertId": "ae_airport_media",
+          "message": "DVDs, books, or media with sexual content are illegal to import. They will be confiscated and may result in a fine.",
+          "riskLevel": "LEGAL"
+        }
+      ],
+      "phrases": [
+        {
+          "english": "I am here for tourism.",
+          "nativeScript": "أنا هنا للسياحة.",
+          "romanized": "Ana huna lil-siyaha."
+        },
+        {
+          "english": "Where is the currency exchange?",
+          "nativeScript": "أين مكتب الصرافة؟",
+          "romanized": "Ayna maktab al-sarafa?"
+        }
+      ]
+    },
+    {
+      "id": "mosque",
+      "displayName": "Mosque",
+      "icon": "🕌",
+      "description": "Dress code, prayer times, and conduct inside mosques",
+      "geofence": "mosque_zone",
+      "locationKeywords": ["mosque", "masjid", "prayer", "grand mosque", "sheikh zayed", "jumeirah mosque"],
+      "arrivalSteps": [
+        {
+          "stepIndex": 0,
+          "title": "Dress Code is Mandatory",
+          "description": "Women: full-length abaya covering arms and legs, head scarf required. Men: long trousers, covered shoulders.",
+          "riskLevel": "LEGAL"
+        },
+        {
+          "stepIndex": 1,
+          "title": "Remove Shoes Before Entering",
+          "description": "Leave all footwear at the entrance. Carry them with you or leave at the shoe rack.",
+          "riskLevel": "SENSITIVE"
+        },
+        {
+          "stepIndex": 2,
+          "title": "Respect Prayer Times",
+          "description": "If prayer begins, stand quietly to the side. Do not walk in front of or disturb people praying.",
+          "riskLevel": "SENSITIVE"
+        }
+      ],
+      "fallbackAlerts": [
+        {
+          "alertId": "ae_mosque_dress",
+          "message": "Both men and women must be modestly dressed to enter a mosque. Abayas are provided at the Grand Mosque entrance.",
+          "riskLevel": "SENSITIVE"
+        },
+        {
+          "alertId": "ae_mosque_photo",
+          "message": "Photography is usually allowed in common areas of grand mosques, but never during prayer or inside the prayer hall without permission.",
+          "riskLevel": "SENSITIVE"
+        }
+      ],
+      "phrases": [
+        {
+          "english": "Is there a dress code here?",
+          "nativeScript": "هل هناك قواعد للباس هنا؟",
+          "romanized": "Hal hunaka qawa'id lil-libas huna?"
+        },
+        {
+          "english": "Please show me where to enter.",
+          "nativeScript": "أرشدني إلى مدخل الزوار من فضلك.",
+          "romanized": "Arshidni ila madkhal al-zuwwar min fadlak."
+        }
+      ]
+    },
+    {
+      "id": "taxi",
+      "displayName": "Taxi / Careem",
+      "icon": "🚕",
+      "description": "Taxi etiquette, app rides, and pricing",
+      "geofence": "taxi_stand",
+      "locationKeywords": ["taxi", "careem", "uber", "cab", "transport", "ride"],
+      "arrivalSteps": [
+        {
+          "stepIndex": 0,
+          "title": "Use Metered or App Taxis",
+          "description": "All licensed RTA taxis in Dubai are metered. Careem and Uber are widely available and reliable.",
+          "riskLevel": "NORM"
+        },
+        {
+          "stepIndex": 1,
+          "title": "Seat Belt is Mandatory",
+          "description": "Seat belts for all passengers are legally required and strictly enforced.",
+          "riskLevel": "LEGAL"
+        }
+      ],
+      "fallbackAlerts": [
+        {
+          "alertId": "ae_taxi_affection",
+          "message": "Public displays of affection in taxis and in public are illegal under UAE law.",
+          "riskLevel": "LEGAL"
+        },
+        {
+          "alertId": "ae_taxi_dress",
+          "message": "Dress modestly when using taxis — revealing clothing can result in complaints or legal issues.",
+          "riskLevel": "SENSITIVE"
+        }
+      ],
+      "phrases": [
+        {
+          "english": "Please take me to the Dubai Mall.",
+          "nativeScript": "خذني إلى دبي مول من فضلك.",
+          "romanized": "Khudni ila Dubai Mall min fadlak."
+        },
+        {
+          "english": "How much is the fare?",
+          "nativeScript": "كم يبلغ الأجر؟",
+          "romanized": "Kam yablugh al-ajr?"
+        }
+      ]
+    },
+    {
+      "id": "beach",
+      "displayName": "Public Beach",
+      "icon": "🏖️",
+      "description": "Beach rules, dress code, and prohibited behaviours",
+      "geofence": "beach_zone",
+      "locationKeywords": ["beach", "jumeirah", "kite beach", "marina", "coast", "sea", "corniche"],
+      "arrivalSteps": [
+        {
+          "stepIndex": 0,
+          "title": "Swimwear Only in the Water",
+          "description": "Swimwear is acceptable at designated public beaches only. Cover up when walking away from the beach.",
+          "riskLevel": "SENSITIVE"
+        },
+        {
+          "stepIndex": 1,
+          "title": "No Drinking Alcohol",
+          "description": "Drinking alcohol on public beaches is illegal and can result in arrest.",
+          "riskLevel": "LEGAL"
+        }
+      ],
+      "fallbackAlerts": [
+        {
+          "alertId": "ae_beach_alcohol",
+          "message": "Consuming alcohol on a public beach is illegal in the UAE. Alcohol is only permitted in licensed venues.",
+          "riskLevel": "LEGAL"
+        },
+        {
+          "alertId": "ae_beach_pda",
+          "message": "Kissing and embracing in public — including on the beach — is illegal and can result in arrest.",
+          "riskLevel": "LEGAL"
+        }
+      ],
+      "phrases": [
+        {
+          "english": "Is this a public beach?",
+          "nativeScript": "هل هذا شاطئ عام؟",
+          "romanized": "Hal hatha shati' 'amm?"
+        }
+      ]
+    },
+    {
+      "id": "immigration",
+      "displayName": "Immigration Desk",
+      "icon": "🛂",
+      "description": "UAE passport control and legal requirements",
+      "geofence": "airport_immigration",
+      "locationKeywords": ["immigration", "customs", "border", "passport", "visa", "control"],
+      "arrivalSteps": [
+        {
+          "stepIndex": 0,
+          "title": "Israel Passport Note",
+          "description": "The UAE now accepts Israeli passports after the Abraham Accords normalisation.",
+          "riskLevel": "NORM"
+        },
+        {
+          "stepIndex": 1,
+          "title": "Visa on Arrival for Many Nationals",
+          "description": "Many nationalities receive a free 30-day visa on arrival. Check your eligibility before travel.",
+          "riskLevel": "NORM"
+        }
+      ],
+      "fallbackAlerts": [
+        {
+          "alertId": "ae_immigration_debt",
+          "message": "Individuals with outstanding debt judgements in the UAE may be detained at immigration. Check your status before travelling.",
+          "riskLevel": "LEGAL"
+        }
+      ],
+      "phrases": [
+        {
+          "english": "I am visiting for tourism.",
+          "nativeScript": "أنا زائر للسياحة.",
+          "romanized": "Ana za'ir lil-siyaha."
+        }
+      ]
+    }
+  ]
+}

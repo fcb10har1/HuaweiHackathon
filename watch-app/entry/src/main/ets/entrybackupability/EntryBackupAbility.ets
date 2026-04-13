@@ -1,3 +1,6 @@
+// NOT USED — DevEco-generated backup stub. ArrivalRitual does not use the
+// system backup/restore framework. Safe to ignore.
+
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { BackupExtensionAbility, BundleVersion } from '@kit.CoreFileKit';
 

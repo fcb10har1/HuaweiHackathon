@@ -1,3 +1,6 @@
+// NOT USED — DevEco-generated integration test stub. No actual tests implemented.
+// Kept so the Hvigor build system doesn't complain about a missing ohosTest entry point.
+
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { describe, beforeAll, beforeEach, afterEach, afterAll, it, expect } from '@ohos/hypium';
 

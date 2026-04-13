@@ -32,58 +32,47 @@
       {
         "name": "ohos.permission.ACCELEROMETER",
         "reason": "$string:permission_reason_sensor",
-        "usedScene": {
-          "abilities": ["EntryAbility"],
-          "when": "inuse"
-        }
+        "usedScene": { "abilities": ["EntryAbility"], "when": "inuse" }
       },
       {
         "name": "ohos.permission.GYROSCOPE",
         "reason": "$string:permission_reason_sensor",
-        "usedScene": {
-          "abilities": ["EntryAbility"],
-          "when": "inuse"
-        }
+        "usedScene": { "abilities": ["EntryAbility"], "when": "inuse" }
       },
       {
         "name": "ohos.permission.VIBRATE",
         "reason": "$string:permission_reason_vibrate",
-        "usedScene": {
-          "abilities": ["EntryAbility"],
-          "when": "inuse"
-        }
+        "usedScene": { "abilities": ["EntryAbility"], "when": "inuse" }
       },
       {
         "name": "ohos.permission.MICROPHONE",
         "reason": "$string:permission_reason_microphone",
-        "usedScene": {
-          "abilities": ["EntryAbility"],
-          "when": "inuse"
-        }
+        "usedScene": { "abilities": ["EntryAbility"], "when": "inuse" }
       },
       {
         "name": "ohos.permission.INTERNET",
         "reason": "$string:permission_reason_internet",
-        "usedScene": {
-          "abilities": ["EntryAbility"],
-          "when": "always"
-        }
+        "usedScene": { "abilities": ["EntryAbility"], "when": "always" }
       },
       {
         "name": "ohos.permission.LOCATION",
         "reason": "$string:permission_reason_location",
-        "usedScene": {
-          "abilities": ["EntryAbility"],
-          "when": "inuse"
-        }
+        "usedScene": { "abilities": ["EntryAbility"], "when": "inuse" }
       },
       {
         "name": "ohos.permission.APPROXIMATELY_LOCATION",
         "reason": "$string:permission_reason_location",
-        "usedScene": {
-          "abilities": ["EntryAbility"],
-          "when": "inuse"
-        }
+        "usedScene": { "abilities": ["EntryAbility"], "when": "inuse" }
+      },
+      {
+        "name": "ohos.permission.LOCATION_IN_BACKGROUND",
+        "reason": "$string:permission_reason_location",
+        "usedScene": { "abilities": ["EntryAbility"], "when": "always" }
+      },
+      {
+        "name": "ohos.permission.KEEP_BACKGROUND_RUNNING",
+        "reason": "$string:permission_reason_location",
+        "usedScene": { "abilities": ["EntryAbility"], "when": "always" }
       }
     ],
     "extensionAbilities": [

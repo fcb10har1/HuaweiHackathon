@@ -1,5 +1,13 @@
 {
   "src": [
-    "pages/Index"
+    "pages/Index",
+    "pages/AddTripCountry",
+    "pages/AddTripDates",
+    "pages/TripHome",
+    "pages/ArrivalSteps",
+    "pages/ConvoAssist",
+    "pages/SpeechResult",
+    "pages/ContextAlert",
+    "pages/TripEnded"
   ]
 }

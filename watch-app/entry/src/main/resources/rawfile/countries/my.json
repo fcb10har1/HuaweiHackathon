@@ -1,0 +1,196 @@
+{
+  "countryCode": "MY",
+  "name": "Malaysia",
+  "flag": "🇲🇾",
+  "tagline": "Multicultural melting pot of Asia",
+  "language": {
+    "name": "Malay",
+    "locale": "ms-MY",
+    "nativeScriptName": "Bahasa Melayu"
+  },
+  "scenarios": [
+    {
+      "id": "airport",
+      "displayName": "Airport Arrival",
+      "icon": "✈️",
+      "description": "Immigration and customs at KLIA",
+      "geofence": "airport_arrivals",
+      "locationKeywords": ["airport", "arrivals", "terminal", "klia", "klia2", "kuala lumpur", "penang", "kota kinabalu"],
+      "arrivalSteps": [
+        {
+          "stepIndex": 0,
+          "title": "Visa Requirements & MDAC",
+          "description": "Most nationalities from Commonwealth, ASEAN, and major Western nations receive visa-free entry for 30–90 days. The Malaysia Digital Arrival Card (MDAC) at imigresen-online.imi.gov.my is mandatory for all foreign visitors and must be completed within 3 days before arrival.",
+          "riskLevel": "LEGAL"
+        },
+        {
+          "stepIndex": 1,
+          "title": "Passport Control / Immigration",
+          "description": "Proceed to the foreigners' immigration queue at KLIA, klia2, or other entry points. Present your passport and MDAC confirmation. Officers will check documentation, ask about purpose and duration of stay, and verify your accommodation address.",
+          "riskLevel": "SENSITIVE"
+        },
+        {
+          "stepIndex": 2,
+          "title": "Biometrics",
+          "description": "Fingerprints (both index fingers) are scanned at the immigration counter for all non-Malaysian citizens. A facial photograph is also taken. Biometric data is stored for future entries.",
+          "riskLevel": "SENSITIVE"
+        },
+        {
+          "stepIndex": 3,
+          "title": "Baggage Claim",
+          "description": "Collect your checked baggage from the designated carousel. Retain your baggage claim tags as they are checked by customs officers at the exit.",
+          "riskLevel": "NORM"
+        },
+        {
+          "stepIndex": 4,
+          "title": "Customs Declaration",
+          "description": "Duty-free allowance: goods up to MYR 500, 200 cigarettes or 225g tobacco, 1L alcohol (non-Muslim). Declare cash or monetary instruments over MYR 30,000. Prohibited: drugs (mandatory death penalty for trafficking), pornographic material, firearms without permit.",
+          "riskLevel": "LEGAL"
+        },
+        {
+          "stepIndex": 5,
+          "title": "Exit to Arrivals Hall",
+          "description": "After customs clearance, proceed to the arrivals hall. At KLIA, the KLIA Ekspres train provides fast access to Kuala Lumpur city centre (28 minutes). Registered taxis and e-hailing apps (Grab) are available from designated bays.",
+          "riskLevel": "NORM"
+        }
+      ],
+      "fallbackAlerts": [
+        {
+          "alertId": "my_airport_drugs",
+          "message": "Malaysia enforces the mandatory death penalty for drug trafficking. Even possession of small amounts can result in severe punishment.",
+          "riskLevel": "LEGAL"
+        }
+      ],
+      "phrases": [
+        {
+          "english": "Where is the taxi counter?",
+          "nativeScript": "Di mana kaunter teksi?",
+          "romanized": "Di mana kaunter teksi?"
+        },
+        {
+          "english": "I have nothing to declare.",
+          "nativeScript": "Saya tiada barang untuk diisytiharkan.",
+          "romanized": "Saya tiada barang untuk diisytiharkan."
+        }
+      ]
+    },
+    {
+      "id": "mosque",
+      "displayName": "Mosque",
+      "icon": "🕌",
+      "description": "Mosque etiquette and dress code in Malaysia",
+      "geofence": "mosque_zone",
+      "locationKeywords": ["mosque", "masjid", "surau", "prayer", "national mosque", "putra mosque", "blue mosque"],
+      "arrivalSteps": [
+        {
+          "stepIndex": 0,
+          "title": "Robes Provided at Tourist Mosques",
+          "description": "Major tourist mosques like Masjid Putra provide robes and headscarves at the entrance for visitors.",
+          "riskLevel": "NORM"
+        },
+        {
+          "stepIndex": 1,
+          "title": "Remove Shoes",
+          "description": "All footwear must be removed before entering any mosque.",
+          "riskLevel": "SENSITIVE"
+        },
+        {
+          "stepIndex": 2,
+          "title": "Non-Muslims in Non-Prayer Areas Only",
+          "description": "Non-Muslims are usually welcome in designated visitor areas but must not enter active prayer halls.",
+          "riskLevel": "SENSITIVE"
+        }
+      ],
+      "fallbackAlerts": [
+        {
+          "alertId": "my_mosque_dress",
+          "message": "Women must cover hair and wear a long robe inside all mosques. These are provided free at major tourist mosques.",
+          "riskLevel": "SENSITIVE"
+        },
+        {
+          "alertId": "my_mosque_ramadan",
+          "message": "During Ramadan, eating or drinking in public during daylight is an offence under Syariah law in many Malaysian states.",
+          "riskLevel": "LEGAL"
+        }
+      ],
+      "phrases": [
+        {
+          "english": "Is this mosque open to visitors?",
+          "nativeScript": "Adakah masjid ini terbuka kepada pelawat?",
+          "romanized": "Adakah masjid ini terbuka kepada pelawat?"
+        }
+      ]
+    },
+    {
+      "id": "temple",
+      "displayName": "Hindu / Buddhist Temple",
+      "icon": "🛕",
+      "description": "Etiquette at Chinese and Hindu temples",
+      "geofence": "temple_zone",
+      "locationKeywords": ["temple", "batu caves", "sri mahamariamman", "thean hou", "buddhist", "chinese temple", "shrine"],
+      "arrivalSteps": [
+        {
+          "stepIndex": 0,
+          "title": "Remove Shoes at Entrances",
+          "description": "Footwear must be removed before entering any Hindu or Buddhist temple.",
+          "riskLevel": "SENSITIVE"
+        },
+        {
+          "stepIndex": 1,
+          "title": "Dress Modestly",
+          "description": "Shorts and sleeveless tops are generally not acceptable. Long pants or skirts are preferred.",
+          "riskLevel": "SENSITIVE"
+        }
+      ],
+      "fallbackAlerts": [
+        {
+          "alertId": "my_temple_thaipusam",
+          "message": "During Thaipusam, Batu Caves is extremely crowded. Dress conservatively and be respectful of devotees carrying kavadis.",
+          "riskLevel": "SENSITIVE"
+        }
+      ],
+      "phrases": [
+        {
+          "english": "May I enter this temple?",
+          "nativeScript": "Bolehkah saya masuk ke kuil ini?",
+          "romanized": "Bolehkah saya masuk ke kuil ini?"
+        }
+      ]
+    },
+    {
+      "id": "market",
+      "displayName": "Night Market / Pasar Malam",
+      "icon": "🌙",
+      "description": "Street food, bargaining, and hawker culture",
+      "geofence": "market_zone",
+      "locationKeywords": ["market", "pasar", "night market", "pasar malam", "bazaar", "hawker", "street food"],
+      "arrivalSteps": [
+        {
+          "stepIndex": 0,
+          "title": "Bargaining is Acceptable",
+          "description": "Gentle bargaining is common at markets. Fixed-price stalls usually display price tags.",
+          "riskLevel": "NORM"
+        }
+      ],
+      "fallbackAlerts": [
+        {
+          "alertId": "my_market_halal",
+          "message": "Many stalls in Malaysia are halal-certified. Look for the JAKIM halal logo if dietary compliance is important to you.",
+          "riskLevel": "NORM"
+        }
+      ],
+      "phrases": [
+        {
+          "english": "How much is this?",
+          "nativeScript": "Berapa harganya?",
+          "romanized": "Berapa harganya?"
+        },
+        {
+          "english": "Can you give me a discount?",
+          "nativeScript": "Boleh bagi diskaun?",
+          "romanized": "Boleh bagi diskaun?"
+        }
+      ]
+    }
+  ]
+}

@@ -1,3 +1,6 @@
+// NOT USED — DevEco-generated unit test stub. No actual tests implemented.
+// Real tests should be written for StorageService, CountryDataService, etc.
+
 import { describe, beforeAll, beforeEach, afterEach, afterAll, it, expect } from '@ohos/hypium';
 
 export default function localUnitTest() {
