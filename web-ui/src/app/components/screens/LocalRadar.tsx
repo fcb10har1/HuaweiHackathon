@@ -1,4 +1,5 @@
-export function LocalRadar() {
+interface LocalRadarProps { onDismiss?: () => void; onPhrases?: () => void; }
+export function LocalRadar({ onDismiss, onPhrases }: LocalRadarProps = {}) {
   return (
     <div style={{ width: '100%', height: '100%', background: '#080810', position: 'relative' }}>
       <div style={{
@@ -48,13 +49,13 @@ export function LocalRadar() {
           <div style={{
             flex: 1, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
             color: '#8888A0', fontSize: '10px', fontWeight: 600,
-            padding: '6px 0', borderRadius: '7px', textAlign: 'center',
-          }}>OK</div>
+            padding: '6px 0', borderRadius: '7px', textAlign: 'center', cursor: 'pointer',
+          }} onClick={onDismiss}>OK</div>
           <div style={{
             flex: 2, background: 'rgba(45,212,191,0.08)', border: '1px solid rgba(45,212,191,0.22)',
             color: '#2DD4BF', fontSize: '10px', fontWeight: 600,
-            padding: '6px 0', borderRadius: '7px', textAlign: 'center',
-          }}>🎤 Phrases</div>
+            padding: '6px 0', borderRadius: '7px', textAlign: 'center', cursor: 'pointer',
+          }} onClick={onPhrases}>🎤 Phrases</div>
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
-export function ArrivalWelcome() {
+interface ArrivalWelcomeProps { onArrivalSteps?: () => void; onConvoAssist?: () => void; onBack?: () => void; }
+export function ArrivalWelcome({ onArrivalSteps, onConvoAssist }: ArrivalWelcomeProps = {}) {
   return (
     <div style={{ width: '100%', height: '100%', background: '#080810', position: 'relative' }}>
       <div style={{
@@ -43,15 +44,15 @@ export function ArrivalWelcome() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%' }}>
           <div style={{
             background: '#2DD4BF', color: '#080810', fontSize: '10px', fontWeight: 700,
-            padding: '7px 0', borderRadius: '8px', textAlign: 'center',
-          }}>
+            padding: '7px 0', borderRadius: '8px', textAlign: 'center', cursor: 'pointer',
+          }} onClick={onArrivalSteps}>
             ✓  ARRIVAL STEPS
           </div>
           <div style={{
             background: 'rgba(45,212,191,0.08)', border: '1px solid rgba(45,212,191,0.28)',
             color: '#2DD4BF', fontSize: '10px', fontWeight: 600,
-            padding: '7px 0', borderRadius: '8px', textAlign: 'center',
-          }}>
+            padding: '7px 0', borderRadius: '8px', textAlign: 'center', cursor: 'pointer',
+          }} onClick={onConvoAssist}>
             🎤  CONVO ASSIST
           </div>
         </div>
