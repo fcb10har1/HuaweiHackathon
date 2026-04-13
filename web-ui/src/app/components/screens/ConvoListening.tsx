@@ -1,6 +1,7 @@
 const BARS = [4, 8, 12, 7, 14, 9, 5, 11, 7, 4, 10, 6];
 
-export function ConvoListening() {
+interface ConvoListeningProps { onBack?: () => void; onDone?: (transcribed: string) => void; venueType?: string; }
+export function ConvoListening({ onBack: _ob, onDone: _od, venueType }: ConvoListeningProps = {}) {
   return (
     <div style={{ width: '100%', height: '100%', background: '#080810', position: 'relative' }}>
       <div style={{
@@ -60,7 +61,7 @@ export function ConvoListening() {
           background: 'rgba(255,255,255,0.04)', borderRadius: '6px', padding: '4px 10px',
         }}>
           <span style={{ fontSize: '9px' }}>🛺</span>
-          <span style={{ color: '#8888A0', fontSize: '8.5px' }}>Taxi context active</span>
+          <span style={{ color: '#8888A0', fontSize: '8.5px' }}>{venueType ? `${venueType} context active` : 'Taxi context active'}</span>
         </div>
       </div>
     </div>

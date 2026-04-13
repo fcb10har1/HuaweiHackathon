@@ -1,5 +1,6 @@
+interface PrivacyConsentProps { onConsent?: () => void; }
 // Safe area: inset 42px → 176×176px content (corners at 124.5px < 130px radius)
-export function PrivacyConsent() {
+export function PrivacyConsent({ onConsent }: PrivacyConsentProps = {}) {
   return (
     <div style={{ width: '100%', height: '100%', background: '#080810', position: 'relative' }}>
       <div style={{
@@ -43,7 +44,10 @@ export function PrivacyConsent() {
           background: '#2DD4BF', color: '#080810', fontSize: '10px', fontWeight: 700,
           padding: '6px 0', borderRadius: '8px', width: '100%', textAlign: 'center',
           letterSpacing: '0.04em',
-        }}>
+          cursor: 'pointer',
+        }}
+        onClick={onConsent}
+        >
           ALLOW &amp; CONTINUE
         </div>
       </div>

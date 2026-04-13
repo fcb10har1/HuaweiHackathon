@@ -1,4 +1,5 @@
-export function RedAlert() {
+interface RedAlertProps { onDismiss?: () => void; }
+export function RedAlert({ onDismiss }: RedAlertProps = {}) {
   return (
     <div style={{
       width: '100%', height: '100%', position: 'relative',
@@ -65,8 +66,8 @@ export function RedAlert() {
         <div style={{
           background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
           color: '#8888A0', fontSize: '10px', fontWeight: 600,
-          padding: '6px 0', borderRadius: '7px', width: '100%', textAlign: 'center',
-        }}>
+          padding: '6px 0', borderRadius: '7px', width: '100%', textAlign: 'center', cursor: 'pointer',
+        }} onClick={onDismiss}>
           Dismiss
         </div>
       </div>
