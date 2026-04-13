@@ -108,7 +108,7 @@ struct AddTripDates {
             selected: this.startDate,
           })
           .onChange((val: DatePickerResult) => {
-            this.startDate = new Date(val.year, val.month, val.day);
+            this.startDate = new Date(val.year ?? 0, val.month ?? 0, val.day ?? 1);
           })
           .width('100%')
           .layoutWeight(1)
@@ -145,7 +145,7 @@ struct AddTripDates {
             selected: this.endDate,
           })
           .onChange((val: DatePickerResult) => {
-            this.endDate = new Date(val.year, val.month, val.day);
+            this.endDate = new Date(val.year ?? 0, val.month ?? 0, val.day ?? 1);
           })
           .width('100%')
           .layoutWeight(1)
