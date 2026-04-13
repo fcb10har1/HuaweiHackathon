@@ -1,0 +1,41 @@
+{
+  "apiType": "stageMode",
+  "buildOption": {
+    "arkOptions": {
+      // Set your API keys here. They are injected at build time and accessed
+      // in Config.ets via: import BuildProfile from 'BuildProfile'
+      "buildProfileFields": {
+        "OPENAI_API_KEY": "",           // ← Paste your OpenAI key locally, do NOT commit
+        "GOOGLE_PLACES_API_KEY": ""     // ← Paste your Google Places key locally, do NOT commit
+      }
+    },
+    "resOptions": {
+      "copyCodeResource": {
+        "enable": false
+      }
+    }
+  },
+  "buildOptionSet": [
+    {
+      "name": "release",
+      "arkOptions": {
+        "obfuscation": {
+          "ruleOptions": {
+            "enable": false,
+            "files": [
+              "./obfuscation-rules.txt"
+            ]
+          }
+        }
+      }
+    },
+  ],
+  "targets": [
+    {
+      "name": "default"
+    },
+    {
+      "name": "ohosTest",
+    }
+  ]
+}

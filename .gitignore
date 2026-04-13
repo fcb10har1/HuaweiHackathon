@@ -24,3 +24,7 @@ watch-app/.preview/
 *.env
 local.properties
 Key
+
+# HarmonyOS API keys
+# Copy watch-app/entry/build-profile.json5.example → build-profile.json5 and fill in your keys
+watch-app/entry/build-profile.json5
