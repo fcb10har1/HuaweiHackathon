@@ -12,6 +12,11 @@ import media from '@ohos.multimedia.media';
 import { OPENAI_API_KEY, LLM_MODEL, MIC_DURATION_MS } from '../common/Config';
 import { SpeechReply } from '../common/Types';
 
+interface ChatMessage {
+  role: string;
+  content: string;
+}
+
 export interface LlmAlertResult {
   alertId: string;
   message: string;
@@ -43,10 +48,7 @@ export class LlmService {
           max_tokens: 200,
           temperature: 0.7,
           messages: [
-            {
-              role: 'system',
-              content: 'You are a travel cultural guidance assistant. Always respond with valid JSON only.',
-            },
+            { role: 'system', content: 'You are a travel cultural guidance assistant. Always respond with valid JSON only.' } as ChatMessage,
             {
               role: 'user',
               content:
@@ -55,8 +57,8 @@ export class LlmService {
                 `Respond ONLY with valid JSON: ` +
                 `{"alertId":"snake_case_id","message":"1-2 sentence alert","riskLevel":"NORM"} ` +
                 `riskLevel must be NORM, SENSITIVE, or LEGAL.`,
-            },
-          ],
+            } as ChatMessage,
+          ] as ChatMessage[],
         }),
       });
       req.destroy();
@@ -87,15 +89,15 @@ export class LlmService {
           response_format: { type: 'json_object' },
           max_tokens: 150,
           messages: [
-            { role: 'system', content: 'You are a travel assistant. Always respond with valid JSON only.' },
+            { role: 'system', content: 'You are a travel assistant. Always respond with valid JSON only.' } as ChatMessage,
             {
               role: 'user',
               content:
                 `A traveler is in ${country} at a/an ${locationType}. ` +
                 `Provide exactly 3 short practical English phrases they might need. ` +
                 `Respond ONLY with: {"phrases":["phrase one","phrase two","phrase three"]}`,
-            },
-          ],
+            } as ChatMessage,
+          ] as ChatMessage[],
         }),
       });
       req.destroy();
@@ -192,7 +194,7 @@ export class LlmService {
           response_format: { type: 'json_object' },
           max_tokens: 400,
           messages: [
-            { role: 'system', content: 'You are a travel language assistant. Always respond with valid JSON only.' },
+            { role: 'system', content: 'You are a travel language assistant. Always respond with valid JSON only.' } as ChatMessage,
             {
               role: 'user',
               content:
@@ -205,8 +207,8 @@ export class LlmService {
                 `"replies":[{"english":"reply","local":"${language} reply"},` +
                 `{"english":"reply","local":"${language} reply"},` +
                 `{"english":"reply","local":"${language} reply"}]}`,
-            },
-          ],
+            } as ChatMessage,
+          ] as ChatMessage[],
         }),
       });
       req.destroy();
