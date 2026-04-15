@@ -43,7 +43,18 @@ struct SpeechResult {
   }
 
   private async playTtsAudio(): Promise<void> {
-    if (!this.response.ttsAudioUrl) {
+    let audioUrl: string = '';
+    
+    // Determine which audio to play
+    if (this.selectedIdx >= 0 && this.response.suggestionAudios && this.response.suggestionAudios.length > this.selectedIdx) {
+      // Play audio for the selected suggestion
+      audioUrl = this.response.suggestionAudios[this.selectedIdx];
+      console.info('[SpeechResult] Playing suggestion audio at index:', this.selectedIdx);
+    } else if (this.response.ttsAudioUrl) {
+      // Fall back to translation audio
+      audioUrl = this.response.ttsAudioUrl;
+      console.info('[SpeechResult] Playing translation audio');
+    } else {
       this.audioPlayError = 'No audio available';
       return;
     }
@@ -62,7 +73,7 @@ struct SpeechResult {
       } catch (_) {}
 
       // Download the audio
-      await this.downloadAudio(this.response.ttsAudioUrl, tempFilePath);
+      await this.downloadAudio(audioUrl, tempFilePath);
 
       // Play the audio
       if (this.audioPlayer) {

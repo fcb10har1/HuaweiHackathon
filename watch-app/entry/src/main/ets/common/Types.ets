@@ -76,6 +76,7 @@ export interface TranslationResponse {
   translationEnglish: string;
   replySuggestionsJapanese: string[];
   ttsAudioUrl: string;
+  suggestionAudios?: string[];  // Audio files for each suggestion (optional)
 }
 
 export interface CountryEntry {
