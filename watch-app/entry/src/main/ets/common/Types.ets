@@ -86,6 +86,11 @@ export interface CountryEntry {
   languageLocale: string;
 }
 
+export interface AudioFile {
+  name: string;
+  file: string;
+}
+
 export const SUPPORTED_COUNTRIES: CountryEntry[] = [
   { code: 'AE', name: 'UAE',        flag: '🇦🇪', languageName: 'Arabic',      languageLocale: 'ar-AE' },
   { code: 'ID', name: 'Indonesia',  flag: '🇮🇩', languageName: 'Indonesian',  languageLocale: 'id-ID' },

@@ -11,7 +11,7 @@
 import router from '@ohos.router';
 import common from '@ohos.app.ability.common';
 import { vibrator } from '@kit.SensorServiceKit';
-import { Trip, Phrase, TranslationResponse } from '../common/Types';
+import { Trip, Phrase, TranslationResponse, AudioFile } from '../common/Types';
 import { CountryDataService } from '../services/CountryDataService';
 import { LlmService } from '../services/LlmService';
 import { TranslationService } from '../services/TranslationService';
@@ -29,7 +29,7 @@ struct ConvoAssist {
   @State phrases: Phrase[]     = [];
   @State extraPhrases: string[] = [];   // LLM-generated extras (English only)
   @State loadingPhrases: boolean = true;
-  @State audioFiles: Array<{ name: string; file: string }> = [
+  @State audioFiles: AudioFile[] = [
     { name: '🇯🇵 Japanese Sample', file: 'japanese_sample.wav' },
     { name: '🇹🇭 Thai Sample', file: 'thai_sample.wav' },
     { name: '🇮🇩 Indonesian Sample', file: 'indonesian_sample.wav' },
@@ -232,7 +232,7 @@ struct ConvoAssist {
               .padding({ left: 8, top: 8 })
               .width('100%')
 
-            ForEach(this.audioFiles, (audioFile: { name: string; file: string }, index: number) => {
+            ForEach(this.audioFiles, (audioFile: AudioFile, index: number) => {
               Button(audioFile.name)
                 .onClick(() => this.selectAudioFile(index))
                 .backgroundColor('#238636')
