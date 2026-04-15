@@ -1,18 +1,12 @@
 # Node
 node_modules/
-web-ui/node_modules/
-web-ui/dist/
-
-# Android build
-phone-app/build/
-phone-app/.gradle/
-phone-app/local.properties
-*.keystore
 
 # HarmonyOS build
 watch-app/build/
 watch-app/.caches/
 watch-app/.preview/
+watch-app/.hvigor/
+watch-app/oh_modules/
 
 # IDE
 .idea/
@@ -20,11 +14,11 @@ watch-app/.preview/
 .DS_Store
 .vscode/
 
-# Secrets — never commit
+# Local config and secrets
 *.env
 local.properties
 Key
+SDK/
 
 # HarmonyOS API keys
-# Copy watch-app/entry/build-profile.json5.example → build-profile.json5 and fill in your keys
 watch-app/entry/build-profile.json5
