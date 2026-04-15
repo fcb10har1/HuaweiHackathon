@@ -115,31 +115,29 @@ def translate():
         language_name = 'Thai'
         transcript = 'สวัสดีค่ะ คุณพูดภาษาอังกฤษได้ไหมค่ะ'
         translation = 'Hello, do you speak English?'
-        suggestions_key = 'replySuggestionsThai'
     elif 'indo' in filename.lower() or 'id' in filename.lower():
         language_code = 'id'
         language_name = 'Indonesian'
         transcript = 'Halo, bisakah Anda berbicara bahasa Inggris?'
         translation = 'Hello, can you speak English?'
-        suggestions_key = 'replySuggestionsIndonesian'
     else:  # Japanese
         language_code = 'ja'
         language_name = 'Japanese'
         transcript = 'こんにちは、あなたはどこの出身ですか？'
         translation = 'Hi, where are you from?'
-        suggestions_key = 'replySuggestionsJapanese'
     
     # Get suggestions (AI-powered or fallback)
     print(f"[Backend] Getting {language_name} suggestions...")
     suggestions = get_ai_suggestions(transcript, language_code, language_name)
     print(f"[Backend] Suggestions: {suggestions}")
     
-    # Create response with both text suggestions AND audio
+    # Create response with BOTH text suggestions AND audio
+    # NOTE: Always use 'replySuggestionsJapanese' key for app compatibility (app expects this exact key)
     response = {
         'sourceLanguage': language_code,
         'transcript': transcript,
         'translationEnglish': translation,
-        suggestions_key: suggestions,  # TEXT suggestions (this is the key!)
+        'replySuggestionsJapanese': suggestions,  # Use consistent key name for app
         'ttsAudioUrl': f'data:audio/wav;base64,{MINIMAL_WAV_BASE64}',
         'suggestionAudios': [
             f'data:audio/wav;base64,{MINIMAL_WAV_BASE64}',
