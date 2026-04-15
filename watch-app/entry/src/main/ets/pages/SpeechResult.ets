@@ -66,7 +66,9 @@ struct SpeechResult {
 
   private get currentSuggestion(): string {
     const suggestions = this.response.replySuggestionsJapanese ?? [];
-    return suggestions[this.selectedIdx] ?? '';
+    const result = suggestions[this.selectedIdx] ?? '';
+    console.info('[SpeechResult] currentSuggestion getter - selectedIdx:', this.selectedIdx, 'suggestions.length:', suggestions.length, 'result:', result);
+    return result;
   }
 
   private async playTtsAudio(): Promise<void> {
