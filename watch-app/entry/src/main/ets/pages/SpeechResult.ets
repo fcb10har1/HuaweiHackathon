@@ -22,23 +22,22 @@ struct SpeechResult {
 
   build() {
     Column() {
-      // ── Header ──────────────────────────────────────────────────────────────
       Row() {
-        Text('←')
-          .fontSize(18)
-          .fontColor('#8B949E')
+        Text('\u2190')
+          .fontSize(17)
+          .fontColor('#4A7A8A')
           .onClick(() => router.back())
-          .padding({ left: 8, right: 8 })
+          .padding({ left: 10, right: 8 })
         Text('Convo Result')
-          .fontSize(13)
+          .fontSize(12)
           .fontWeight(FontWeight.Bold)
-          .fontColor('#E6EDF3')
+          .fontColor('#E8F4F8')
       }
       .width('100%')
-      .height(40)
+      .height(36)
       .alignItems(VerticalAlign.Center)
 
-      Divider().color('#21262D')
+      Divider().color('#0D2035')
 
       Scroll() {
         Column({ space: 12 }) {
@@ -47,15 +46,15 @@ struct SpeechResult {
           if (this.transcribedEnglish) {
             Column({ space: 4 }) {
               Text('They said:')
-                .fontSize(10)
-                .fontColor('#8B949E')
+                .fontSize(9)
+                .fontColor('#4A7A8A')
               Text(`"${this.transcribedEnglish}"`)
-                .fontSize(12)
-                .fontColor('#C9D1D9')
+                .fontSize(11)
+                .fontColor('#A0BEC8')
                 .fontStyle(FontStyle.Italic)
                 .textAlign(TextAlign.Center)
-                .width('90%')
-                .lineHeight(18)
+                .width('84%')
+                .lineHeight(16)
             }
             .width('100%')
             .alignItems(HorizontalAlign.Center)
@@ -74,24 +73,24 @@ struct SpeechResult {
           if (this.current) {
             Column({ space: 8 }) {
               Text(this.current.english)
-                .fontSize(13)
+                .fontSize(12)
                 .fontWeight(FontWeight.Bold)
-                .fontColor('#E6EDF3')
+                .fontColor('#E8F4F8')
                 .textAlign(TextAlign.Center)
-                .width('90%')
-                .lineHeight(20)
+                .width('84%')
+                .lineHeight(18)
 
               if (this.current.local) {
-                Divider().color('#21262D').width('60%')
+                Divider().color('#0D2035').width('55%')
                 Text(`(${this.languageName}):`)
                   .fontSize(9)
-                  .fontColor('#8B949E')
+                  .fontColor('#4A7A8A')
                 Text(this.current.local)
-                  .fontSize(13)
-                  .fontColor('#00E5C8')
+                  .fontSize(12)
+                  .fontColor('#2DD4BF')
                   .textAlign(TextAlign.Center)
-                  .width('90%')
-                  .lineHeight(20)
+                  .width('84%')
+                  .lineHeight(18)
               }
             }
             .width('100%')
@@ -112,26 +111,28 @@ struct SpeechResult {
           // ← → navigation buttons
           if (this.replies.length > 1) {
             Row({ space: 16 }) {
-              Button('‹')
+              Button('\u2039')
                 .onClick(() => {
                   if (this.selectedIdx > 0) this.selectedIdx -= 1;
                 })
-                .backgroundColor(this.selectedIdx > 0 ? '#21262D' : '#0D1117')
-                .fontColor(this.selectedIdx > 0 ? '#E6EDF3' : '#21262D')
+                .backgroundColor(this.selectedIdx > 0 ? '#0D2035' : '#060D1A')
+                .fontColor(this.selectedIdx > 0 ? '#E8F4F8' : '#0D2035')
                 .fontSize(20)
                 .width('35%')
-                .height(36)
+                .height(34)
+                .borderRadius(17)
                 .enabled(this.selectedIdx > 0)
 
-              Button('›')
+              Button('\u203A')
                 .onClick(() => {
                   if (this.selectedIdx < this.replies.length - 1) this.selectedIdx += 1;
                 })
-                .backgroundColor(this.selectedIdx < this.replies.length - 1 ? '#21262D' : '#0D1117')
-                .fontColor(this.selectedIdx < this.replies.length - 1 ? '#E6EDF3' : '#21262D')
+                .backgroundColor(this.selectedIdx < this.replies.length - 1 ? '#0D2035' : '#060D1A')
+                .fontColor(this.selectedIdx < this.replies.length - 1 ? '#E8F4F8' : '#0D2035')
                 .fontSize(20)
                 .width('35%')
-                .height(36)
+                .height(34)
+                .borderRadius(17)
                 .enabled(this.selectedIdx < this.replies.length - 1)
             }
           }
@@ -148,7 +149,7 @@ struct SpeechResult {
     }
     .width('100%')
     .height('100%')
-    .backgroundColor('#0D1117')
+    .backgroundColor('#060D1A')
     .gesture(
       PanGesture({ direction: PanDirection.Right, distance: 50 })
         .onActionEnd(() => router.back())

@@ -70,50 +70,52 @@ struct Index {
       // ── Header ──────────────────────────────────────────────────────────────
       Row() {
         Text('ArrivalRitual')
-          .fontSize(14)
+          .fontSize(13)
           .fontWeight(FontWeight.Bold)
-          .fontColor('#E6EDF3')
+          .fontColor('#E8F4F8')
         Blank()
         Text('+')
-          .fontSize(22)
-          .fontColor('#00E5C8')
+          .fontSize(20)
+          .fontColor('#2DD4BF')
           .onClick(() => router.pushUrl({ url: 'pages/AddTripCountry' }))
-          .padding(4)
+          .padding(6)
       }
       .width('100%')
-      .padding({ left: 12, right: 12, top: 10, bottom: 6 })
+      .padding({ left: 12, right: 10, top: 8, bottom: 6 })
 
-      Divider().color('#21262D').width('100%')
+      Divider().color('#0D2035').width('100%')
 
       // ── Trip list ────────────────────────────────────────────────────────────
       if (this.trips.length === 0) {
         Column({ space: 10 }) {
-          Text('✈️').fontSize(32)
           Text('No trips yet')
             .fontSize(13)
-            .fontColor('#8B949E')
+            .fontColor('#E8F4F8')
+            .fontWeight(FontWeight.Bold)
           Text('Tap + to add your first trip')
             .fontSize(10)
-            .fontColor('#6E7681')
-          Button('+ Add Trip')
+            .fontColor('#4A7A8A')
+          Button('Add Trip')
             .onClick(() => router.pushUrl({ url: 'pages/AddTripCountry' }))
-            .backgroundColor('#1F6FEB')
-            .fontColor('#FFFFFF')
+            .backgroundColor('transparent')
+            .fontColor('#2DD4BF')
             .fontSize(12)
             .width('70%')
+            .height(34)
+            .borderRadius(17)
+            .border({ width: 1, color: '#2DD4BF' })
         }
         .width('100%')
         .layoutWeight(1)
         .justifyContent(FlexAlign.Center)
         .alignItems(HorizontalAlign.Center)
       } else {
-        List({ space: 8 }) {
+        List({ space: 7 }) {
           ForEach(this.trips, (trip: Trip) => {
             ListItem() {
               if (this.deletingId === trip.id) {
-                // Delete confirmation row
-                Row({ space: 8 }) {
-                  Text('Delete trip?')
+                Row({ space: 6 }) {
+                  Text('Delete?')
                     .fontSize(11)
                     .fontColor('#FF4444')
                     .layoutWeight(1)
@@ -122,51 +124,50 @@ struct Index {
                     .backgroundColor('#FF4444')
                     .fontColor('#FFFFFF')
                     .fontSize(10)
-                    .height(28)
+                    .height(30)
+                    .borderRadius(15)
                   Button('No')
                     .onClick(() => { this.deletingId = ''; })
-                    .backgroundColor('#21262D')
-                    .fontColor('#8B949E')
+                    .backgroundColor('#0D2035')
+                    .fontColor('#4A7A8A')
                     .fontSize(10)
-                    .height(28)
+                    .height(30)
+                    .borderRadius(15)
                 }
                 .width('100%')
-                .padding({ left: 12, right: 12, top: 8, bottom: 8 })
-                .backgroundColor('#1A0000')
+                .padding({ left: 10, right: 10, top: 8, bottom: 8 })
+                .backgroundColor('#1A0A0A')
                 .borderRadius(8)
               } else {
-                // Normal trip card
-                Column({ space: 4 }) {
-                  Row() {
-                    Text(trip.flag)
-                      .fontSize(20)
-                    Column({ space: 2 }) {
-                      Text(trip.countryName)
-                        .fontSize(13)
-                        .fontWeight(FontWeight.Bold)
-                        .fontColor('#E6EDF3')
-                      Text(`${formatDate(trip.startTimestamp)} – ${formatDate(trip.endTimestamp)}`)
-                        .fontSize(9)
-                        .fontColor('#8B949E')
-                    }
-                    .margin({ left: 10 })
-                    .layoutWeight(1)
-                    .alignItems(HorizontalAlign.Start)
-                    Blank()
-                    Text(this.statusBadge(trip))
+                Row({ space: 0 }) {
+                  Text(trip.flag)
+                    .fontSize(18)
+                  Column({ space: 2 }) {
+                    Text(trip.countryName)
+                      .fontSize(12)
+                      .fontWeight(FontWeight.Bold)
+                      .fontColor('#E8F4F8')
+                    Text(`${formatDate(trip.startTimestamp)} \u2013 ${formatDate(trip.endTimestamp)}`)
                       .fontSize(9)
-                      .fontColor(this.statusColor(trip))
-                      .backgroundColor('#21262D')
-                      .padding({ left: 6, right: 6, top: 3, bottom: 3 })
-                      .borderRadius(4)
+                      .fontColor('#4A7A8A')
                   }
-                  .width('100%')
-                  .alignItems(VerticalAlign.Center)
+                  .margin({ left: 8 })
+                  .layoutWeight(1)
+                  .alignItems(HorizontalAlign.Start)
+                  Blank()
+                  Text(this.statusBadge(trip))
+                    .fontSize(8)
+                    .fontColor(this.statusColor(trip))
+                    .backgroundColor('#0D2035')
+                    .padding({ left: 5, right: 5, top: 3, bottom: 3 })
+                    .borderRadius(4)
                 }
                 .width('100%')
-                .padding({ left: 12, right: 12, top: 10, bottom: 10 })
-                .backgroundColor('#161B22')
+                .alignItems(VerticalAlign.Center)
+                .padding({ left: 10, right: 10, top: 9, bottom: 9 })
+                .backgroundColor('#0D2035')
                 .borderRadius(8)
+                .border({ width: 1, color: '#143050' })
                 .onClick(() => this.openTrip(trip))
                 .gesture(
                   LongPressGesture()
@@ -191,6 +192,6 @@ struct Index {
     }
     .width('100%')
     .height('100%')
-    .backgroundColor('#0D1117')
+    .backgroundColor('#060D1A')
   }
 }

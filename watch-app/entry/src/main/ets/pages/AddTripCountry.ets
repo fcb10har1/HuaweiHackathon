@@ -11,47 +11,47 @@ struct AddTripCountry {
     Column() {
       // ── Header ──────────────────────────────────────────────────────────────
       Row() {
-        Text('←')
-          .fontSize(18)
-          .fontColor('#8B949E')
+        Text('\u2190')
+          .fontSize(17)
+          .fontColor('#4A7A8A')
           .onClick(() => router.back())
-          .padding({ left: 8, right: 8 })
+          .padding({ left: 10, right: 8 })
         Text('Select Country')
-          .fontSize(13)
+          .fontSize(12)
           .fontWeight(FontWeight.Bold)
-          .fontColor('#E6EDF3')
+          .fontColor('#E8F4F8')
       }
       .width('100%')
-      .height(40)
+      .height(36)
       .alignItems(VerticalAlign.Center)
 
-      Divider().color('#21262D')
+      Divider().color('#0D2035')
 
-      // ── Country scroll list ──────────────────────────────────────────────────
       List({ space: 6 }) {
         ForEach(SUPPORTED_COUNTRIES, (entry: CountryEntry) => {
           ListItem() {
-            Row({ space: 12 }) {
-              Text(entry.flag).fontSize(24)
+            Row({ space: 10 }) {
+              Text(entry.flag).fontSize(20)
               Column({ space: 2 }) {
                 Text(entry.name)
-                  .fontSize(13)
+                  .fontSize(12)
                   .fontWeight(FontWeight.Bold)
-                  .fontColor('#E6EDF3')
+                  .fontColor('#E8F4F8')
                 Text(entry.languageName)
-                  .fontSize(10)
-                  .fontColor('#8B949E')
+                  .fontSize(9)
+                  .fontColor('#4A7A8A')
               }
               .alignItems(HorizontalAlign.Start)
               .layoutWeight(1)
-              Text('›')
-                .fontSize(16)
-                .fontColor('#8B949E')
+              Text('\u203A')
+                .fontSize(14)
+                .fontColor('#4A7A8A')
             }
             .width('100%')
-            .padding({ left: 14, right: 14, top: 10, bottom: 10 })
-            .backgroundColor('#161B22')
+            .padding({ left: 12, right: 12, top: 9, bottom: 9 })
+            .backgroundColor('#0D2035')
             .borderRadius(8)
+            .border({ width: 1, color: '#143050' })
             .onClick(() => {
               router.pushUrl({
                 url: 'pages/AddTripDates',
@@ -73,7 +73,7 @@ struct AddTripCountry {
     }
     .width('100%')
     .height('100%')
-    .backgroundColor('#0D1117')
+    .backgroundColor('#060D1A')
     .gesture(
       PanGesture({ direction: PanDirection.Right, distance: 50 })
         .onActionEnd(() => router.back())

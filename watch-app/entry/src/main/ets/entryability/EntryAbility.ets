@@ -42,7 +42,7 @@ export default class EntryAbility extends UIAbility {
       hilog.warn(DOMAIN, 'ArrivalRitual', 'Permission request failed: %{public}s', err.message);
     });
 
-    windowStage.loadContent('pages/Index', (err) => {
+    windowStage.loadContent('pages/Splash', (err) => {
       if (err.code) {
         hilog.error(DOMAIN, 'ArrivalRitual', 'Failed to load content: %{public}s', JSON.stringify(err));
         return;

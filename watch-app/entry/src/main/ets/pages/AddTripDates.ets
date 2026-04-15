@@ -61,9 +61,9 @@ struct AddTripDates {
     Column() {
       // ── Header ──────────────────────────────────────────────────────────────
       Row() {
-        Text('←')
-          .fontSize(18)
-          .fontColor('#8B949E')
+        Text('\u2190')
+          .fontSize(17)
+          .fontColor('#4A7A8A')
           .onClick(() => {
             if (this.step > 1) {
               this.step -= 1;
@@ -71,36 +71,35 @@ struct AddTripDates {
               router.back();
             }
           })
-          .padding({ left: 8, right: 8 })
+          .padding({ left: 10, right: 8 })
         Text(this.step === 1 ? 'Departure' : this.step === 2 ? 'Return' : 'Confirm')
-          .fontSize(13)
+          .fontSize(12)
           .fontWeight(FontWeight.Bold)
-          .fontColor('#E6EDF3')
+          .fontColor('#E8F4F8')
       }
       .width('100%')
-      .height(40)
+      .height(36)
       .alignItems(VerticalAlign.Center)
 
-      Divider().color('#21262D')
+      Divider().color('#0D2035')
 
-      // ── Country banner ───────────────────────────────────────────────────────
       Row({ space: 8 }) {
-        Text(this.flag).fontSize(20)
+        Text(this.flag).fontSize(18)
         Text(this.countryName)
-          .fontSize(13)
-          .fontColor('#00E5C8')
+          .fontSize(12)
+          .fontColor('#2DD4BF')
           .fontWeight(FontWeight.Bold)
       }
       .width('100%')
-      .padding({ left: 14, top: 10, bottom: 4 })
+      .padding({ left: 12, top: 8, bottom: 4 })
 
       // ── Step content ─────────────────────────────────────────────────────────
       if (this.step === 1) {
         Column({ space: 10 }) {
           Text('When do you depart?')
-            .fontSize(11)
-            .fontColor('#8B949E')
-            .margin({ top: 6 })
+            .fontSize(10)
+            .fontColor('#4A7A8A')
+            .margin({ top: 4 })
 
           DatePicker({
             start:    new Date('2024-01-01'),
@@ -124,8 +123,10 @@ struct AddTripDates {
             .backgroundColor('#1F6FEB')
             .fontColor('#FFFFFF')
             .fontSize(12)
-            .width('80%')
-            .margin({ bottom: 12 })
+            .width('75%')
+            .height(34)
+            .borderRadius(17)
+            .margin({ bottom: 10 })
         }
         .width('100%')
         .layoutWeight(1)
@@ -135,9 +136,9 @@ struct AddTripDates {
       if (this.step === 2) {
         Column({ space: 10 }) {
           Text('When do you return?')
-            .fontSize(11)
-            .fontColor('#8B949E')
-            .margin({ top: 6 })
+            .fontSize(10)
+            .fontColor('#4A7A8A')
+            .margin({ top: 4 })
 
           DatePicker({
             start:    this.startDate,
@@ -155,8 +156,10 @@ struct AddTripDates {
             .backgroundColor('#1F6FEB')
             .fontColor('#FFFFFF')
             .fontSize(12)
-            .width('80%')
-            .margin({ bottom: 12 })
+            .width('75%')
+            .height(34)
+            .borderRadius(17)
+            .margin({ bottom: 10 })
         }
         .width('100%')
         .layoutWeight(1)
@@ -166,33 +169,36 @@ struct AddTripDates {
       if (this.step === 3) {
         Column({ space: 12 }) {
           Text('Trip Summary')
-            .fontSize(12)
-            .fontColor('#8B949E')
-            .margin({ top: 10 })
+            .fontSize(11)
+            .fontColor('#4A7A8A')
+            .margin({ top: 8 })
 
           Column({ space: 6 }) {
             Row({ space: 8 }) {
-              Text('Depart').fontSize(10).fontColor('#8B949E').width(50)
+              Text('Depart').fontSize(9).fontColor('#4A7A8A').width(44)
               Text(formatDate(this.startDate.getTime()))
-                .fontSize(12).fontColor('#E6EDF3').fontWeight(FontWeight.Bold)
+                .fontSize(11).fontColor('#E8F4F8').fontWeight(FontWeight.Bold)
             }
             Row({ space: 8 }) {
-              Text('Return').fontSize(10).fontColor('#8B949E').width(50)
+              Text('Return').fontSize(9).fontColor('#4A7A8A').width(44)
               Text(formatDate(this.endDate.getTime()))
-                .fontSize(12).fontColor('#E6EDF3').fontWeight(FontWeight.Bold)
+                .fontSize(11).fontColor('#E8F4F8').fontWeight(FontWeight.Bold)
             }
           }
-          .backgroundColor('#161B22')
-          .padding(12)
+          .backgroundColor('#0D2035')
+          .padding(10)
           .borderRadius(8)
-          .width('90%')
+          .border({ width: 1, color: '#143050' })
+          .width('84%')
 
-          Button(this.saving ? 'Saving...' : 'Save Trip ✓')
+          Button(this.saving ? 'Saving...' : 'Save Trip')
             .onClick(() => this.saveTrip())
-            .backgroundColor(this.saving ? '#21262D' : '#238636')
+            .backgroundColor(this.saving ? '#0D2035' : '#238636')
             .fontColor('#FFFFFF')
-            .fontSize(13)
-            .width('80%')
+            .fontSize(12)
+            .width('75%')
+            .height(34)
+            .borderRadius(17)
         }
         .width('100%')
         .layoutWeight(1)
@@ -201,7 +207,7 @@ struct AddTripDates {
     }
     .width('100%')
     .height('100%')
-    .backgroundColor('#0D1117')
+    .backgroundColor('#060D1A')
     .gesture(
       PanGesture({ direction: PanDirection.Right, distance: 50 })
         .onActionEnd(() => {

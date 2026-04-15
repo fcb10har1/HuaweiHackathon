@@ -12,53 +12,52 @@ struct TripEnded {
   private trip: Trip = JSON.parse(this.params['tripJson'] ?? '{}') as Trip;
 
   build() {
-    Column({ space: 14 }) {
+    Column({ space: 10 }) {
       Text(this.trip.flag)
-        .fontSize(40)
-        .margin({ top: 30 })
+        .fontSize(34)
+        .margin({ top: 24 })
 
-      Text(`Your trip to`)
-        .fontSize(12)
-        .fontColor('#8B949E')
+      Text('Your trip to')
+        .fontSize(11)
+        .fontColor('#4A7A8A')
 
       Text(this.trip.countryName)
-        .fontSize(18)
+        .fontSize(16)
         .fontWeight(FontWeight.Bold)
-        .fontColor('#E6EDF3')
+        .fontColor('#E8F4F8')
 
       Text('has ended.')
-        .fontSize(12)
-        .fontColor('#8B949E')
+        .fontSize(11)
+        .fontColor('#4A7A8A')
 
-      Divider().color('#21262D').width('60%')
+      Divider().color('#0D2035').width('55%')
 
-      Text('Safe travels! 🎉')
-        .fontSize(14)
-        .fontColor('#00E5C8')
+      Text('Safe travels!')
+        .fontSize(13)
+        .fontColor('#2DD4BF')
         .fontWeight(FontWeight.Bold)
 
       Text('We hope the journey was wonderful.')
         .fontSize(10)
-        .fontColor('#6E7681')
+        .fontColor('#4A7A8A')
         .textAlign(TextAlign.Center)
-        .width('80%')
+        .width('76%')
 
       Button('Done')
-        .onClick(() => {
-          // Pop back to the trip list (Index)
-          router.back();
-        })
-        .backgroundColor('#238636')
-        .fontColor('#FFFFFF')
-        .fontSize(13)
-        .width('70%')
-        .margin({ top: 8 })
+        .onClick(() => router.back())
+        .backgroundColor('#0D2035')
+        .fontColor('#2DD4BF')
+        .fontSize(12)
+        .width('65%')
+        .height(34)
+        .borderRadius(17)
+        .margin({ top: 6 })
     }
     .width('100%')
     .height('100%')
     .justifyContent(FlexAlign.Start)
     .alignItems(HorizontalAlign.Center)
-    .backgroundColor('#0D1117')
+    .backgroundColor('#060D1A')
     .gesture(
       PanGesture({ direction: PanDirection.Right, distance: 50 })
         .onActionEnd(() => router.back())

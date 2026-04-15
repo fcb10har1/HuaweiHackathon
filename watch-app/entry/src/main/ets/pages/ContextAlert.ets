@@ -13,51 +13,50 @@ struct ContextAlertPage {
   private countryName: string = this.params['countryName'] ?? '';
 
   private get bgColor(): string {
-    if (this.alert.riskLevel === 'LEGAL')     return '#1A0000';
-    if (this.alert.riskLevel === 'SENSITIVE') return '#1A1200';
-    return '#0D1117';
+    if (this.alert.riskLevel === 'LEGAL')     return '#150008';
+    if (this.alert.riskLevel === 'SENSITIVE') return '#130E00';
+    return '#060D1A';
   }
 
   build() {
-    Column({ space: 12 }) {
-      // ── Risk badge ───────────────────────────────────────────────────────────
+    Column({ space: 10 }) {
       Text(riskLabel(this.alert.riskLevel))
-        .fontSize(13)
+        .fontSize(12)
         .fontWeight(FontWeight.Bold)
         .fontColor(riskColor(this.alert.riskLevel))
-        .margin({ top: 20 })
+        .margin({ top: 18 })
 
-      // Location name (if available)
       if (this.alert.locationName) {
-        Text(`📍 ${this.alert.locationName}`)
-          .fontSize(10)
-          .fontColor('#8B949E')
+        Text(this.alert.locationName)
+          .fontSize(9)
+          .fontColor('#4A7A8A')
       }
 
       Divider()
         .color(riskColor(this.alert.riskLevel))
-        .width('60%')
+        .width('55%')
         .strokeWidth(2)
 
-      // Alert message
       Scroll() {
         Text(this.alert.message)
-          .fontSize(12)
-          .fontColor('#E6EDF3')
+          .fontSize(11)
+          .fontColor('#E8F4F8')
           .textAlign(TextAlign.Center)
-          .width('88%')
-          .lineHeight(19)
+          .width('84%')
+          .lineHeight(17)
       }
-      .height(120)
+      .height(110)
+      .scrollBar(BarState.Off)
 
-      // Dismiss button
-      Button('OK, Got It')
+      Button('OK')
         .onClick(() => router.back())
-        .backgroundColor('#21262D')
-        .fontColor('#8B949E')
+        .backgroundColor('#0D2035')
+        .fontColor('#4A7A8A')
         .fontSize(12)
-        .width('70%')
-        .margin({ bottom: 16 })
+        .width('65%')
+        .height(34)
+        .borderRadius(17)
+        .margin({ bottom: 14 })
     }
     .width('100%')
     .height('100%')

@@ -106,9 +106,9 @@ struct ConvoAssist {
     Column() {
       // ── Header ──────────────────────────────────────────────────────────────
       Row() {
-        Text('←')
-          .fontSize(18)
-          .fontColor('#8B949E')
+        Text('\u2190')
+          .fontSize(17)
+          .fontColor('#4A7A8A')
           .onClick(() => {
             if (this.mode !== 'phrases') {
               if (this.countdownTimer !== -1) {
@@ -120,18 +120,18 @@ struct ConvoAssist {
               router.back();
             }
           })
-          .padding({ left: 8, right: 8 })
+          .padding({ left: 10, right: 8 })
         Text(this.mode === 'phrases' ? 'Convo Assist' :
              this.mode === 'listening' ? 'Listening...' : 'Processing...')
-          .fontSize(13)
+          .fontSize(12)
           .fontWeight(FontWeight.Bold)
-          .fontColor('#E6EDF3')
+          .fontColor('#E8F4F8')
       }
       .width('100%')
-      .height(40)
+      .height(36)
       .alignItems(VerticalAlign.Center)
 
-      Divider().color('#21262D')
+      Divider().color('#0D2035')
 
       // ── Phrases mode ─────────────────────────────────────────────────────────
       if (this.mode === 'phrases') {
@@ -147,90 +147,85 @@ struct ConvoAssist {
           .alignItems(HorizontalAlign.Center)
         } else {
           Column() {
-            // Context label
             if (this.venueType) {
-              Text(`📍 ${this.venueType}`)
-                .fontSize(10)
-                .fontColor('#00E5C8')
-                .padding({ left: 14, top: 6, bottom: 4 })
+              Text(this.venueType)
+                .fontSize(9)
+                .fontColor('#2DD4BF')
+                .padding({ left: 12, top: 4, bottom: 2 })
                 .width('100%')
             }
 
             Text('Useful Phrases')
-              .fontSize(11)
-              .fontColor('#8B949E')
-              .padding({ left: 14, bottom: 4 })
+              .fontSize(10)
+              .fontColor('#4A7A8A')
+              .padding({ left: 12, bottom: 4 })
               .width('100%')
 
-            // Scrollable phrase list
             Scroll() {
-              Column({ space: 8 }) {
-                // JSON phrases (English + native script)
+              Column({ space: 7 }) {
                 ForEach(this.phrases, (p: Phrase) => {
-                  Column({ space: 4 }) {
+                  Column({ space: 3 }) {
                     Text(p.english)
-                      .fontSize(12)
-                      .fontColor('#E6EDF3')
+                      .fontSize(11)
+                      .fontColor('#E8F4F8')
                       .fontWeight(FontWeight.Medium)
                     Text(p.nativeScript)
-                      .fontSize(11)
-                      .fontColor('#00E5C8')
+                      .fontSize(10)
+                      .fontColor('#2DD4BF')
                   }
                   .width('100%')
-                  .padding({ left: 14, right: 14, top: 8, bottom: 8 })
-                  .backgroundColor('#161B22')
+                  .padding({ left: 12, right: 12, top: 7, bottom: 7 })
+                  .backgroundColor('#0D2035')
                   .borderRadius(6)
+                  .border({ width: 1, color: '#143050' })
                 })
-                // LLM extras (English only, shown when loaded)
                 ForEach(this.extraPhrases, (ep: string) => {
                   Text(ep)
-                    .fontSize(11)
-                    .fontColor('#C9D1D9')
+                    .fontSize(10)
+                    .fontColor('#A0BEC8')
                     .width('100%')
-                    .padding({ left: 14, right: 14, top: 8, bottom: 8 })
-                    .backgroundColor('#0D1B2A')
+                    .padding({ left: 12, right: 12, top: 7, bottom: 7 })
+                    .backgroundColor('#0A1828')
                     .borderRadius(6)
                 })
-                // Bottom spacer so mic button doesn't overlap last phrase
-                Text('').height(60)
+                Text('').height(50)
               }
               .width('100%')
               .padding({ left: 10, right: 10 })
             }
             .layoutWeight(1)
+            .scrollBar(BarState.Off)
           }
           .width('100%')
           .layoutWeight(1)
           .alignItems(HorizontalAlign.Start)
 
-          // Mic button — floating at bottom
-          Button('🎤  Listen')
+          Button('Mic — Listen')
             .onClick(() => this.startListening())
-            .backgroundColor('#238636')
-            .fontColor('#FFFFFF')
-            .fontSize(13)
+            .backgroundColor('transparent')
+            .fontColor('#2DD4BF')
+            .fontSize(12)
             .width('75%')
-            .height(40)
-            .margin({ bottom: 14 })
+            .height(34)
+            .borderRadius(17)
+            .border({ width: 1, color: '#2DD4BF' })
+            .margin({ bottom: 12 })
         }
       }
 
       // ── Listening mode ───────────────────────────────────────────────────────
       if (this.mode === 'listening') {
-        Column({ space: 16 }) {
-          Text('🎤')
-            .fontSize(40)
-            .fontColor('#00E5C8')
+        Column({ space: 14 }) {
           Text(`${this.countdown}`)
-            .fontSize(36)
+            .fontSize(34)
             .fontWeight(FontWeight.Bold)
-            .fontColor('#00E5C8')
-          Text('Listening…')
-            .fontSize(14)
-            .fontColor('#E6EDF3')
-          Text('Hold steady near the speaker')
+            .fontColor('#2DD4BF')
+          Text('Listening')
+            .fontSize(13)
+            .fontColor('#E8F4F8')
+          Text('Hold near the speaker')
             .fontSize(10)
-            .fontColor('#8B949E')
+            .fontColor('#4A7A8A')
         }
         .width('100%')
         .layoutWeight(1)
@@ -238,18 +233,15 @@ struct ConvoAssist {
         .alignItems(HorizontalAlign.Center)
       }
 
-      // ── Processing mode ──────────────────────────────────────────────────────
       if (this.mode === 'processing') {
-        Column({ space: 14 }) {
-          Text('⚙️')
-            .fontSize(36)
+        Column({ space: 12 }) {
           Text('Processing...')
-            .fontSize(14)
+            .fontSize(13)
             .fontWeight(FontWeight.Bold)
-            .fontColor('#E6EDF3')
+            .fontColor('#E8F4F8')
           Text('Translating and generating replies')
             .fontSize(10)
-            .fontColor('#8B949E')
+            .fontColor('#4A7A8A')
             .textAlign(TextAlign.Center)
             .width('80%')
         }
@@ -261,7 +253,7 @@ struct ConvoAssist {
     }
     .width('100%')
     .height('100%')
-    .backgroundColor('#0D1117')
+    .backgroundColor('#060D1A')
     .gesture(
       PanGesture({ direction: PanDirection.Right, distance: 50 })
         .onActionEnd(() => {
