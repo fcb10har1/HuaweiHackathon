@@ -16,7 +16,12 @@ app = Flask(__name__)
 
 # Store last suggestion audio for playback
 LAST_SUGGESTION_AUDIOS = []
-DESKTOP_PATH = str(Path.home() / "Desktop")
+
+# Get NewRecordings folder path - save to C:\NewRecordings (outside OneDrive)
+RECORDINGS_PATH = r"C:\NewRecordings"
+if not os.path.exists(RECORDINGS_PATH):
+    os.makedirs(RECORDINGS_PATH, exist_ok=True)
+print(f"[Backend] Using recordings folder: {RECORDINGS_PATH}")
 
 # Minimal valid WAV file (silence, 100ms @ 16kHz)
 MINIMAL_WAV_BASE64 = "UklGRiYAAABXQVZFZm10IBAAAAABAAEAQB8AAAB9AAACABAAZGF0YQIAAAAAAA=="
@@ -226,8 +231,11 @@ def save_audio(index):
     """
     global LAST_SUGGESTION_AUDIOS
     
+    print(f"[Backend] [DEBUG] save_audio called with index={index}, audios count={len(LAST_SUGGESTION_AUDIOS)}")
+    
     if not LAST_SUGGESTION_AUDIOS or index >= len(LAST_SUGGESTION_AUDIOS):
-        return jsonify({'error': 'Audio not found', 'status': 'failed'}), 404
+        print(f"[Backend] ⚠ Audio not found: index={index}, count={len(LAST_SUGGESTION_AUDIOS)}")
+        return jsonify({'error': 'Audio not found', 'status': 'failed', 'debug': {'index': index, 'count': len(LAST_SUGGESTION_AUDIOS)}}), 404
     
     audio_base64_uri = LAST_SUGGESTION_AUDIOS[index]
     
@@ -241,14 +249,21 @@ def save_audio(index):
             else:
                 ext = 'wav'
         else:
+            print(f"[Backend] ⚠ Invalid audio format for index={index}")
             return jsonify({'error': 'Invalid audio format'}), 400
         
-        # Decode and save to Desktop
+        # Ensure NewRecordings directory exists
+        if not os.path.exists(RECORDINGS_PATH):
+            print(f"[Backend] ⚠ Recordings path does not exist: {RECORDINGS_PATH}")
+            return jsonify({'error': f'Recordings path not found: {RECORDINGS_PATH}', 'status': 'failed'}), 500
+        
+        # Decode and save to NewRecordings
         audio_bytes = base64.b64decode(base64_data)
         timestamp = datetime.now().strftime('%H%M%S')
         filename = f"suggestion_{index+1}_{timestamp}.{ext}"
-        filepath = os.path.join(DESKTOP_PATH, filename)
+        filepath = os.path.join(RECORDINGS_PATH, filename)
         
+        print(f"[Backend] [DEBUG] Writing {len(audio_bytes)} bytes to {filepath}")
         with open(filepath, 'wb') as f:
             f.write(audio_bytes)
         
@@ -258,11 +273,13 @@ def save_audio(index):
             'file': filename,
             'path': filepath,
             'size': len(audio_bytes)
-        })
+        }), 200
     
     except Exception as e:
+        import traceback
         print(f"[Backend] ⚠ Failed to save audio: {e}")
-        return jsonify({'error': str(e), 'status': 'failed'}), 500
+        print(f"[Backend] [STACKTRACE] {traceback.format_exc()}")
+        return jsonify({'error': str(e), 'status': 'failed', 'debug': {'exception': str(type(e).__name__)}}), 500
 
 
 if __name__ == '__main__':
