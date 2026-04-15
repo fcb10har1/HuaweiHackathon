@@ -151,6 +151,8 @@ struct SpeechResult {
           .fontSize(13)
           .fontWeight(FontWeight.Bold)
           .fontColor('#E6EDF3')
+          .layoutWeight(1)
+          .textAlign(TextAlign.Center)
       }
       .width('100%')
       .height(40)
