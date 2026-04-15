@@ -20,20 +20,19 @@ export class TranslationService {
     }
 
     try {
-      // Verify file exists and is readable
-      if (!fs.accessSync(filePath)) {
-        console.error('[TranslationService] File not found:', filePath);
-        return this.getMockResponse();
-      }
-
+      console.info('[TranslationService] Uploading audio:', filePath);
+      
       // Upload to backend
       const req = http.createHttp();
+      
+      // Send filename as form parameter (for demo backend that routes by filename)
       const response = await req.request(TRANSLATION_API_BASE_URL + TRANSLATION_API_ENDPOINT, {
         method: http.RequestMethod.POST,
-        header: { 'Content-Type': 'application/octet-stream' },
-        multiFormDataList: [
-          { name: 'audio', contentType: 'audio/mp4', filePath, remoteFileName: 'audio.m4a' },
-        ],
+        header: { 'Content-Type': 'application/json' },
+        // Send filename as JSON payload for demo
+        expect: http.HttpDataType.OBJECT,
+        usingProtocol: http.HttpProtocol.HTTP1_1,
+        data: JSON.stringify({ filename: filePath }),
       });
 
       req.destroy();
@@ -42,6 +41,7 @@ export class TranslationService {
         try {
           const result = JSON.parse(response.result as string) as TranslationResponse;
           this.validateResponse(result);
+          console.info('[TranslationService] Translation received:', result.translationEnglish);
           return result;
         } catch (e) {
           console.error('[TranslationService] Failed to parse response:', JSON.stringify(e));
