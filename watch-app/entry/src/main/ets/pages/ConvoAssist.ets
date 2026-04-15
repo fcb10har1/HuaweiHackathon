@@ -73,12 +73,11 @@ struct ConvoAssist {
     this.mode = 'processing';
     
     const audioFile = this.audioFiles[index];
-    const filePath = `/data/storage/el1/bundle/audio/${audioFile.file}`;
-    
-    console.info('[ConvoAssist] Selected audio:', audioFile.name, 'uploading from:', filePath);
+    console.info('[ConvoAssist] Selected audio:', audioFile.name);
     
     try {
-      await this.uploadAndTranslate(filePath);
+      // Pass filename to backend - backend can handle it as demo
+      await this.uploadAndTranslate(audioFile.file);
     } catch (e) {
       console.error('[ConvoAssist] Upload failed:', JSON.stringify(e));
       this.mode = 'picking';
