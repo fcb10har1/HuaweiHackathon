@@ -115,76 +115,71 @@ struct ArrivalSteps {
         .alignItems(HorizontalAlign.Center)
       } else {
         // Display current step with optimized watch layout
-        Column() {
-          // Step title (prominent)
-          Text(this.currentStep?.title ?? '')
-            .fontSize(13)
-            .fontWeight(FontWeight.Bold)
-            .fontColor('#E6EDF3')
-            .textAlign(TextAlign.Center)
-            .width('95%')
-            .lineHeight(18)
-            .margin({ bottom: 10 })
+        Scroll() {
+          Column({ space: 8 }) {
+            // Step title (prominent)
+            Text(this.currentStep?.title ?? '')
+              .fontSize(13)
+              .fontWeight(FontWeight.Bold)
+              .fontColor('#E6EDF3')
+              .textAlign(TextAlign.Center)
+              .width('95%')
+              .lineHeight(18)
 
-          // Step description (scrollable, full content)
-          Scroll() {
+            // Step description (full height)
             Text(this.currentStep?.description ?? '')
               .fontSize(10)
               .fontColor('#C9D1D9')
               .textAlign(TextAlign.Start)
-              .width('100%')
+              .width('95%')
               .lineHeight(16)
-              .padding({ left: 8, right: 8 })
-          }
-          .scrollBarWidth(2)
-          .layoutWeight(1)
-          .width('100%')
-          .margin({ bottom: 8 })
 
-          // Progress dots (compact)
-          Row() {
-            ForEach(this.steps, (_: ArrivalStep, idx: number) => {
-              Row()
-                .width(idx === this.currentIdx ? 12 : 5)
-                .height(5)
-                .borderRadius(2.5)
-                .backgroundColor(idx === this.currentIdx ? '#00E5C8' :
-                  idx < this.currentIdx ? '#238636' : '#21262D')
-                .margin({ right: 4 })
-            })
-          }
-          .width('100%')
-          .justifyContent(FlexAlign.Center)
-          .margin({ bottom: 8 })
-
-          // Navigation buttons (stack on watch for space)
-          Column({ space: 6 }) {
-            Button(this.isLastStep ? '✓ Done' : 'Next ›')
-              .onClick(() => { this.currentIdx += 1; })
-              .backgroundColor(this.isLastStep ? '#238636' : '#1F6FEB')
-              .fontColor('#FFFFFF')
-              .fontSize(11)
-              .fontWeight(FontWeight.Bold)
-              .width('100%')
-              .height(36)
-
-            if (this.currentIdx > 0) {
-              Button('‹ Back')
-                .onClick(() => { this.currentIdx -= 1; })
-                .backgroundColor('#21262D')
-                .fontColor('#8B949E')
-                .fontSize(10)
-                .width('100%')
-                .height(32)
+            // Progress dots (compact)
+            Row() {
+              ForEach(this.steps, (_: ArrivalStep, idx: number) => {
+                Row()
+                  .width(idx === this.currentIdx ? 12 : 5)
+                  .height(5)
+                  .borderRadius(2.5)
+                  .backgroundColor(idx === this.currentIdx ? '#00E5C8' :
+                    idx < this.currentIdx ? '#238636' : '#21262D')
+                  .margin({ right: 4 })
+              })
             }
+            .width('100%')
+            .justifyContent(FlexAlign.Center)
+            .margin({ top: 4, bottom: 8 })
+
+            // Navigation buttons (stack on watch for space)
+            Column({ space: 6 }) {
+              Button(this.isLastStep ? '✓ Done' : 'Next ›')
+                .onClick(() => { this.currentIdx += 1; })
+                .backgroundColor(this.isLastStep ? '#238636' : '#1F6FEB')
+                .fontColor('#FFFFFF')
+                .fontSize(11)
+                .fontWeight(FontWeight.Bold)
+                .width('100%')
+                .height(36)
+
+              if (this.currentIdx > 0) {
+                Button('‹ Back')
+                  .onClick(() => { this.currentIdx -= 1; })
+                  .backgroundColor('#21262D')
+                  .fontColor('#8B949E')
+                  .fontSize(10)
+                  .width('100%')
+                  .height(32)
+              }
+            }
+            .width('90%')
+            .alignItems(HorizontalAlign.Center)
           }
-          .width('90%')
-          .margin({ bottom: 8 })
+          .width('100%')
+          .alignItems(HorizontalAlign.Center)
+          .padding({ left: 6, right: 6, top: 8, bottom: 8 })
         }
+        .layoutWeight(1)
         .width('100%')
-        .height('100%')
-        .padding({ left: 8, right: 8, top: 8, bottom: 8 })
-        .alignItems(HorizontalAlign.Center)
       }
     }
     .width('100%')
