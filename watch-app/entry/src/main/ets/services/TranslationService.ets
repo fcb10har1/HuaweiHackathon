@@ -25,12 +25,11 @@ export class TranslationService {
       // Upload to backend
       const req = http.createHttp();
       
-      // Send filename as JSON payload (for demo backend that routes by filename)
-      const response = await req.request(TRANSLATION_API_BASE_URL + TRANSLATION_API_ENDPOINT, {
+      // Send filename as query parameter
+      const url = `${TRANSLATION_API_BASE_URL}${TRANSLATION_API_ENDPOINT}?filename=${encodeURIComponent(filePath)}`;
+      const response = await req.request(url, {
         method: http.RequestMethod.POST,
         header: { 'Content-Type': 'application/json' },
-        expectDataType: http.HttpDataType.OBJECT,
-        data: JSON.stringify({ filename: filePath }),
       });
 
       req.destroy();
