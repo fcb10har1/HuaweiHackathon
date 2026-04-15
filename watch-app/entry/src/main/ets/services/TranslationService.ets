@@ -25,13 +25,11 @@ export class TranslationService {
       // Upload to backend
       const req = http.createHttp();
       
-      // Send filename as form parameter (for demo backend that routes by filename)
+      // Send filename as JSON payload (for demo backend that routes by filename)
       const response = await req.request(TRANSLATION_API_BASE_URL + TRANSLATION_API_ENDPOINT, {
         method: http.RequestMethod.POST,
         header: { 'Content-Type': 'application/json' },
-        // Send filename as JSON payload for demo
-        expect: http.HttpDataType.OBJECT,
-        usingProtocol: http.HttpProtocol.HTTP1_1,
+        expectDataType: http.HttpDataType.OBJECT,
         data: JSON.stringify({ filename: filePath }),
       });
 
