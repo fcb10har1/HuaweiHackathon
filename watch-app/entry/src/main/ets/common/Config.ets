@@ -21,7 +21,7 @@ export const LLM_MODEL: string = 'gpt-4o-mini';
 // ── Backend API (for demo file-based translation) ────────────────────────────
 export const TRANSLATION_API_BASE_URL: string = 'http://localhost:5000';
 export const TRANSLATION_API_ENDPOINT: string = '/api/translate';
-export const USE_MOCK_TRANSLATION: boolean = true;  // Set to false when backend is ready
+export const USE_MOCK_TRANSLATION: boolean = false;  // Set to false when backend is ready
 
 // ── Places ────────────────────────────────────────────────────────────────────
 // Map Google Places types → our scenario IDs
