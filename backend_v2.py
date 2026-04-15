@@ -53,7 +53,7 @@ def get_ai_suggestions(transcript, language_code, target_language):
     """
     if not OPENAI_API_KEY:
         print(f"[Backend] No API key - using fallback")
-        return SUGGESTION_REPLIES.get(language_code, SUGGESTION_REPLIES['ja'])
+        return SUGGESTION_REPLIES.get(language_code, SUGGESTION_REPLIES['ja']), ['I am from Japan', 'America', 'India']
     
     try:
         print(f"[Backend] 🤖 Calling OpenAI for {target_language}...")
@@ -78,15 +78,34 @@ def get_ai_suggestions(transcript, language_code, target_language):
         suggestions = json.loads(reply_text)
         if isinstance(suggestions, list) and len(suggestions) >= 3:
             print(f"[Backend] ✓ Using AI suggestions: {suggestions[:3]}")
-            return suggestions[:3]
+            
+            # Now translate each suggestion to English
+            print(f"[Backend] Translating suggestions to English...")
+            translations = []
+            for suggestion in suggestions[:3]:
+                try:
+                    trans_response = client.chat.completions.create(
+                        model="gpt-3.5-turbo",
+                        messages=[{"role": "user", "content": f"Translate this {target_language} phrase to English. Return ONLY the translation, nothing else:\n{suggestion}"}],
+                        temperature=0.3,
+                        max_tokens=50
+                    )
+                    translation = trans_response.choices[0].message.content.strip()
+                    translations.append(translation)
+                    print(f"[Backend]   {suggestion} → {translation}")
+                except Exception as e:
+                    print(f"[Backend]   Translation failed: {e}")
+                    translations.append("")
+            
+            return suggestions[:3], translations
         else:
             print(f"[Backend] Invalid format, using fallback")
-            return SUGGESTION_REPLIES.get(language_code, SUGGESTION_REPLIES['ja'])
+            return SUGGESTION_REPLIES.get(language_code, SUGGESTION_REPLIES['ja']), ['I am from Japan', 'America', 'India']
         
     except Exception as e:
         print(f"[Backend] ❌ OpenAI error: {type(e).__name__}: {str(e)}")
         print(f"[Backend] Falling back to hardcoded suggestions")
-        return SUGGESTION_REPLIES.get(language_code, SUGGESTION_REPLIES['ja'])
+        return SUGGESTION_REPLIES.get(language_code, SUGGESTION_REPLIES['ja']), ['I am from Japan', 'America', 'India']
 
 
 @app.route('/health', methods=['GET'])
@@ -128,16 +147,18 @@ def translate():
     
     # Get suggestions (AI-powered or fallback)
     print(f"[Backend] Getting {language_name} suggestions...")
-    suggestions = get_ai_suggestions(transcript, language_code, language_name)
+    suggestions, translations = get_ai_suggestions(transcript, language_code, language_name)
     print(f"[Backend] Suggestions: {suggestions}")
+    print(f"[Backend] Translations: {translations}")
     
-    # Create response with BOTH text suggestions AND audio
+    # Create response with BOTH text suggestions AND audio AND translations
     # NOTE: Always use 'replySuggestionsJapanese' key for app compatibility (app expects this exact key)
     response = {
         'sourceLanguage': language_code,
         'transcript': transcript,
         'translationEnglish': translation,
         'replySuggestionsJapanese': suggestions,  # Use consistent key name for app
+        'suggestionTranslations': translations,  # English translations for each suggestion
         'ttsAudioUrl': f'data:audio/wav;base64,{MINIMAL_WAV_BASE64}',
         'suggestionAudios': [
             f'data:audio/wav;base64,{MINIMAL_WAV_BASE64}',

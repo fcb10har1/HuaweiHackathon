@@ -50,8 +50,14 @@ struct SpeechResult {
   aboutToAppear(): void {
     this.ctx = getContext(this) as common.UIAbilityContext;
     // Debug: Check if suggestions were received
-    console.info('[SpeechResult] Suggestions received:', JSON.stringify(this.response.replySuggestionsJapanese));
-    console.info('[SpeechResult] Suggestion audios:', this.response.suggestionAudios ? this.response.suggestionAudios.length : 'none');
+    console.info('[SpeechResult] ========== PAGE APPEARED ==========');
+    console.info('[SpeechResult] Full response object:', JSON.stringify(this.response));
+    console.info('[SpeechResult] replySuggestionsJapanese:', this.response.replySuggestionsJapanese);
+    console.info('[SpeechResult] replySuggestionsJapanese type:', typeof this.response.replySuggestionsJapanese);
+    console.info('[SpeechResult] replySuggestionsJapanese length:', this.response.replySuggestionsJapanese?.length);
+    console.info('[SpeechResult] selectedIdx:', this.selectedIdx);
+    console.info('[SpeechResult] currentSuggestion:', this.currentSuggestion);
+    console.info('[SpeechResult] Suggestion audio count:', this.response.suggestionAudios ? this.response.suggestionAudios.length : 'none');
   }
 
   aboutToDisappear(): void {
@@ -298,13 +304,13 @@ struct SpeechResult {
 
           // ── Japanese reply suggestions ─────────────────────────────────────────
           if (this.response.replySuggestionsJapanese && this.response.replySuggestionsJapanese.length > 0) {
-            Column({ space: 6 }) {
+            Column({ space: 8 }) {
               Text('Reply (Japanese):')
                 .fontSize(9)
                 .fontColor('#8B949E')
 
-              // Display current selected suggestion - SIMPLIFIED FOR CIRCULAR DISPLAY
-              Text(this.currentSuggestion)
+              // Display current selected suggestion directly from array
+              Text(this.response.replySuggestionsJapanese[this.selectedIdx] || 'No suggestion')
                 .fontSize(11)
                 .fontColor('#00E5C8')
                 .textAlign(TextAlign.Center)
@@ -313,6 +319,17 @@ struct SpeechResult {
                 .padding({ top: 8, bottom: 8, left: 4, right: 4 })
                 .backgroundColor('#0D2818')
                 .borderRadius(4)
+
+              // Display English translation below
+              if (this.response.suggestionTranslations && this.response.suggestionTranslations.length > this.selectedIdx) {
+                Text(this.response.suggestionTranslations[this.selectedIdx])
+                  .fontSize(9)
+                  .fontColor('#8B949E')
+                  .textAlign(TextAlign.Center)
+                  .width('95%')
+                  .lineHeight(14)
+                  .padding({ top: 4, bottom: 4 })
+              }
 
               // Pagination indicator
               if (this.response.replySuggestionsJapanese.length > 1) {
