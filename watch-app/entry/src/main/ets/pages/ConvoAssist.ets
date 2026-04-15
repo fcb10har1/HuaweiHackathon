@@ -11,7 +11,6 @@
 import router from '@ohos.router';
 import common from '@ohos.app.ability.common';
 import { vibrator } from '@kit.SensorServiceKit';
-import picker from '@ohos.file.picker';
 import { Trip, Phrase, TranslationResponse } from '../common/Types';
 import { CountryDataService } from '../services/CountryDataService';
 import { LlmService } from '../services/LlmService';
@@ -30,6 +29,12 @@ struct ConvoAssist {
   @State phrases: Phrase[]     = [];
   @State extraPhrases: string[] = [];   // LLM-generated extras (English only)
   @State loadingPhrases: boolean = true;
+  @State audioFiles: Array<{ name: string; file: string }> = [
+    { name: '🇯🇵 Japanese Sample', file: 'japanese_sample.wav' },
+    { name: '🇹🇭 Thai Sample', file: 'thai_sample.wav' },
+    { name: '🇮🇩 Indonesian Sample', file: 'indonesian_sample.wav' },
+  ];
+  @State selectedAudioIdx: number = -1;
 
   private dataService: CountryDataService | null = null;
   private llmService: LlmService = new LlmService();
@@ -61,24 +66,22 @@ struct ConvoAssist {
     try {
       vibrator.startVibration({ type: 'time', duration: 80 }, { id: 0, usage: 'notification' });
     } catch (_) {}
+  }
 
+  private async selectAudioFile(index: number): Promise<void> {
+    this.selectedAudioIdx = index;
+    this.mode = 'processing';
+    
+    const audioFile = this.audioFiles[index];
+    const filePath = `/data/storage/el1/bundle/audio/${audioFile.file}`;
+    
+    console.info('[ConvoAssist] Selected audio:', audioFile.name, 'uploading from:', filePath);
+    
     try {
-      const audioSelectOptions = new picker.AudioSelectOptions();
-      audioSelectOptions.maxSelectNumber = 1;
-      const pickerResult = await picker.select(audioSelectOptions);
-      
-      if (pickerResult && pickerResult.length > 0) {
-        const filePath = pickerResult[0];
-        console.info('[ConvoAssist] Selected audio file:', filePath);
-        this.mode = 'processing';
-        await this.uploadAndTranslate(filePath);
-      } else {
-        console.info('[ConvoAssist] No file selected');
-        this.mode = 'phrases';
-      }
+      await this.uploadAndTranslate(filePath);
     } catch (e) {
-      console.error('[ConvoAssist] File picker error:', JSON.stringify(e));
-      this.mode = 'phrases';
+      console.error('[ConvoAssist] Upload failed:', JSON.stringify(e));
+      this.mode = 'picking';
     }
   }
 
@@ -222,21 +225,31 @@ struct ConvoAssist {
 
       // ── Picking mode ──────────────────────────────────────────────────────────
       if (this.mode === 'picking') {
-        Column({ space: 8 }) {
-          Text('🎤')
-            .fontSize(28)
-            .fontColor('#00E5C8')
-          Text('Selecting...')
-            .fontSize(11)
-            .fontColor('#E6EDF3')
-          Text('Choose an audio file')
-            .fontSize(8)
-            .fontColor('#8B949E')
+        Scroll() {
+          Column({ space: 6 }) {
+            Text('Select Audio File')
+              .fontSize(11)
+              .fontColor('#8B949E')
+              .padding({ left: 8, top: 8 })
+              .width('100%')
+
+            ForEach(this.audioFiles, (audioFile: { name: string; file: string }, index: number) => {
+              Button(audioFile.name)
+                .onClick(() => this.selectAudioFile(index))
+                .backgroundColor('#238636')
+                .fontColor('#FFFFFF')
+                .fontSize(9)
+                .width('85%')
+                .height(32)
+                .borderRadius(4)
+            })
+
+            Text('').height(20)
+          }
+          .width('100%')
+          .alignItems(HorizontalAlign.Center)
         }
-        .width('100%')
         .layoutWeight(1)
-        .justifyContent(FlexAlign.Center)
-        .alignItems(HorizontalAlign.Center)
       }
 
       // ── Processing mode ───────────────────────────────────────────────────────
