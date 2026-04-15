@@ -49,6 +49,9 @@ struct SpeechResult {
 
   aboutToAppear(): void {
     this.ctx = getContext(this) as common.UIAbilityContext;
+    // Debug: Check if suggestions were received
+    console.info('[SpeechResult] Suggestions received:', JSON.stringify(this.response.replySuggestionsJapanese));
+    console.info('[SpeechResult] Suggestion audios:', this.response.suggestionAudios ? this.response.suggestionAudios.length : 'none');
   }
 
   aboutToDisappear(): void {
@@ -298,22 +301,16 @@ struct SpeechResult {
                 .fontSize(9)
                 .fontColor('#8B949E')
 
-              // Display current selected suggestion
-              if (this.currentSuggestion) {
-                Column({ space: 2 }) {
-                  Text(this.currentSuggestion)
-                    .fontSize(12)
-                    .fontColor('#00E5C8')
-                    .textAlign(TextAlign.Center)
-                    .width('88%')
-                    .lineHeight(18)
-                }
-                .width('100%')
-                .padding(10)
+              // Display current selected suggestion - SIMPLIFIED FOR CIRCULAR DISPLAY
+              Text(this.currentSuggestion)
+                .fontSize(11)
+                .fontColor('#00E5C8')
+                .textAlign(TextAlign.Center)
+                .width('95%')
+                .lineHeight(16)
+                .padding({ top: 8, bottom: 8, left: 4, right: 4 })
                 .backgroundColor('#0D2818')
-                .borderRadius(6)
-                .alignItems(HorizontalAlign.Center)
-              }
+                .borderRadius(4)
 
               // Pagination indicator
               if (this.response.replySuggestionsJapanese.length > 1) {
