@@ -73,16 +73,18 @@ struct SpeechResult {
       }
 
       this.audioPlayer = await media.createAVPlayer();
-      this.audioPlayer.fdSrc = tempFilePath;
+      const fileUri: string = 'file://' + tempFilePath;
+      (this.audioPlayer as any).url = fileUri;
 
       // Play when ready
-      await new Promise<void>((resolve) => {
-        const onStateChange = (state: string) => {
-          if (state === 'prepared') {
+      await new Promise<void>((resolve: () => void) => {
+        const onStateChange = (state: string | number): void => {
+          console.info('[SpeechResult] Audio state:', state);
+          if (state === 'prepared' || state === 1) {
             this.audioPlayer?.play();
-          } else if (state === 'completed' || state === 'stopped' || state === 'error') {
+          } else if (state === 'completed' || state === 'stopped' || state === 'error' || state === 3 || state === 4 || state === 5) {
             this.isPlayingAudio = false;
-            if (state === 'error') {
+            if (state === 'error' || state === 5) {
               this.audioPlayError = 'Playback failed';
             }
             resolve();
@@ -102,12 +104,12 @@ struct SpeechResult {
   }
 
   private downloadAudio(url: string, filePath: string): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve: () => void, reject: (err: Error) => void) => {
       try {
         const req = http.createHttp();
         req.request(url, {
           method: http.RequestMethod.GET,
-        }).then((resp) => {
+        }).then((resp: http.HttpResponse) => {
           req.destroy();
           if (resp.responseCode === 200 && resp.result) {
             try {
@@ -121,14 +123,12 @@ struct SpeechResult {
           } else {
             reject(new Error('Failed to download audio'));
           }
-        }).catch((e) => {
+        }).catch((e: Error) => {
           req.destroy();
           reject(e);
         });
       } catch (e) {
-        reject(e);
-      }
-    });
+        reject(e as Error);
   }
 
   build() {
@@ -308,7 +308,5 @@ struct SpeechResult {
           router.back();
         })
     )
-  }
-}
   }
 }

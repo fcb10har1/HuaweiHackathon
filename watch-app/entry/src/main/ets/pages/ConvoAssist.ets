@@ -63,14 +63,12 @@ struct ConvoAssist {
     } catch (_) {}
 
     try {
-      const result = await picker.select({
-        mode: picker.PickerMode.OPEN_FILE,
-        requestPermission: false,
-        MIMEType: ['audio/*'],
-      });
+      const result = await picker.pick({
+        filterExtensions: [],
+      }) as Promise<string[]>;
 
       if (result && result.length > 0) {
-        const pickedUri = result[0];
+        const pickedUri: string = result[0];
         console.info('[ConvoAssist] Selected file:', pickedUri);
         this.mode = 'processing';
         await this.uploadAndTranslate(pickedUri);
