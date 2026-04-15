@@ -11,7 +11,6 @@
 import router from '@ohos.router';
 import common from '@ohos.app.ability.common';
 import { vibrator } from '@kit.SensorServiceKit';
-import { picker } from '@kit.CoreFileKit';
 import { Trip, Phrase, TranslationResponse } from '../common/Types';
 import { CountryDataService } from '../services/CountryDataService';
 import { LlmService } from '../services/LlmService';
@@ -57,27 +56,18 @@ struct ConvoAssist {
   }
 
   private async startFilePicker(): Promise<void> {
-    this.mode = 'picking';
+    this.mode = 'processing';
     try {
       vibrator.startVibration({ type: 'time', duration: 80 }, { id: 0, usage: 'notification' });
     } catch (_) {}
 
+    // Demo mode: Skip file picker (watches don't support it well) and use mock translation directly
+    console.info('[ConvoAssist] Starting mock translation demo...');
     try {
-      const result = await picker.pick({
-        filterExtensions: [],
-      }) as Promise<string[]>;
-
-      if (result && result.length > 0) {
-        const pickedUri: string = result[0];
-        console.info('[ConvoAssist] Selected file:', pickedUri);
-        this.mode = 'processing';
-        await this.uploadAndTranslate(pickedUri);
-      } else {
-        // User cancelled picker
-        this.mode = 'phrases';
-      }
+      const result = await this.translationService.translateAudio('/demo/audio');
+      this.navigateToResult(result);
     } catch (e) {
-      console.error('[ConvoAssist] File picker failed:', JSON.stringify(e));
+      console.error('[ConvoAssist] Translation failed:', JSON.stringify(e));
       this.mode = 'phrases';
     }
   }

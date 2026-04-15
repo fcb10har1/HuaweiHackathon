@@ -73,8 +73,13 @@ struct SpeechResult {
       }
 
       this.audioPlayer = await media.createAVPlayer();
-      const fileUri: string = 'file://' + tempFilePath;
-      (this.audioPlayer as any).url = fileUri;
+      const fileObj = fs.openSync(tempFilePath, fs.OpenMode.READ_ONLY);
+      const avFileDescriptor: media.AVFileDescriptor = {
+        fd: fileObj.fd,
+        offset: 0,
+        length: -1,
+      };
+      this.audioPlayer.fdSrc = avFileDescriptor;
 
       // Play when ready
       await new Promise<void>((resolve: () => void) => {
@@ -129,6 +134,8 @@ struct SpeechResult {
         });
       } catch (e) {
         reject(e as Error);
+      }
+    });
   }
 
   build() {
