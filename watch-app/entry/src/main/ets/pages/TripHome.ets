@@ -137,42 +137,36 @@ struct TripHome {
       // ── Back ────────────────────────────────────────────────────────────────
       Row() {
         Text('←')
-          .fontSize(18)
+          .fontSize(16)
           .fontColor('#8B949E')
           .onClick(() => router.back())
-          .padding({ left: 8, right: 8 })
-        Text('My Trip')
+          .padding(6)
+      }
+      .width('100%')
+      .height(32)
+      .alignItems(VerticalAlign.Center)
+
+      // ── Country banner (centered, narrow for circular) ──────────────────────
+      Column({ space: 2 }) {
+        Text(this.trip.flag)
+          .fontSize(24)
+        Text(this.trip.countryName)
           .fontSize(13)
           .fontWeight(FontWeight.Bold)
           .fontColor('#E6EDF3')
-      }
-      .width('100%')
-      .height(40)
-      .alignItems(VerticalAlign.Center)
-
-      Divider().color('#21262D')
-
-      // ── Country banner ───────────────────────────────────────────────────────
-      Column({ space: 3 }) {
-        Text(this.trip.flag)
-          .fontSize(28)
-        Text(this.trip.countryName)
-          .fontSize(15)
-          .fontWeight(FontWeight.Bold)
-          .fontColor('#E6EDF3')
         Text(`${formatDate(this.trip.startTimestamp)} – ${formatDate(this.trip.endTimestamp)}`)
-          .fontSize(9)
+          .fontSize(8)
           .fontColor('#8B949E')
       }
       .width('100%')
       .alignItems(HorizontalAlign.Center)
-      .padding({ top: 12, bottom: 12 })
+      .padding({ top: 8, bottom: 10 })
+      .layoutWeight(1)
+      .justifyContent(FlexAlign.Center)
 
-      Divider().color('#21262D').width('70%')
-
-      // ── Feature buttons (optimized for circular watch) ───────────────────────
-      Column({ space: 10 }) {
-        Button('✈️  Arrival\nSteps')
+      // ── Feature buttons (narrow, centered for circular) ┐─────────────────────
+      Column({ space: 8 }) {
+        Button('Arrival\nSteps')
           .onClick(() => {
             router.pushUrl({
               url: 'pages/ArrivalSteps',
@@ -181,13 +175,13 @@ struct TripHome {
           })
           .backgroundColor('#1F6FEB')
           .fontColor('#FFFFFF')
-          .fontSize(11)
+          .fontSize(10)
           .fontWeight(FontWeight.Bold)
-          .width('65%')
-          .height(40)
+          .width('55%')
+          .height(38)
           .padding(0)
 
-        Button('💬  Convo\nAssist')
+        Button('Convo\nAssist')
           .onClick(() => {
             router.pushUrl({
               url: 'pages/ConvoAssist',
@@ -199,10 +193,10 @@ struct TripHome {
           })
           .backgroundColor('#238636')
           .fontColor('#FFFFFF')
-          .fontSize(11)
+          .fontSize(10)
           .fontWeight(FontWeight.Bold)
-          .width('65%')
-          .height(40)
+          .width('55%')
+          .height(38)
           .padding(0)
       }
       .width('100%')
@@ -213,9 +207,9 @@ struct TripHome {
       // ── GPS status ───────────────────────────────────────────────────────────
       if (this.statusText) {
         Text(this.statusText)
-          .fontSize(8)
+          .fontSize(7)
           .fontColor('#6E7681')
-          .padding({ bottom: 6 })
+          .padding({ bottom: 4 })
       }
     }
     .width('100%')

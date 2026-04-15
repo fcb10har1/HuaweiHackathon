@@ -148,75 +148,77 @@ struct ConvoAssist {
             }
 
             Text('Useful Phrases')
-              .fontSize(11)
+              .fontSize(10)
               .fontColor('#8B949E')
-              .padding({ left: 14, bottom: 4 })
-              .width('100%')
+              .margin({ bottom: 4 })
 
-            // Scrollable phrase list
+            // Scrollable phrase list (narrow for circular)
             Scroll() {
-              Column({ space: 8 }) {
+              Column({ space: 5 }) {
                 // JSON phrases (English + native script)
                 ForEach(this.phrases, (p: Phrase) => {
-                  Column({ space: 4 }) {
+                  Column({ space: 2 }) {
                     Text(p.english)
-                      .fontSize(12)
+                      .fontSize(9)
                       .fontColor('#E6EDF3')
                       .fontWeight(FontWeight.Medium)
                     Text(p.nativeScript)
-                      .fontSize(11)
+                      .fontSize(8)
                       .fontColor('#00E5C8')
+                      .lineHeight(12)
                   }
                   .width('100%')
-                  .padding({ left: 14, right: 14, top: 8, bottom: 8 })
+                  .padding({ left: 8, right: 8, top: 5, bottom: 5 })
                   .backgroundColor('#161B22')
-                  .borderRadius(6)
+                  .borderRadius(4)
                 })
                 // LLM extras (English only, shown when loaded)
                 ForEach(this.extraPhrases, (ep: string) => {
                   Text(ep)
-                    .fontSize(11)
+                    .fontSize(8)
                     .fontColor('#C9D1D9')
                     .width('100%')
-                    .padding({ left: 14, right: 14, top: 8, bottom: 8 })
+                    .padding({ left: 8, right: 8, top: 5, bottom: 5 })
                     .backgroundColor('#0D1B2A')
-                    .borderRadius(6)
+                    .borderRadius(4)
                 })
-                // Bottom spacer so mic button doesn't overlap last phrase
-                Text('').height(60)
+                // Bottom spacer
+                Text('').height(46)
               }
               .width('100%')
-              .padding({ left: 10, right: 10 })
+              .alignItems(HorizontalAlign.Center)
             }
             .layoutWeight(1)
           }
           .width('100%')
           .layoutWeight(1)
-          .alignItems(HorizontalAlign.Start)
+          .alignItems(HorizontalAlign.Center)
+          .padding({ left: 6, right: 6 })
 
-          // Mic button — now opens file picker (still feels natural for demo)
-          Button('🎤  Listen')
+          // Mic button (narrower, centered)
+          Button('🎤 Listen')
             .onClick(() => this.startFilePicker())
             .backgroundColor('#238636')
             .fontColor('#FFFFFF')
-            .fontSize(13)
-            .width('75%')
-            .height(40)
-            .margin({ bottom: 14 })
+            .fontSize(11)
+            .fontWeight(FontWeight.Bold)
+            .width('54%')
+            .height(36)
+            .margin({ bottom: 8 })
         }
       }
 
       // ── Picking mode ──────────────────────────────────────────────────────────
       if (this.mode === 'picking') {
-        Column({ space: 16 }) {
+        Column({ space: 8 }) {
           Text('🎤')
-            .fontSize(40)
+            .fontSize(28)
             .fontColor('#00E5C8')
           Text('Selecting...')
-            .fontSize(14)
+            .fontSize(11)
             .fontColor('#E6EDF3')
           Text('Choose an audio file')
-            .fontSize(10)
+            .fontSize(8)
             .fontColor('#8B949E')
         }
         .width('100%')
@@ -227,18 +229,18 @@ struct ConvoAssist {
 
       // ── Processing mode ───────────────────────────────────────────────────────
       if (this.mode === 'processing') {
-        Column({ space: 14 }) {
+        Column({ space: 8 }) {
           Text('⚙️')
-            .fontSize(36)
+            .fontSize(32)
           Text('Processing...')
-            .fontSize(14)
+            .fontSize(12)
             .fontWeight(FontWeight.Bold)
             .fontColor('#E6EDF3')
           Text('Translating audio')
-            .fontSize(10)
+            .fontSize(8)
             .fontColor('#8B949E')
             .textAlign(TextAlign.Center)
-            .width('80%')
+            .width('75%')
         }
         .width('100%')
         .layoutWeight(1)
