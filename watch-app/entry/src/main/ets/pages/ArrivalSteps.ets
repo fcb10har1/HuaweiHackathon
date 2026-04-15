@@ -37,134 +37,153 @@ struct ArrivalSteps {
 
   build() {
     Column() {
-      // ── Header ──────────────────────────────────────────────────────────────
+      // ── Header (compact for watch) ──────────────────────────────────────────
       Row() {
         Text('←')
-          .fontSize(18)
+          .fontSize(16)
           .fontColor('#8B949E')
           .onClick(() => router.back())
-          .padding({ left: 8, right: 8 })
-        Text('Arrival Steps')
-          .fontSize(13)
+          .padding(8)
+        Text(this.steps.length > 0 ? `Step ${this.currentIdx + 1}/${this.steps.length}` : 'Steps')
+          .fontSize(12)
           .fontWeight(FontWeight.Bold)
           .fontColor('#E6EDF3')
-        Blank()
-        if (this.steps.length > 0) {
-          Text(`${this.currentIdx + 1}/${this.steps.length}`)
-            .fontSize(10)
-            .fontColor('#8B949E')
-            .padding({ right: 12 })
-        }
+          .layoutWeight(1)
       }
       .width('100%')
-      .height(40)
+      .height(36)
       .alignItems(VerticalAlign.Center)
 
-      Divider().color('#21262D')
+      Divider().color('#21262D').height(0.5)
 
       if (this.loading) {
+        // Loading state
         Column() {
+          LoadingProgress()
+            .color('#00E5C8')
+            .width(40)
+            .height(40)
           Text('Loading steps...')
-            .fontSize(12)
+            .fontSize(11)
             .fontColor('#8B949E')
+            .margin({ top: 8 })
         }
         .width('100%')
         .layoutWeight(1)
         .justifyContent(FlexAlign.Center)
         .alignItems(HorizontalAlign.Center)
       } else if (this.steps.length === 0) {
+        // No steps available
         Column() {
+          Text('😕')
+            .fontSize(32)
           Text('No steps available')
             .fontSize(12)
             .fontColor('#8B949E')
+            .margin({ top: 8 })
         }
         .width('100%')
         .layoutWeight(1)
         .justifyContent(FlexAlign.Center)
         .alignItems(HorizontalAlign.Center)
       } else if (this.currentIdx >= this.steps.length) {
-        // All steps done
-        Column({ space: 12 }) {
-          Text('✅').fontSize(36)
-          Text('All Steps Done!')
-            .fontSize(15)
+        // Completed all steps
+        Column() {
+          Text('✅')
+            .fontSize(40)
+          Text('Complete!')
+            .fontSize(14)
             .fontWeight(FontWeight.Bold)
             .fontColor('#00E5C8')
-          Text('You have completed all arrival steps.')
-            .fontSize(11)
+            .margin({ top: 8 })
+          Text('All arrival steps done')
+            .fontSize(10)
             .fontColor('#8B949E')
-            .textAlign(TextAlign.Center)
-            .width('85%')
-          Button('Start Over')
-            .onClick(() => { this.currentIdx = 0; })
+            .margin({ top: 4 })
+          Button('← Back')
+            .onClick(() => router.back())
             .backgroundColor('#21262D')
             .fontColor('#8B949E')
-            .fontSize(11)
-            .width('70%')
+            .fontSize(10)
+            .width('60%')
+            .height(32)
+            .margin({ top: 12 })
         }
         .width('100%')
         .layoutWeight(1)
         .justifyContent(FlexAlign.Center)
         .alignItems(HorizontalAlign.Center)
       } else {
-        // Current step card
-        Column({ space: 10 }) {
-          // Step number indicator
-          Row({ space: 6 }) {
-            ForEach(this.steps, (_: ArrivalStep, idx: number) => {
-              Row()
-                .width(idx === this.currentIdx ? 14 : 6)
-                .height(6)
-                .borderRadius(3)
-                .backgroundColor(idx === this.currentIdx ? '#00E5C8' :
-                  idx < this.currentIdx ? '#238636' : '#21262D')
-            })
-          }
-          .margin({ top: 10 })
-
-          // Step title
+        // Display current step with optimized watch layout
+        Column() {
+          // Step title (prominent)
           Text(this.currentStep?.title ?? '')
-            .fontSize(14)
+            .fontSize(13)
             .fontWeight(FontWeight.Bold)
             .fontColor('#E6EDF3')
             .textAlign(TextAlign.Center)
-            .width('90%')
+            .width('95%')
+            .lineHeight(18)
+            .margin({ bottom: 10 })
 
-          // Step description (scrollable)
+          // Step description (scrollable, full content)
           Scroll() {
             Text(this.currentStep?.description ?? '')
-              .fontSize(11)
+              .fontSize(10)
               .fontColor('#C9D1D9')
               .textAlign(TextAlign.Start)
               .width('100%')
-              .lineHeight(17)
+              .lineHeight(16)
+              .padding({ left: 8, right: 8 })
           }
-          .width('90%')
+          .scrollBarWidth(2)
           .layoutWeight(1)
+          .width('100%')
+          .margin({ bottom: 8 })
 
-          // Navigation buttons
-          Row({ space: 10 }) {
+          // Progress dots (compact)
+          Row() {
+            ForEach(this.steps, (_: ArrivalStep, idx: number) => {
+              Row()
+                .width(idx === this.currentIdx ? 12 : 5)
+                .height(5)
+                .borderRadius(2.5)
+                .backgroundColor(idx === this.currentIdx ? '#00E5C8' :
+                  idx < this.currentIdx ? '#238636' : '#21262D')
+                .margin({ right: 4 })
+            })
+          }
+          .width('100%')
+          .justifyContent(FlexAlign.Center)
+          .margin({ bottom: 8 })
+
+          // Navigation buttons (stack on watch for space)
+          Column({ space: 6 }) {
+            Button(this.isLastStep ? '✓ Done' : 'Next ›')
+              .onClick(() => { this.currentIdx += 1; })
+              .backgroundColor(this.isLastStep ? '#238636' : '#1F6FEB')
+              .fontColor('#FFFFFF')
+              .fontSize(11)
+              .fontWeight(FontWeight.Bold)
+              .width('100%')
+              .height(36)
+
             if (this.currentIdx > 0) {
               Button('‹ Back')
                 .onClick(() => { this.currentIdx -= 1; })
                 .backgroundColor('#21262D')
                 .fontColor('#8B949E')
-                .fontSize(11)
-                .width('38%')
-                .height(36)
+                .fontSize(10)
+                .width('100%')
+                .height(32)
             }
-            Button(this.isLastStep ? 'Done ✓' : 'Next ›')
-              .onClick(() => { this.currentIdx += 1; })
-              .backgroundColor(this.isLastStep ? '#238636' : '#1F6FEB')
-              .fontColor('#FFFFFF')
-              .fontSize(11)
-              .width(this.currentIdx > 0 ? '38%' : '70%')
-              .height(36)
           }
-          .margin({ bottom: 14 })
+          .width('90%')
+          .margin({ bottom: 8 })
         }
         .width('100%')
-        .layoutWeight(1)
+        .height('100%')
+        .padding({ left: 8, right: 8, top: 8, bottom: 8 })
         .alignItems(HorizontalAlign.Center)
       }
     }
