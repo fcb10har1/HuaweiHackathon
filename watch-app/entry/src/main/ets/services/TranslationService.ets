@@ -22,35 +22,40 @@ export class TranslationService {
     try {
       console.info('[TranslationService] Uploading audio:', filePath);
       
-      // Upload to backend
+      // Create HTTP request
       const req = http.createHttp();
       
       // Send filename as query parameter
-      const url = `${TRANSLATION_API_BASE_URL}${TRANSLATION_API_ENDPOINT}?filename=${encodeURIComponent(filePath)}`;
+      const url = `${TRANSLATION_API_BASE_URL}${TRANSLATION_API_ENDPOINT}?filename=${filePath}`;
+      console.info('[TranslationService] URL:', url);
+      
       const response = await req.request(url, {
         method: http.RequestMethod.POST,
         header: { 'Content-Type': 'application/json' },
       });
 
+      console.info('[TranslationService] Response code:', response.responseCode);
       req.destroy();
 
       if (response.responseCode === 200 && response.result) {
         try {
+          console.info('[TranslationService] Response result:', response.result);
           const result = JSON.parse(response.result as string) as TranslationResponse;
           this.validateResponse(result);
-          console.info('[TranslationService] Translation received:', result.translationEnglish);
+          console.info('[TranslationService] ✓ Translation received:', result.translationEnglish);
           return result;
         } catch (e) {
           console.error('[TranslationService] Failed to parse response:', JSON.stringify(e));
         }
       } else {
-        console.warn('[TranslationService] API returned status:', response.responseCode);
+        console.warn('[TranslationService] ✗ API returned status:', response.responseCode);
       }
     } catch (e) {
-      console.error('[TranslationService] Upload failed:', JSON.stringify(e));
+      console.error('[TranslationService] ✗ Request failed:', JSON.stringify(e));
     }
 
     // Fallback to mock on any error
+    console.warn('[TranslationService] Falling back to mock response');
     return this.getMockResponse();
   }
 
