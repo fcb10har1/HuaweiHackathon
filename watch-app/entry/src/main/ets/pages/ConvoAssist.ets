@@ -5,16 +5,19 @@
  *   Normal — scrollable list of useful phrases (English + local script)
  *            sourced from JSON (always) + LLM extras (when online)
  *            Phrases are context-aware based on currentVenueType from GPS
- *   Listening — 5-second recording UI, then navigates to SpeechResult
+ *   Listening — file picker UI, then navigates to SpeechResult
+ *   Processing — uploading and translating
  */
 import router from '@ohos.router';
 import common from '@ohos.app.ability.common';
 import { vibrator } from '@kit.SensorServiceKit';
-import { Trip, Phrase } from '../common/Types';
+import { picker } from '@kit.CoreFileKit';
+import { Trip, Phrase, TranslationResponse } from '../common/Types';
 import { CountryDataService } from '../services/CountryDataService';
-import { LlmService }         from '../services/LlmService';
+import { LlmService } from '../services/LlmService';
+import { TranslationService } from '../services/TranslationService';
 
-type ConvoMode = 'phrases' | 'listening' | 'processing';
+type ConvoMode = 'phrases' | 'picking' | 'processing';
 
 @Entry
 @Component
@@ -27,23 +30,16 @@ struct ConvoAssist {
   @State phrases: Phrase[]     = [];
   @State extraPhrases: string[] = [];   // LLM-generated extras (English only)
   @State loadingPhrases: boolean = true;
-  @State countdown: number     = 5;
 
-  private countdownTimer: number = -1;
   private dataService: CountryDataService | null = null;
   private llmService: LlmService = new LlmService();
+  private translationService: TranslationService = new TranslationService();
   private ctx: common.UIAbilityContext | null = null;
 
   aboutToAppear(): void {
     this.ctx = getContext(this) as common.UIAbilityContext;
     this.dataService = new CountryDataService(this.ctx);
     this.loadPhrases();
-  }
-
-  aboutToDisappear(): void {
-    if (this.countdownTimer !== -1) {
-      clearInterval(this.countdownTimer);
-    }
   }
 
   private loadPhrases(): void {
@@ -60,44 +56,55 @@ struct ConvoAssist {
     });
   }
 
-  private startListening(): void {
-    this.mode      = 'listening';
-    this.countdown = 5;
+  private async startFilePicker(): Promise<void> {
+    this.mode = 'picking';
     try {
       vibrator.startVibration({ type: 'time', duration: 80 }, { id: 0, usage: 'notification' });
     } catch (_) {}
 
-    this.countdownTimer = setInterval(() => {
-      this.countdown -= 1;
-      if (this.countdown <= 0) {
-        clearInterval(this.countdownTimer);
-        this.countdownTimer = -1;
+    try {
+      const result = await picker.select({
+        mode: picker.PickerMode.OPEN_FILE,
+        requestPermission: false,
+        MIMEType: ['audio/*'],
+      });
+
+      if (result && result.length > 0) {
+        const pickedUri = result[0];
+        console.info('[ConvoAssist] Selected file:', pickedUri);
         this.mode = 'processing';
-        this.runSpeechPipeline();
+        await this.uploadAndTranslate(pickedUri);
+      } else {
+        // User cancelled picker
+        this.mode = 'phrases';
       }
-    }, 1000);
+    } catch (e) {
+      console.error('[ConvoAssist] File picker failed:', JSON.stringify(e));
+      this.mode = 'phrases';
+    }
   }
 
-  private runSpeechPipeline(): void {
-    if (!this.ctx) return;
-    this.llmService.transcribeAndReply(
-      this.ctx,
-      this.trip.countryName,
-      this.venueType || 'general',
-      this.trip.languageName,
-      this.trip.languageLocale,
-    ).then(result => {
-      router.pushUrl({
-        url: 'pages/SpeechResult',
-        params: {
-          transcribedEnglish: result.transcribedEnglish,
-          repliesJson:        JSON.stringify(result.replies),
-          languageName:       this.trip.languageName,
-        },
-      });
-      // Reset mode for when user comes back
+  private async uploadAndTranslate(filePath: string): Promise<void> {
+    try {
+      const result = await this.translationService.translateAudio(filePath);
+      this.navigateToResult(result);
+    } catch (e) {
+      console.error('[ConvoAssist] Translation failed:', JSON.stringify(e));
+      // Show error and go back to phrases
       this.mode = 'phrases';
+    }
+  }
+
+  private navigateToResult(result: TranslationResponse): void {
+    router.pushUrl({
+      url: 'pages/SpeechResult',
+      params: {
+        translationResponseJson: JSON.stringify(result),
+        languageName: this.trip.languageName,
+      },
     });
+    // Reset mode for when user comes back
+    this.mode = 'phrases';
   }
 
   // ── Build ───────────────────────────────────────────────────────────────────
@@ -111,10 +118,6 @@ struct ConvoAssist {
           .fontColor('#8B949E')
           .onClick(() => {
             if (this.mode !== 'phrases') {
-              if (this.countdownTimer !== -1) {
-                clearInterval(this.countdownTimer);
-                this.countdownTimer = -1;
-              }
               this.mode = 'phrases';
             } else {
               router.back();
@@ -122,7 +125,7 @@ struct ConvoAssist {
           })
           .padding({ left: 8, right: 8 })
         Text(this.mode === 'phrases' ? 'Convo Assist' :
-             this.mode === 'listening' ? 'Listening...' : 'Processing...')
+             this.mode === 'picking' ? 'Select Audio…' : 'Processing...')
           .fontSize(13)
           .fontWeight(FontWeight.Bold)
           .fontColor('#E6EDF3')
@@ -203,9 +206,9 @@ struct ConvoAssist {
           .layoutWeight(1)
           .alignItems(HorizontalAlign.Start)
 
-          // Mic button — floating at bottom
+          // Mic button — now opens file picker (still feels natural for demo)
           Button('🎤  Listen')
-            .onClick(() => this.startListening())
+            .onClick(() => this.startFilePicker())
             .backgroundColor('#238636')
             .fontColor('#FFFFFF')
             .fontSize(13)
@@ -215,20 +218,16 @@ struct ConvoAssist {
         }
       }
 
-      // ── Listening mode ───────────────────────────────────────────────────────
-      if (this.mode === 'listening') {
+      // ── Picking mode ──────────────────────────────────────────────────────────
+      if (this.mode === 'picking') {
         Column({ space: 16 }) {
           Text('🎤')
             .fontSize(40)
             .fontColor('#00E5C8')
-          Text(`${this.countdown}`)
-            .fontSize(36)
-            .fontWeight(FontWeight.Bold)
-            .fontColor('#00E5C8')
-          Text('Listening…')
+          Text('Selecting...')
             .fontSize(14)
             .fontColor('#E6EDF3')
-          Text('Hold steady near the speaker')
+          Text('Choose an audio file')
             .fontSize(10)
             .fontColor('#8B949E')
         }
@@ -238,7 +237,7 @@ struct ConvoAssist {
         .alignItems(HorizontalAlign.Center)
       }
 
-      // ── Processing mode ──────────────────────────────────────────────────────
+      // ── Processing mode ───────────────────────────────────────────────────────
       if (this.mode === 'processing') {
         Column({ space: 14 }) {
           Text('⚙️')
@@ -247,7 +246,7 @@ struct ConvoAssist {
             .fontSize(14)
             .fontWeight(FontWeight.Bold)
             .fontColor('#E6EDF3')
-          Text('Translating and generating replies')
+          Text('Translating audio')
             .fontSize(10)
             .fontColor('#8B949E')
             .textAlign(TextAlign.Center)
@@ -266,10 +265,6 @@ struct ConvoAssist {
       PanGesture({ direction: PanDirection.Right, distance: 50 })
         .onActionEnd(() => {
           if (this.mode !== 'phrases') {
-            if (this.countdownTimer !== -1) {
-              clearInterval(this.countdownTimer);
-              this.countdownTimer = -1;
-            }
             this.mode = 'phrases';
           } else {
             router.back();

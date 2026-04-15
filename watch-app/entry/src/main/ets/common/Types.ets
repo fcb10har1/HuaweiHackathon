@@ -70,6 +70,14 @@ export interface SpeechReply {
   local: string;
 }
 
+export interface TranslationResponse {
+  sourceLanguage: string;
+  transcript: string;
+  translationEnglish: string;
+  replySuggestionsJapanese: string[];
+  ttsAudioUrl: string;
+}
+
 export interface CountryEntry {
   code: string;
   name: string;
