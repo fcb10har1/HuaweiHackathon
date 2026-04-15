@@ -6,11 +6,17 @@ import os
 import base64
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
+from pathlib import Path
+from datetime import datetime
 
 # Load environment variables from .env file
 load_dotenv()
 
 app = Flask(__name__)
+
+# Store last suggestion audio for playback
+LAST_SUGGESTION_AUDIOS = []
+DESKTOP_PATH = str(Path.home() / "Desktop")
 
 # Minimal valid WAV file (silence, 100ms @ 16kHz)
 MINIMAL_WAV_BASE64 = "UklGRiYAAABXQVZFZm10IBAAAAABAAEAQB8AAAB9AAACABAAZGF0YQIAAAAAAA=="
@@ -47,6 +53,34 @@ except ImportError:
     print("[Backend] ⚠ OpenAI module not installed - will use fallback suggestions")
     OPENAI_AVAILABLE = False
 
+def generate_tts_audio(text, language_code='ja'):
+    """
+    Generate TTS audio for a phrase using OpenAI's TTS API.
+    Returns base64-encoded MP3 audio.
+    """
+    if not OPENAI_API_KEY:
+        return None
+    
+    try:
+        from openai import OpenAI
+        client = OpenAI(api_key=OPENAI_API_KEY)
+        
+        print(f"[Backend] Generating TTS for: {text}")
+        response = client.audio.speech.create(
+            model="tts-1",
+            voice="nova",  # Natural sounding voice
+            input=text,
+            response_format="mp3"
+        )
+        
+        # Convert to base64
+        audio_base64 = base64.b64encode(response.content).decode('utf-8')
+        return f"data:audio/mpeg;base64,{audio_base64}"
+    except Exception as e:
+        print(f"[Backend] TTS generation failed: {e}")
+        return None
+
+
 def get_ai_suggestions(transcript, language_code, target_language):
     """
     Generate AI-powered suggestions using OpenAI or return fallback.
@@ -61,7 +95,8 @@ def get_ai_suggestions(transcript, language_code, target_language):
         
         client = OpenAI(api_key=OPENAI_API_KEY)
         
-        prompt = f"Generate 3 polite {target_language} phrases for a traveler. Return ONLY a JSON array like [\"phrase1\", \"phrase2\", \"phrase3\"]"
+        # Generate suggestions RELEVANT to what the user asked
+        prompt = f"A traveler said in {target_language}: \"{transcript}\"\n\nGenerate 3 polite and relevant {target_language} responses to this. Return ONLY a JSON array like [\"response1\", \"response2\", \"response3\"]"
         
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
@@ -151,6 +186,18 @@ def translate():
     print(f"[Backend] Suggestions: {suggestions}")
     print(f"[Backend] Translations: {translations}")
     
+    # Generate TTS audio for each suggestion
+    print(f"[Backend] Generating TTS audio for {len(suggestions)} suggestions...")
+    suggestion_audios = []
+    for i, suggestion in enumerate(suggestions):
+        audio = generate_tts_audio(suggestion, language_code)
+        if audio:
+            suggestion_audios.append(audio)
+            print(f"[Backend] ✓ TTS generated for suggestion {i+1}")
+        else:
+            suggestion_audios.append(f'data:audio/wav;base64,{MINIMAL_WAV_BASE64}')
+            print(f"[Backend] ⚠ TTS failed for suggestion {i+1}, using fallback")
+    
     # Create response with BOTH text suggestions AND audio AND translations
     # NOTE: Always use 'replySuggestionsJapanese' key for app compatibility (app expects this exact key)
     response = {
@@ -160,15 +207,62 @@ def translate():
         'replySuggestionsJapanese': suggestions,  # Use consistent key name for app
         'suggestionTranslations': translations,  # English translations for each suggestion
         'ttsAudioUrl': f'data:audio/wav;base64,{MINIMAL_WAV_BASE64}',
-        'suggestionAudios': [
-            f'data:audio/wav;base64,{MINIMAL_WAV_BASE64}',
-            f'data:audio/wav;base64,{MINIMAL_WAV_BASE64}',
-            f'data:audio/wav;base64,{MINIMAL_WAV_BASE64}'
-        ]
+        'suggestionAudios': suggestion_audios  # Real TTS audio for each suggestion
     }
+    
+    # Store audios globally for later playback
+    global LAST_SUGGESTION_AUDIOS
+    LAST_SUGGESTION_AUDIOS = suggestion_audios
     
     print(f"[Backend] ✓ Response ready")
     return jsonify(response)
+
+
+@app.route('/api/save-audio/<int:index>', methods=['POST'])
+def save_audio(index):
+    """
+    Save suggestion audio to Desktop for playback.
+    Called when user presses Play Audio button on watch.
+    """
+    global LAST_SUGGESTION_AUDIOS
+    
+    if not LAST_SUGGESTION_AUDIOS or index >= len(LAST_SUGGESTION_AUDIOS):
+        return jsonify({'error': 'Audio not found', 'status': 'failed'}), 404
+    
+    audio_base64_uri = LAST_SUGGESTION_AUDIOS[index]
+    
+    try:
+        # Extract base64 data from URI
+        if 'base64,' in audio_base64_uri:
+            base64_data = audio_base64_uri.split('base64,')[1]
+            # Determine file format
+            if 'audio/mpeg' in audio_base64_uri:
+                ext = 'mp3'
+            else:
+                ext = 'wav'
+        else:
+            return jsonify({'error': 'Invalid audio format'}), 400
+        
+        # Decode and save to Desktop
+        audio_bytes = base64.b64decode(base64_data)
+        timestamp = datetime.now().strftime('%H%M%S')
+        filename = f"suggestion_{index+1}_{timestamp}.{ext}"
+        filepath = os.path.join(DESKTOP_PATH, filename)
+        
+        with open(filepath, 'wb') as f:
+            f.write(audio_bytes)
+        
+        print(f"[Backend] ✓ Audio saved to: {filepath}")
+        return jsonify({
+            'status': 'success',
+            'file': filename,
+            'path': filepath,
+            'size': len(audio_bytes)
+        })
+    
+    except Exception as e:
+        print(f"[Backend] ⚠ Failed to save audio: {e}")
+        return jsonify({'error': str(e), 'status': 'failed'}), 500
 
 
 if __name__ == '__main__':

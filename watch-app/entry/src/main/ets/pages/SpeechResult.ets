@@ -78,139 +78,37 @@ struct SpeechResult {
   }
 
   private async playTtsAudio(): Promise<void> {
-    let audioUrl: string = '';
-    
-    // Determine which audio to play
-    if (this.selectedIdx >= 0 && this.response.suggestionAudios && this.response.suggestionAudios.length > this.selectedIdx) {
-      // Play audio for the selected suggestion
-      audioUrl = this.response.suggestionAudios[this.selectedIdx];
-      console.info('[SpeechResult] Playing suggestion audio at index:', this.selectedIdx);
-    } else if (this.response.ttsAudioUrl) {
-      // Fall back to translation audio
-      audioUrl = this.response.ttsAudioUrl;
-      console.info('[SpeechResult] Playing translation audio');
-    } else {
-      this.audioPlayError = 'No audio available';
-      return;
-    }
-
     this.isPlayingAudio = true;
     this.audioPlayError = '';
 
     try {
-      // Download audio file to temp directory
-      const fileName = 'tts_result.mp3';
-      const tempFilePath = (this.ctx?.tempDir ?? '/tmp') + '/' + fileName;
-
-      // Clean up any existing file
-      try {
-        fs.unlinkSync(tempFilePath);
-      } catch (_) {}
-
-      // Download the audio
-      await this.downloadAudio(audioUrl, tempFilePath);
-
-      // Play the audio
-      if (this.audioPlayer) {
-        try {
-          this.audioPlayer.reset();
-          this.audioPlayer.release();
-        } catch (_) {}
-      }
-
-      this.audioPlayer = await media.createAVPlayer();
-      const fileObj = fs.openSync(tempFilePath, fs.OpenMode.READ_ONLY);
-      const avFileDescriptor: media.AVFileDescriptor = {
-        fd: fileObj.fd,
-        offset: 0,
-        length: -1,
-      };
-      this.audioPlayer.fdSrc = avFileDescriptor;
-
-      // Play when ready
-      await new Promise<void>((resolve: () => void) => {
-        const onStateChange = (state: string | number): void => {
-          console.info('[SpeechResult] Audio state:', state);
-          if (state === 'prepared' || state === 1) {
-            this.audioPlayer?.play();
-          } else if (state === 'completed' || state === 'stopped' || state === 'error' || state === 3 || state === 4 || state === 5) {
-            this.isPlayingAudio = false;
-            if (state === 'error' || state === 5) {
-              this.audioPlayError = 'Playback failed';
-            }
-            resolve();
-          }
-        };
-
-        if (this.audioPlayer) {
-          this.audioPlayer.on('stateChange', onStateChange);
-          this.audioPlayer.prepare();
-        }
+      const httpClient = http.createHttp();
+      const requestUrl: string = `http://10.0.2.2:5000/api/save-audio/${this.selectedIdx}`;
+      
+      const response: http.HttpResponse = await httpClient.request(requestUrl, {
+        method: http.RequestMethod.POST,
+        expectDataType: http.HttpDataType.STRING,
+        connectTimeout: 30000,
+        readTimeout: 30000
       });
-    } catch (e) {
-      console.error('[SpeechResult] Audio playback failed:', JSON.stringify(e));
-      this.audioPlayError = 'Playback failed';
+      
+      if (response.responseCode === 200) {
+        const result: Record<string, string> = JSON.parse(response.result as string);
+        console.info('[SpeechResult] ✓ Audio saved:', result.file);
+        this.audioPlayError = `✓ Saved: ${result.file}`;
+      } else {
+        console.error('[SpeechResult] Backend error:', response.responseCode);
+        this.audioPlayError = 'Failed to save audio';
+      }
+      httpClient.destroy();
+    } catch (error) {
+      console.error('[SpeechResult] ❌ Save failed:', error);
+      this.audioPlayError = 'Error saving to Desktop';
+    } finally {
       this.isPlayingAudio = false;
     }
   }
 
-  private downloadAudio(url: string, filePath: string): Promise<void> {
-    return new Promise((resolve: () => void, reject: (err: Error) => void) => {
-      try {
-        // Handle base64 data URLs (data:audio/wav;base64,...)
-        if (url.startsWith('data:')) {
-          try {
-            const base64Part = url.split(',')[1];
-            if (!base64Part) {
-              reject(new Error('Invalid data URL format'));
-              return;
-            }
-            
-            console.info('[SpeechResult] Decoding base64 audio data...');
-            
-            // Decode base64 string to bytes using helper function
-            const bytes: Uint8Array = base64ToUint8Array(base64Part);
-            
-            // Write to file
-            const file = fs.openSync(filePath, fs.OpenMode.READ_WRITE | fs.OpenMode.CREATE);
-            fs.writeSync(file.fd, bytes);
-            fs.closeSync(file.fd);
-            console.info('[SpeechResult] ✓ Wrote base64 audio to file');
-            resolve();
-          } catch (e) {
-            console.error('[SpeechResult] Failed to decode base64:', JSON.stringify(e));
-            reject(e);
-          }
-          return;
-        }
-
-        // Handle regular HTTP URLs
-        const req = http.createHttp();
-        req.request(url, {
-          method: http.RequestMethod.GET,
-        }).then((resp: http.HttpResponse) => {
-          req.destroy();
-          if (resp.responseCode === 200 && resp.result) {
-            try {
-              const file = fs.openSync(filePath, fs.OpenMode.READ_WRITE | fs.OpenMode.CREATE);
-              fs.writeSync(file.fd, resp.result as ArrayBuffer);
-              fs.closeSync(file.fd);
-              resolve();
-            } catch (e) {
-              reject(e);
-            }
-          } else {
-            reject(new Error('Failed to download audio'));
-          }
-        }).catch((e: Error) => {
-          req.destroy();
-          reject(e);
-        });
-      } catch (e) {
-        reject(e as Error);
-      }
-    });
-  }
 
   build() {
     Column() {
