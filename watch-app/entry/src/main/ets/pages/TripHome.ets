@@ -153,26 +153,26 @@ struct TripHome {
       Divider().color('#21262D')
 
       // ── Country banner ───────────────────────────────────────────────────────
-      Column({ space: 4 }) {
+      Column({ space: 3 }) {
         Text(this.trip.flag)
-          .fontSize(30)
+          .fontSize(28)
         Text(this.trip.countryName)
-          .fontSize(16)
+          .fontSize(15)
           .fontWeight(FontWeight.Bold)
           .fontColor('#E6EDF3')
         Text(`${formatDate(this.trip.startTimestamp)} – ${formatDate(this.trip.endTimestamp)}`)
-          .fontSize(10)
+          .fontSize(9)
           .fontColor('#8B949E')
       }
       .width('100%')
       .alignItems(HorizontalAlign.Center)
-      .padding({ top: 14, bottom: 14 })
+      .padding({ top: 12, bottom: 12 })
 
-      Divider().color('#21262D').width('80%')
+      Divider().color('#21262D').width('70%')
 
-      // ── Feature buttons ──────────────────────────────────────────────────────
-      Column({ space: 12 }) {
-        Button('✈️  Arrival Steps')
+      // ── Feature buttons (optimized for circular watch) ───────────────────────
+      Column({ space: 10 }) {
+        Button('✈️  Arrival\nSteps')
           .onClick(() => {
             router.pushUrl({
               url: 'pages/ArrivalSteps',
@@ -181,11 +181,13 @@ struct TripHome {
           })
           .backgroundColor('#1F6FEB')
           .fontColor('#FFFFFF')
-          .fontSize(13)
-          .width('85%')
-          .height(44)
+          .fontSize(11)
+          .fontWeight(FontWeight.Bold)
+          .width('65%')
+          .height(40)
+          .padding(0)
 
-        Button('💬  Convo Assist')
+        Button('💬  Convo\nAssist')
           .onClick(() => {
             router.pushUrl({
               url: 'pages/ConvoAssist',
@@ -197,9 +199,11 @@ struct TripHome {
           })
           .backgroundColor('#238636')
           .fontColor('#FFFFFF')
-          .fontSize(13)
-          .width('85%')
-          .height(44)
+          .fontSize(11)
+          .fontWeight(FontWeight.Bold)
+          .width('65%')
+          .height(40)
+          .padding(0)
       }
       .width('100%')
       .alignItems(HorizontalAlign.Center)
@@ -209,9 +213,9 @@ struct TripHome {
       // ── GPS status ───────────────────────────────────────────────────────────
       if (this.statusText) {
         Text(this.statusText)
-          .fontSize(9)
+          .fontSize(8)
           .fontColor('#6E7681')
-          .padding({ bottom: 8 })
+          .padding({ bottom: 6 })
       }
     }
     .width('100%')

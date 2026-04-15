@@ -159,42 +159,42 @@ struct SpeechResult {
       Divider().color('#21262D')
 
       Scroll() {
-        Column({ space: 12 }) {
+        Column({ space: 8 }) {
 
           // ── Original transcript (if available) ────────────────────────────────
           if (this.response.transcript) {
-            Column({ space: 4 }) {
+            Column({ space: 3 }) {
               Text('They said:')
-                .fontSize(10)
+                .fontSize(9)
                 .fontColor('#8B949E')
               Text(`"${this.response.transcript}"`)
-                .fontSize(11)
+                .fontSize(10)
                 .fontColor('#C9D1D9')
                 .fontStyle(FontStyle.Italic)
                 .textAlign(TextAlign.Center)
                 .width('90%')
-                .lineHeight(18)
+                .lineHeight(16)
             }
             .width('100%')
             .alignItems(HorizontalAlign.Center)
-            .padding({ top: 12, bottom: 8 })
+            .padding({ top: 8, bottom: 6 })
 
-            Divider().color('#21262D').width('80%')
+            Divider().color('#21262D').width('70%')
           }
 
           // ── Translation (English) ──────────────────────────────────────────────
           if (this.response.translationEnglish) {
-            Column({ space: 8 }) {
+            Column({ space: 6 }) {
               Text('Translation:')
-                .fontSize(10)
+                .fontSize(9)
                 .fontColor('#8B949E')
               Text(this.response.translationEnglish)
-                .fontSize(14)
+                .fontSize(12)
                 .fontWeight(FontWeight.Bold)
                 .fontColor('#E6EDF3')
                 .textAlign(TextAlign.Center)
-                .width('95%')
-                .lineHeight(22)
+                .width('90%')
+                .lineHeight(18)
 
               // Play TTS button
               Button('▶ Play Audio')
@@ -202,73 +202,73 @@ struct SpeechResult {
                 .enabled(!this.isPlayingAudio)
                 .backgroundColor(this.isPlayingAudio ? '#21262D' : '#238636')
                 .fontColor('#FFFFFF')
-                .fontSize(11)
-                .width('80%')
+                .fontSize(10)
+                .width('70%')
                 .height(32)
-                .margin({ top: 8 })
+                .margin({ top: 6 })
 
               // Audio error or playing indicator
               if (this.audioPlayError) {
                 Text(this.audioPlayError)
-                  .fontSize(10)
+                  .fontSize(9)
                   .fontColor('#FF4444')
               } else if (this.isPlayingAudio) {
                 Text('Playing audio...')
-                  .fontSize(10)
+                  .fontSize(9)
                   .fontColor('#00E5C8')
               }
             }
             .width('100%')
-            .padding(12)
+            .padding(10)
             .backgroundColor('#161B22')
-            .borderRadius(8)
+            .borderRadius(6)
             .alignItems(HorizontalAlign.Center)
-            .margin({ left: 10, right: 10, top: 8, bottom: 8 })
+            .margin({ left: 8, right: 8, top: 4, bottom: 6 })
           }
 
           // ── Japanese reply suggestions ─────────────────────────────────────────
           if (this.response.replySuggestionsJapanese && this.response.replySuggestionsJapanese.length > 0) {
-            Column({ space: 8 }) {
-              Text('You can reply (in Japanese):')
-                .fontSize(10)
+            Column({ space: 6 }) {
+              Text('Reply (Japanese):')
+                .fontSize(9)
                 .fontColor('#8B949E')
 
               // Display current selected suggestion
               if (this.currentSuggestion) {
-                Column({ space: 4 }) {
+                Column({ space: 2 }) {
                   Text(this.currentSuggestion)
-                    .fontSize(14)
+                    .fontSize(12)
                     .fontColor('#00E5C8')
                     .textAlign(TextAlign.Center)
-                    .width('90%')
-                    .lineHeight(24)
+                    .width('88%')
+                    .lineHeight(18)
                 }
                 .width('100%')
-                .padding(12)
+                .padding(10)
                 .backgroundColor('#0D2818')
-                .borderRadius(8)
+                .borderRadius(6)
                 .alignItems(HorizontalAlign.Center)
               }
 
               // Pagination indicator
               if (this.response.replySuggestionsJapanese.length > 1) {
                 Text(`${this.selectedIdx + 1} / ${this.response.replySuggestionsJapanese.length}`)
-                  .fontSize(10)
+                  .fontSize(8)
                   .fontColor('#8B949E')
               }
 
-              // Navigation buttons
+              // Navigation buttons (smaller for circular screen)
               if (this.response.replySuggestionsJapanese.length > 1) {
-                Row({ space: 12 }) {
+                Row({ space: 8 }) {
                   Button('‹')
                     .onClick(() => {
                       if (this.selectedIdx > 0) this.selectedIdx -= 1;
                     })
                     .backgroundColor(this.selectedIdx > 0 ? '#21262D' : '#0D1117')
                     .fontColor(this.selectedIdx > 0 ? '#E6EDF3' : '#21262D')
-                    .fontSize(18)
-                    .width('40%')
-                    .height(32)
+                    .fontSize(14)
+                    .width('32%')
+                    .height(28)
                     .enabled(this.selectedIdx > 0)
 
                   Button('›')
@@ -279,9 +279,9 @@ struct SpeechResult {
                     })
                     .backgroundColor(this.selectedIdx < this.response.replySuggestionsJapanese.length - 1 ? '#21262D' : '#0D1117')
                     .fontColor(this.selectedIdx < this.response.replySuggestionsJapanese.length - 1 ? '#E6EDF3' : '#21262D')
-                    .fontSize(18)
-                    .width('40%')
-                    .height(32)
+                    .fontSize(14)
+                    .width('32%')
+                    .height(28)
                     .enabled(this.selectedIdx < this.response.replySuggestionsJapanese.length - 1)
                 }
                 .width('100%')
@@ -289,17 +289,17 @@ struct SpeechResult {
               }
             }
             .width('100%')
-            .padding(12)
+            .padding(10)
             .backgroundColor('#161B22')
-            .borderRadius(8)
+            .borderRadius(6)
             .alignItems(HorizontalAlign.Center)
-            .margin({ left: 10, right: 10, top: 4, bottom: 12 })
+            .margin({ left: 8, right: 8, top: 4, bottom: 8 })
           }
 
-          Text('Swipe right or tap ← to go back')
-            .fontSize(9)
+          Text('← Swipe or tap back')
+            .fontSize(8)
             .fontColor('#6E7681')
-            .margin({ top: 8, bottom: 12 })
+            .margin({ top: 4, bottom: 8 })
         }
         .width('100%')
         .alignItems(HorizontalAlign.Center)
