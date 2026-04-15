@@ -37,21 +37,21 @@ struct ArrivalSteps {
 
   build() {
     Column() {
-      // ── Header (compact for watch) ──────────────────────────────────────────
+      // ── Header (minimal for circular) ──────────────────────────────────────┐─
       Row() {
         Text('←')
-          .fontSize(16)
+          .fontSize(13)
           .fontColor('#8B949E')
           .onClick(() => router.back())
-          .padding(8)
-        Text(this.steps.length > 0 ? `Step ${this.currentIdx + 1}/${this.steps.length}` : 'Steps')
-          .fontSize(12)
-          .fontWeight(FontWeight.Bold)
-          .fontColor('#E6EDF3')
+          .padding(6)
+        Text(this.steps.length > 0 ? `${this.currentIdx + 1}/${this.steps.length}` : '')
+          .fontSize(9)
+          .fontColor('#8B949E')
           .layoutWeight(1)
+          .textAlign(TextAlign.Center)
       }
       .width('100%')
-      .height(36)
+      .height(28)
       .alignItems(VerticalAlign.Center)
 
       Divider().color('#21262D').height(0.5)
@@ -114,69 +114,67 @@ struct ArrivalSteps {
         .justifyContent(FlexAlign.Center)
         .alignItems(HorizontalAlign.Center)
       } else {
-        // Display current step with optimized watch layout
+        // Display current step (scrollable content)
         Scroll() {
-          Column({ space: 8 }) {
-            // Step title (prominent)
+          Column({ space: 6 }) {
+            // Step title
             Text(this.currentStep?.title ?? '')
-              .fontSize(13)
+              .fontSize(11)
               .fontWeight(FontWeight.Bold)
               .fontColor('#E6EDF3')
               .textAlign(TextAlign.Center)
-              .width('95%')
-              .lineHeight(18)
+              .width('90%')
+              .lineHeight(15)
 
-            // Step description (full height)
+            Divider().color('#21262D').width('80%').height(0.5)
+
+            // Step description  
             Text(this.currentStep?.description ?? '')
-              .fontSize(10)
+              .fontSize(9)
               .fontColor('#C9D1D9')
               .textAlign(TextAlign.Start)
-              .width('95%')
-              .lineHeight(16)
+              .width('90%')
+              .lineHeight(13)
 
-            // Progress dots (compact)
+            // Progress dots
             Row() {
               ForEach(this.steps, (_: ArrivalStep, idx: number) => {
                 Row()
-                  .width(idx === this.currentIdx ? 12 : 5)
-                  .height(5)
-                  .borderRadius(2.5)
+                  .width(idx === this.currentIdx ? 10 : 4)
+                  .height(4)
+                  .borderRadius(2)
                   .backgroundColor(idx === this.currentIdx ? '#00E5C8' :
                     idx < this.currentIdx ? '#238636' : '#21262D')
-                  .margin({ right: 4 })
+                  .margin({ right: 3 })
               })
             }
             .width('100%')
             .justifyContent(FlexAlign.Center)
-            .margin({ top: 4, bottom: 8 })
+            .margin({ top: 6, bottom: 6 })
 
-            // Navigation buttons (stack on watch for space)
-            Column({ space: 6 }) {
-              Button(this.isLastStep ? '✓ Done' : 'Next ›')
-                .onClick(() => { this.currentIdx += 1; })
-                .backgroundColor(this.isLastStep ? '#238636' : '#1F6FEB')
-                .fontColor('#FFFFFF')
-                .fontSize(11)
-                .fontWeight(FontWeight.Bold)
-                .width('100%')
-                .height(36)
+            // Navigation buttons
+            Button(this.isLastStep ? '✓ Done' : 'Next ›')
+              .onClick(() => { this.currentIdx += 1; })
+              .backgroundColor(this.isLastStep ? '#238636' : '#1F6FEB')
+              .fontColor('#FFFFFF')
+              .fontSize(10)
+              .fontWeight(FontWeight.Bold)
+              .width('60%')
+              .height(34)
 
-              if (this.currentIdx > 0) {
-                Button('‹ Back')
-                  .onClick(() => { this.currentIdx -= 1; })
-                  .backgroundColor('#21262D')
-                  .fontColor('#8B949E')
-                  .fontSize(10)
-                  .width('100%')
-                  .height(32)
-              }
+            if (this.currentIdx > 0) {
+              Button('‹ Back')
+                .onClick(() => { this.currentIdx -= 1; })
+                .backgroundColor('#21262D')
+                .fontColor('#8B949E')
+                .fontSize(9)
+                .width('60%')
+                .height(30)
             }
-            .width('90%')
-            .alignItems(HorizontalAlign.Center)
           }
           .width('100%')
           .alignItems(HorizontalAlign.Center)
-          .padding({ left: 6, right: 6, top: 8, bottom: 8 })
+          .padding({ left: 4, right: 4, top: 6, bottom: 6 })
         }
         .layoutWeight(1)
         .width('100%')
