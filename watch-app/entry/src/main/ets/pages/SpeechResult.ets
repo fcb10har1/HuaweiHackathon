@@ -7,7 +7,31 @@ import media from '@ohos.multimedia.media';
 import http from '@ohos.net.http';
 import fs from '@ohos.file.fs';
 import common from '@ohos.app.ability.common';
+import util from '@ohos.util';
 import { TranslationResponse } from '../common/Types';
+
+// Base64 decoder helper function for HarmonyOS
+function base64ToUint8Array(base64Str: string): Uint8Array {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  const bytes: number[] = [];
+  
+  for (let i = 0; i < base64Str.length; i += 4) {
+    const a = chars.indexOf(base64Str[i] ?? '');
+    const b = chars.indexOf(base64Str[i + 1] ?? '');
+    const c = chars.indexOf(base64Str[i + 2] ?? '');
+    const d = chars.indexOf(base64Str[i + 3] ?? '');
+    
+    bytes.push((a << 2) | (b >> 4));
+    if (c !== -1) {
+      bytes.push(((b & 15) << 4) | (c >> 2));
+    }
+    if (d !== -1) {
+      bytes.push(((c & 3) << 6) | d);
+    }
+  }
+  
+  return new Uint8Array(bytes);
+}
 
 @Entry
 @Component
@@ -133,15 +157,12 @@ struct SpeechResult {
             
             console.info('[SpeechResult] Decoding base64 audio data...');
             
-            // Use util module to decode base64
-            let util = require('util');
-            const binaryString = util.TextDecoder.create().decode(
-              util.Base64.decode(base64Part)
-            ) as string;
+            // Decode base64 string to bytes using helper function
+            const bytes: Uint8Array = base64ToUint8Array(base64Part);
             
             // Write to file
             const file = fs.openSync(filePath, fs.OpenMode.READ_WRITE | fs.OpenMode.CREATE);
-            fs.writeSync(file.fd, binaryString);
+            fs.writeSync(file.fd, bytes);
             fs.closeSync(file.fd);
             console.info('[SpeechResult] ✓ Wrote base64 audio to file');
             resolve();
