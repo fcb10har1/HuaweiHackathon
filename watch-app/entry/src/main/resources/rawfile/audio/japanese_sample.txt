@@ -1,3 +1,0 @@
-AUDIO_PLACEHOLDER_JAPANESE_SAMPLE
-This is a placeholder audio file for testing file upload functionality.
-In production, replace this with actual audio files (WAV, MP3, etc).

@@ -111,6 +111,37 @@ struct SpeechResult {
   private downloadAudio(url: string, filePath: string): Promise<void> {
     return new Promise((resolve: () => void, reject: (err: Error) => void) => {
       try {
+        // Handle base64 data URLs (data:audio/wav;base64,...)
+        if (url.startsWith('data:')) {
+          try {
+            const base64Part = url.split(',')[1];
+            if (!base64Part) {
+              reject(new Error('Invalid data URL format'));
+              return;
+            }
+            
+            console.info('[SpeechResult] Decoding base64 audio data...');
+            
+            // Use util module to decode base64
+            let util = require('util');
+            const binaryString = util.TextDecoder.create().decode(
+              util.Base64.decode(base64Part)
+            ) as string;
+            
+            // Write to file
+            const file = fs.openSync(filePath, fs.OpenMode.READ_WRITE | fs.OpenMode.CREATE);
+            fs.writeSync(file.fd, binaryString);
+            fs.closeSync(file.fd);
+            console.info('[SpeechResult] ✓ Wrote base64 audio to file');
+            resolve();
+          } catch (e) {
+            console.error('[SpeechResult] Failed to decode base64:', JSON.stringify(e));
+            reject(e);
+          }
+          return;
+        }
+
+        // Handle regular HTTP URLs
         const req = http.createHttp();
         req.request(url, {
           method: http.RequestMethod.GET,
