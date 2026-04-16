@@ -201,7 +201,7 @@ struct ArrivalSteps {
             .padding({ top: 46 })
             .scrollBar(BarState.Off)
             .edgeEffect(EdgeEffect.Spring)
-            .friction(6.0)
+            .friction(35.0)
 
             // ── < > navigation ───────────────────────────────────────────────
             Row({ space: 24 }) {

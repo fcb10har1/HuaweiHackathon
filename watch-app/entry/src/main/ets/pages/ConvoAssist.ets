@@ -301,7 +301,7 @@ struct ConvoAssist {
             .layoutWeight(1)
             .scrollBar(BarState.Off)
             .edgeEffect(EdgeEffect.Spring)
-            .friction(6.0)
+            .friction(35.0)
           }
           .width('100%')
           .layoutWeight(1)

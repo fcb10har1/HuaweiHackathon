@@ -150,7 +150,7 @@ struct AlertsList {
         .layoutWeight(1)
         .scrollBar(BarState.Off)
         .edgeEffect(EdgeEffect.Spring)
-        .friction(6.0)
+        .friction(35.0)
         .alignListItem(ListItemAlign.Center)
         .padding({ top: 8, bottom: 8 })
 

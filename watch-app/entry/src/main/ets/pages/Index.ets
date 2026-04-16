@@ -209,7 +209,7 @@ struct Index {
           .padding({ left: 18, right: 18, top: 8, bottom: 4 })
           .scrollBar(BarState.Off)
           .edgeEffect(EdgeEffect.Spring)
-          .friction(6.0)
+          .friction(35.0)
 
           // ── Bottom teal add button ───────────────────────────────────────────
           Stack({ alignContent: Alignment.Center }) {

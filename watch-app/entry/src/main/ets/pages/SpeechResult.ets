@@ -289,7 +289,7 @@ struct SpeechResult {
       .layoutWeight(1)
       .scrollBar(BarState.Off)
       .edgeEffect(EdgeEffect.Spring)
-      .friction(6.0)
+      .friction(35.0)
     }
     .width('100%')
     .height('100%')
