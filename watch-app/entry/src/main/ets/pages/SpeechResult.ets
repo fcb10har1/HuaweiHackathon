@@ -16,11 +16,11 @@ struct SpeechResult {
   @State selectedIdx: number = 0;
 
   private get suggestions(): string[] {
-    return this.response.replySuggestionsJapanese ?? [];
+    return this.response?.replySuggestionsJapanese ?? [];
   }
 
   private get englishHints(): string[] {
-    return this.response.suggestionTranslations ?? [];
+    return this.response?.suggestionTranslations ?? [];
   }
 
   build() {
