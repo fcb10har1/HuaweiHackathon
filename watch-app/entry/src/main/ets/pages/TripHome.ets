@@ -148,10 +148,10 @@ struct TripHome {
           .fontColor('#6E7681')
           .margin({ bottom: 10 })
 
-        // Action icon buttons
-        Row({ space: 20 }) {
+        // Action icon buttons — outlined circle style
+        Row({ space: 22 }) {
           // Arrival Steps
-          Column({ space: 5 }) {
+          Column({ space: 6 }) {
             Button('📋')
               .onClick(() => {
                 router.pushUrl({
@@ -159,12 +159,13 @@ struct TripHome {
                   params: { tripJson: this.params['tripJson'] },
                 });
               })
-              .backgroundColor('#1F6FEB')
+              .backgroundColor('#121E2E')
               .fontColor('#FFFFFF')
               .fontSize(22)
               .width(54)
               .height(54)
               .borderRadius(27)
+              .border({ width: 1.5, color: '#4D9FFF', style: BorderStyle.Solid })
             Text('Steps')
               .fontSize(10)
               .fontColor('#8B949E')
@@ -172,7 +173,7 @@ struct TripHome {
           .alignItems(HorizontalAlign.Center)
 
           // Convo Assist
-          Column({ space: 5 }) {
+          Column({ space: 6 }) {
             Button('🎤')
               .onClick(() => {
                 router.pushUrl({
@@ -183,12 +184,13 @@ struct TripHome {
                   },
                 });
               })
-              .backgroundColor('#238636')
+              .backgroundColor('#0E1C1A')
               .fontColor('#FFFFFF')
               .fontSize(22)
               .width(54)
               .height(54)
               .borderRadius(27)
+              .border({ width: 1.5, color: '#00E5C8', style: BorderStyle.Solid })
             Text('Convo')
               .fontSize(10)
               .fontColor('#8B949E')

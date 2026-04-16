@@ -55,7 +55,7 @@ struct Index {
   private statusColor(trip: Trip): string {
     const s = getTripStatus(trip);
     if (s === 'active')   return '#00E5C8';
-    if (s === 'upcoming') return '#1F6FEB';
+    if (s === 'upcoming') return '#4D9FFF';
     return '#6E7681';
   }
 
@@ -118,7 +118,7 @@ struct Index {
           Divider().color('#21262D')
 
           // Trip list
-          List({ space: 8 }) {
+          List({ space: 10 }) {
             ForEach(this.trips, (trip: Trip) => {
               ListItem() {
                 if (this.deletingId === trip.id) {
@@ -192,7 +192,10 @@ struct Index {
           }
           .width('100%')
           .layoutWeight(1)
-          .padding({ left: 16, right: 16, top: 6, bottom: 6 })
+          .padding({ left: 18, right: 18, top: 8, bottom: 8 })
+          .scrollBar(BarState.Off)
+          .edgeEffect(EdgeEffect.Spring)
+          .friction(0.85)
         }
         .width('100%')
         .height('100%')

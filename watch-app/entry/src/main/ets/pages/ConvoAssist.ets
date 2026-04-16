@@ -2,19 +2,19 @@
  * ConvoAssist.ets — Conversational assistance screen
  *
  * Modes:
- *   phrases    — phrase list (JSON + LLM extras)
- *   picking    — choose one of the demo sample audio files
- *   processing — upload selected sample and translate via backend
+ *   phrases   — scrollable list of useful phrases (JSON + LLM extras)
+ *   listening — mic active, 5-second recording countdown
+ *   processing — transcribing and generating replies via LLM
  */
 import router from '@ohos.router';
 import common from '@ohos.app.ability.common';
 import { vibrator } from '@kit.SensorServiceKit';
-import { Trip, Phrase, TranslationResponse, AudioFile } from '../common/Types';
+import { Trip, Phrase, SpeechReply, TranslationResponse } from '../common/Types';
 import { CountryDataService } from '../services/CountryDataService';
-import { LlmService } from '../services/LlmService';
-import { TranslationService } from '../services/TranslationService';
+import { LlmService, TranscribeResult } from '../services/LlmService';
+import { MIC_DURATION_MS } from '../common/Config';
 
-type ConvoMode = 'phrases' | 'picking' | 'processing';
+type ConvoMode = 'phrases' | 'listening' | 'processing';
 
 @Entry
 @Component
@@ -27,18 +27,13 @@ struct ConvoAssist {
   @State phrases: Phrase[]      = [];
   @State extraPhrases: string[] = [];
   @State loadingPhrases: boolean = true;
-  @State selectedAudioIdx: number = -1;
+  @State secondsLeft: number    = 0;
 
   private dataService: CountryDataService | null = null;
   private llmService: LlmService = new LlmService();
-  private translationService: TranslationService = new TranslationService();
   private ctx: common.UIAbilityContext | null = null;
+  private countdownTimer: number = -1;
   private cancelled: boolean = false;
-  private sampleAudios: AudioFile[] = [
-    { name: '🇯🇵 Japanese Sample', file: 'japanese_sample.wav' },
-    { name: '🇹🇭 Thai Sample', file: 'thai_sample.wav' },
-    { name: '🇮🇩 Indonesian Sample', file: 'indonesian_sample.wav' },
-  ];
 
   aboutToAppear(): void {
     this.ctx = getContext(this) as common.UIAbilityContext;
@@ -47,6 +42,7 @@ struct ConvoAssist {
   }
 
   aboutToDisappear(): void {
+    this.stopCountdown();
     this.cancelled = true;
   }
 
@@ -55,13 +51,31 @@ struct ConvoAssist {
       this.phrases = phrases;
       this.loadingPhrases = false;
       this.llmService.generateExtraPhrases(this.trip.countryName, this.venueType || 'general')
-        .then(extras => { this.extraPhrases = extras; })
-        .catch(() => { this.extraPhrases = []; });
+        .then(extras => { this.extraPhrases = extras; });
     });
+  }
+
+  private startCountdown(): void {
+    this.secondsLeft = Math.ceil(MIC_DURATION_MS / 1000);
+    this.countdownTimer = setInterval(() => {
+      if (this.secondsLeft > 1) {
+        this.secondsLeft--;
+      } else {
+        this.stopCountdown();
+      }
+    }, 1000);
+  }
+
+  private stopCountdown(): void {
+    if (this.countdownTimer >= 0) {
+      clearInterval(this.countdownTimer);
+      this.countdownTimer = -1;
+    }
   }
 
   private goBack(): void {
     this.cancelled = true;
+    this.stopCountdown();
     if (this.mode !== 'phrases') {
       this.mode = 'phrases';
     } else {
@@ -69,27 +83,50 @@ struct ConvoAssist {
     }
   }
 
-  private async startSamplePicker(): Promise<void> {
+  private async startListening(): Promise<void> {
+    if (!this.ctx) return;
     this.cancelled = false;
-    this.mode = 'picking';
+
     try {
       vibrator.startVibration({ type: 'time', duration: 80 }, { id: 0, usage: 'notification' });
     } catch (_) {}
-  }
 
-  private async selectAudioFile(index: number): Promise<void> {
-    this.selectedAudioIdx = index;
-    const audioFile = this.sampleAudios[index];
-    await this.translateSample(audioFile.file);
-  }
+    this.mode = 'listening';
+    this.startCountdown();
 
-  private async translateSample(filePath: string): Promise<void> {
-    this.cancelled = false;
-    this.mode = 'processing';
+    // Switch to processing display after the recording phase ends
+    setTimeout(() => {
+      this.stopCountdown();
+      if (this.mode === 'listening') {
+        this.mode = 'processing';
+      }
+    }, MIC_DURATION_MS + 300);
+
     try {
-      const result = await this.translationService.translateAudio(filePath);
+      const result: TranscribeResult = await this.llmService.transcribeAndReply(
+        this.ctx,
+        this.trip.countryName,
+        this.venueType || 'general',
+        this.trip.languageName,
+        this.trip.languageLocale,
+      );
+
       if (this.cancelled) return;
-      this.navigateToResult(result);
+
+      // Map TranscribeResult → TranslationResponse for SpeechResult page
+      const localReplies: string[] = result.replies.map((r: SpeechReply) => r.local || r.english);
+      const englishReplies: string[] = result.replies.map((r: SpeechReply) => r.english);
+
+      const translationResp: TranslationResponse = {
+        sourceLanguage: this.trip.languageLocale,
+        transcript: '',
+        translationEnglish: result.transcribedEnglish,
+        replySuggestionsJapanese: localReplies,
+        ttsAudioUrl: '',
+        suggestionTranslations: englishReplies,
+      };
+
+      this.navigateToResult(translationResp);
     } catch (_) {
       if (!this.cancelled) this.mode = 'phrases';
     }
@@ -116,7 +153,7 @@ struct ConvoAssist {
           .onClick(() => this.goBack())
           .padding({ left: 10, right: 8 })
         Text(
-          this.mode === 'picking'    ? 'Select Audio...' :
+          this.mode === 'listening'  ? 'Listening...' :
           this.mode === 'processing' ? 'Processing...' :
                                        'Convo Assist'
         )
@@ -201,7 +238,7 @@ struct ConvoAssist {
 
           // Mic button — circular, centered at bottom
           Button('🎤')
-            .onClick(() => this.startSamplePicker())
+            .onClick(() => this.startListening())
             .backgroundColor('#238636')
             .fontColor('#FFFFFF')
             .fontSize(22)
@@ -209,38 +246,26 @@ struct ConvoAssist {
             .height(54)
             .borderRadius(27)
             .margin({ bottom: 14 })
-          Text('Choose sample audio')
-            .fontSize(8)
-            .fontColor('#8B949E')
-            .margin({ bottom: 10 })
         }
       }
 
-      // ── Picking mode ──────────────────────────────────────────────────────────
-      if (this.mode === 'picking') {
-        Column({ space: 8 }) {
-          Text('Select Audio File')
-            .fontSize(12)
-            .fontColor('#8B949E')
-            .margin({ top: 6, bottom: 4 })
-
-          ForEach(this.sampleAudios, (audio: AudioFile, index: number) => {
-            Button(audio.name)
-              .onClick(() => this.selectAudioFile(index))
-              .backgroundColor('#238636')
-              .fontColor('#FFFFFF')
-              .fontSize(10)
-              .fontWeight(FontWeight.Medium)
-              .width('86%')
-              .height(34)
-              .borderRadius(6)
-          })
-          Text('Tap a sample to translate and play')
-            .fontSize(8)
+      // ── Listening mode ────────────────────────────────────────────────────────
+      if (this.mode === 'listening') {
+        Column({ space: 10 }) {
+          Text('🎤')
+            .fontSize(42)
+          Text('Listening')
+            .fontSize(15)
+            .fontWeight(FontWeight.Bold)
+            .fontColor('#00E5C8')
+          Text(`${this.secondsLeft}`)
+            .fontSize(28)
+            .fontWeight(FontWeight.Bold)
+            .fontColor('#E6EDF3')
+          Text(`Speak in ${this.trip.languageName}`)
+            .fontSize(9)
             .fontColor('#8B949E')
             .textAlign(TextAlign.Center)
-            .width('84%')
-            .margin({ top: 8 })
         }
         .width('100%')
         .layoutWeight(1)
