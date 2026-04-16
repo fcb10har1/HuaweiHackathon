@@ -1,256 +1,516 @@
-{
-  "countryCode": "TH",
-  "name": "Thailand",
-  "flag": "🇹🇭",
-  "tagline": "Warmth, temples, and gracious smiles",
-  "language": {
-    "name": "Thai",
-    "locale": "th-TH",
-    "nativeScriptName": "ภาษาไทย"
-  },
-  "scenarios": [
-    {
-      "id": "airport",
-      "displayName": "Airport Arrival",
-      "icon": "✈️",
-      "description": "Immigration, customs, and arrival procedures",
-      "geofence": "airport_arrivals",
-      "locationKeywords": [
-        "airport",
-        "arrivals",
-        "terminal",
-        "suvarnabhumi",
-        "don mueang"
-      ],
-      "arrivalSteps": [
-        {
-          "stepIndex": 0,
-          "title": "Complete Arrival Card / Digital Arrival Card",
-          "description": "Thailand phased out the paper TM6 card at major airports in 2022. A Thailand Digital Arrival Card (TDAC) system is in use — check current requirements before travel. If issued a paper TM6 on the aircraft, fill in your passport details, Thai address, and flight number."
-        },
-        {
-          "stepIndex": 1,
-          "title": "Health Declaration (if applicable)",
-          "description": "No health certificate or Thailand Pass is currently required for entry. Proceed directly to immigration unless a specific health advisory is active at the time of travel."
-        },
-        {
-          "stepIndex": 2,
-          "title": "Visa / Entry Stamp at Immigration Counter",
-          "description": "Join the foreigners queue. Most nationalities receive a 30–60 day visa exemption (policy expanded in 2024). Present passport and proof of onward travel. Officers may ask for proof of sufficient funds (THB 10,000 per person / THB 20,000 per family)."
-        },
-        {
-          "stepIndex": 3,
-          "title": "Biometric Collection",
-          "description": "Fingerprints of both index fingers are scanned at the immigration counter for all foreign nationals. A facial photograph may also be taken."
-        },
-        {
-          "stepIndex": 4,
-          "title": "Baggage Claim",
-          "description": "Collect luggage from the assigned carousel. Keep your baggage tag stubs for inspection at the exit."
-        },
-        {
-          "stepIndex": 5,
-          "title": "Customs Declaration",
-          "description": "Pass through the Red Channel if carrying goods over THB 20,000, more than 200 cigarettes, 1L of alcohol, or cash exceeding THB 450,000. Use the Green Channel if you have nothing to declare. Drugs carry the death penalty."
-        }
-      ],
-      "fallbackAlerts": [
-        {
-          "alertId": "th_airport_drugs",
-          "message": "Drug trafficking in Thailand carries the death penalty. Do not carry any substances for others.",
-          "riskLevel": "LEGAL"
-        },
-        {
-          "alertId": "th_airport_tm6",
-          "message": "Keep the departure portion of your TM.6 arrival card — you must surrender it when leaving Thailand.",
-          "riskLevel": "LEGAL"
-        }
-      ],
-      "phrases": [
-        {
-          "english": "Where is the taxi stand?",
-          "nativeScript": "จุดรับแท็กซี่อยู่ที่ไหน?",
-          "romanized": "Chut rap taxi yuu thi nai?"
-        },
-        {
-          "english": "I have nothing to declare.",
-          "nativeScript": "ฉันไม่มีสิ่งของต้องแจ้งศุลกากร",
-          "romanized": "Chan mai mee sing khong tong jaeng sulakakorn."
-        }
-      ]
-    },
-    {
-      "id": "temple",
-      "displayName": "Temple / Wat",
-      "icon": "🏯",
-      "description": "Dress codes, sacred spaces, and Buddhist etiquette",
-      "geofence": "temple_zone",
-      "locationKeywords": [
-        "temple",
-        "wat",
-        "buddha",
-        "shrine",
-        "stupa",
-        "sacred",
-        "pagoda",
-        "grand palace"
-      ],
-      "arrivalSteps": [
-        {
-          "stepIndex": 0,
-          "title": "Cover Shoulders and Knees",
-          "description": "Long sleeves and trousers or long skirts are required. Sarongs are often available to borrow at entrances."
-        },
-        {
-          "stepIndex": 1,
-          "title": "Remove Shoes",
-          "description": "Remove footwear before entering any temple building. Look for the shoe rack."
-        },
-        {
-          "stepIndex": 2,
-          "title": "Do Not Point Feet at Buddha",
-          "description": "Feet are considered spiritually low. Never point them at a Buddha image or a monk."
-        },
-        {
-          "stepIndex": 3,
-          "title": "Women Must Not Touch Monks",
-          "description": "Buddhist monks cannot accept direct contact from women. Pass items through a cloth or tray."
-        }
-      ],
-      "fallbackAlerts": [
-        {
-          "alertId": "th_temple_dress",
-          "message": "Temples require covered shoulders and knees. Visitors in shorts may be refused entry.",
-          "riskLevel": "SENSITIVE"
-        },
-        {
-          "alertId": "th_temple_feet",
-          "message": "Never point your feet toward a Buddha image or a monk — it is deeply offensive.",
-          "riskLevel": "SENSITIVE"
-        },
-        {
-          "alertId": "th_temple_monarch",
-          "message": "Criticising the Thai royal family (lèse-majesté) is a criminal offence with up to 15 years imprisonment.",
-          "riskLevel": "LEGAL"
-        }
-      ],
-      "phrases": [
-        {
-          "english": "Where should I remove my shoes?",
-          "nativeScript": "ฉันควรถอดรองเท้าที่ไหน?",
-          "romanized": "Chan khuan thod rong thao thi nai?"
-        },
-        {
-          "english": "Is photography allowed here?",
-          "nativeScript": "ถ่ายรูปได้ที่นี่ไหม?",
-          "romanized": "Thai ruup dai thi nii mai?"
-        }
-      ]
-    },
-    {
-      "id": "taxi",
-      "displayName": "Taxi / Tuk-tuk",
-      "icon": "🛺",
-      "description": "Meter etiquette, fare negotiation, and transport safety",
-      "geofence": "taxi_stand",
-      "locationKeywords": [
-        "taxi",
-        "tuk-tuk",
-        "grab",
-        "transport",
-        "ride",
-        "cab"
-      ],
-      "arrivalSteps": [
-        {
-          "stepIndex": 0,
-          "title": "Insist on the Meter",
-          "description": "Licensed taxis must use the meter. If a driver refuses, find another taxi."
-        },
-        {
-          "stepIndex": 1,
-          "title": "Agree Tuk-tuk Fare First",
-          "description": "Tuk-tuks do not use meters. Always negotiate and agree the fare before getting in."
-        }
-      ],
-      "fallbackAlerts": [
-        {
-          "alertId": "th_taxi_meter",
-          "message": "Always insist the meter is running. Unmetered fares are almost always inflated for tourists.",
-          "riskLevel": "NORM"
-        },
-        {
-          "alertId": "th_taxi_gem_scam",
-          "message": "Drivers offering to take you to a 'special gem store' or 'lucky Buddha' are running a scam. Decline politely.",
-          "riskLevel": "SENSITIVE"
-        }
-      ],
-      "phrases": [
-        {
-          "english": "Please use the meter.",
-          "nativeScript": "กรุณาใช้มิเตอร์",
-          "romanized": "Garuna chai meetoer."
-        },
-        {
-          "english": "How much to the Grand Palace?",
-          "nativeScript": "ไปพระบรมมหาราชวังเท่าไหร่?",
-          "romanized": "Pai Phra Borom Maha Ratchawang thao rai?"
-        },
-        {
-          "english": "Stop here, please.",
-          "nativeScript": "หยุดที่นี่นะครับ/ค่ะ",
-          "romanized": "Yoot thi nii na khrap/kha."
-        }
-      ]
-    },
-    {
-      "id": "beach",
-      "displayName": "Beach / Island",
-      "icon": "🏖️",
-      "description": "Public beach rules, dress codes, and environmental laws",
-      "geofence": "beach_zone",
-      "locationKeywords": [
-        "beach",
-        "island",
-        "koh",
-        "ko",
-        "phuket",
-        "pattaya",
-        "samui",
-        "sea",
-        "coast"
-      ],
-      "arrivalSteps": [
-        {
-          "stepIndex": 0,
-          "title": "No Topless Sunbathing",
-          "description": "Topless sunbathing is illegal on public beaches in Thailand and may result in a fine."
-        },
-        {
-          "stepIndex": 1,
-          "title": "Do Not Touch Coral",
-          "description": "Touching or removing coral is illegal. Fines can be significant."
-        }
-      ],
-      "fallbackAlerts": [
-        {
-          "alertId": "th_beach_topless",
-          "message": "Topless sunbathing is illegal on Thai public beaches. Keep swimwear on at all times.",
-          "riskLevel": "LEGAL"
-        },
-        {
-          "alertId": "th_beach_trash",
-          "message": "Littering on beaches carries a fine of up to 2,000 THB.",
-          "riskLevel": "LEGAL"
-        }
-      ],
-      "phrases": [
-        {
-          "english": "Is this a public beach?",
-          "nativeScript": "นี่เป็นชายหาดสาธารณะไหม?",
-          "romanized": "Nii pen chaai haat satharana mai?"
-        }
-      ]
-    }
-  ]
+﻿{
+    "countryCode":  "TH",
+    "name":  "Thailand",
+    "flag":  "ðŸ‡¹ðŸ‡­",
+    "tagline":  "Warmth, temples, and gracious smiles",
+    "language":  {
+                     "name":  "Thai",
+                     "locale":  "th-TH",
+                     "nativeScriptName":  "à¸ à¸²à¸©à¸²à¹„à¸—à¸¢"
+                 },
+    "scenarios":  [
+                      {
+                          "id":  "airport",
+                          "displayName":  "Airport Arrival",
+                          "icon":  "âœˆï¸",
+                          "description":  "Immigration, customs, and arrival procedures",
+                          "geofence":  "airport_arrivals",
+                          "locationKeywords":  [
+                                                   "airport",
+                                                   "arrivals",
+                                                   "terminal",
+                                                   "suvarnabhumi",
+                                                   "don mueang"
+                                               ],
+                          "arrivalSteps":  [
+                                               {
+                                                   "stepIndex":  0,
+                                                   "title":  "Complete Arrival Card / Digital Arrival Card",
+                                                   "description":  "Thailand phased out the paper TM6 card at major airports in 2022. A Thailand Digital Arrival Card (TDAC) system is in use â€” check current requirements before travel. If issued a paper TM6 on the aircraft, fill in your passport details, Thai address, and flight number."
+                                               },
+                                               {
+                                                   "stepIndex":  1,
+                                                   "title":  "Health Declaration (if applicable)",
+                                                   "description":  "No health certificate or Thailand Pass is currently required for entry. Proceed directly to immigration unless a specific health advisory is active at the time of travel."
+                                               },
+                                               {
+                                                   "stepIndex":  2,
+                                                   "title":  "Visa / Entry Stamp at Immigration Counter",
+                                                   "description":  "Join the foreigners queue. Most nationalities receive a 30â€“60 day visa exemption (policy expanded in 2024). Present passport and proof of onward travel. Officers may ask for proof of sufficient funds (THB 10,000 per person / THB 20,000 per family)."
+                                               },
+                                               {
+                                                   "stepIndex":  3,
+                                                   "title":  "Biometric Collection",
+                                                   "description":  "Fingerprints of both index fingers are scanned at the immigration counter for all foreign nationals. A facial photograph may also be taken."
+                                               },
+                                               {
+                                                   "stepIndex":  4,
+                                                   "title":  "Baggage Claim",
+                                                   "description":  "Collect luggage from the assigned carousel. Keep your baggage tag stubs for inspection at the exit."
+                                               },
+                                               {
+                                                   "stepIndex":  5,
+                                                   "title":  "Customs Declaration",
+                                                   "description":  "Pass through the Red Channel if carrying goods over THB 20,000, more than 200 cigarettes, 1L of alcohol, or cash exceeding THB 450,000. Use the Green Channel if you have nothing to declare. Drugs carry the death penalty."
+                                               }
+                                           ],
+                          "fallbackAlerts":  [
+                                                 {
+                                                     "alertId":  "th_airport_drugs",
+                                                     "message":  "Drug trafficking in Thailand carries the death penalty. Do not carry any substances for others.",
+                                                     "riskLevel":  "LEGAL"
+                                                 },
+                                                 {
+                                                     "alertId":  "th_airport_tm6",
+                                                     "message":  "Keep the departure portion of your TM.6 arrival card â€” you must surrender it when leaving Thailand.",
+                                                     "riskLevel":  "LEGAL"
+                                                 }
+                                             ],
+                          "phrases":  [
+                                          {
+                                              "english":  "Hello",
+                                              "nativeScript":  "\\u0e2a\\u0e27\\u0e31\\u0e2a\\u0e14\\u0e35",
+                                              "romanized":  "Sawasdee"
+                                          },
+                                          {
+                                              "english":  "Goodbye",
+                                              "nativeScript":  "\\u0e25\\u0e32\\u0e01\\u0e48\\u0e2d\\u0e19",
+                                              "romanized":  "Laa gon"
+                                          },
+                                          {
+                                              "english":  "Please",
+                                              "nativeScript":  "\\u0e01\\u0e23\\u0e38\\u0e13\\u0e32",
+                                              "romanized":  "Karuna"
+                                          },
+                                          {
+                                              "english":  "Thank you",
+                                              "nativeScript":  "\\u0e02\\u0e2d\\u0e1a\\u0e04\\u0e38\\u0e13",
+                                              "romanized":  "Khop khun"
+                                          },
+                                          {
+                                              "english":  "Yes",
+                                              "nativeScript":  "\\u0e43\\u0e0a\\u0e48",
+                                              "romanized":  "Chai"
+                                          },
+                                          {
+                                              "english":  "No",
+                                              "nativeScript":  "\\u0e44\\u0e21\\u0e48",
+                                              "romanized":  "Mai"
+                                          },
+                                          {
+                                              "english":  "Excuse me",
+                                              "nativeScript":  "\\u0e02\\u0e2d\\u0e42\\u0e17\\u0e29",
+                                              "romanized":  "Khor thot"
+                                          },
+                                          {
+                                              "english":  "Sorry",
+                                              "nativeScript":  "\\u0e02\\u0e2d\\u0e42\\u0e17\\u0e29",
+                                              "romanized":  "Khor thot"
+                                          },
+                                          {
+                                              "english":  "Do you speak English?",
+                                              "nativeScript":  "\\u0e04\\u0e38\\u0e13\\u0e1e\\u0e39\\u0e14\\u0e20\\u0e32\\u0e29\\u0e32\\u0e2d\\u0e31\\u0e07\\u0e01\\u0e24\\u0e29\\u0e44\\u0e14\\u0e49\\u0e44\\u0e2b\\u0e21",
+                                              "romanized":  "Khun phut phasa angkrit dai mai?"
+                                          },
+                                          {
+                                              "english":  "Where is the bathroom?",
+                                              "nativeScript":  "\\u0e2b\\u0e49\\u0e2d\\u0e07\\u0e19\\u0e49\\u0e33\\u0e2d\\u0e22\\u0e39\\u0e48\\u0e17\\u0e35\\u0e48\\u0e44\\u0e2b\\u0e19",
+                                              "romanized":  "Hong nam yu thi nai?"
+                                          },
+                                          {
+                                              "english":  "How much does this cost?",
+                                              "nativeScript":  "\\u0e2d\\u0e31\\u0e19\\u0e19\\u0e35\\u0e49\\u0e23\\u0e32\\u0e04\\u0e32\\u0e40\\u0e17\\u0e48\\u0e32\\u0e44\\u0e2b\\u0e23\\u0e48",
+                                              "romanized":  "Anni rakha thao rai?"
+                                          },
+                                          {
+                                              "english":  "I would like...",
+                                              "nativeScript":  "\\u0e09\\u0e31\\u0e19\\u0e15\\u0e49\\u0e2d\\u0e07\\u0e01\\u0e32\\u0e23...",
+                                              "romanized":  "Chan tongkan..."
+                                          },
+                                          {
+                                              "english":  "Help!",
+                                              "nativeScript":  "\\u0e0a\\u0e48\\u0e27\\u0e22\\u0e14\\u0e49\\u0e27\\u0e22!",
+                                              "romanized":  "Chuai duai!"
+                                          },
+                                          {
+                                              "english":  "I don\u0027t understand",
+                                              "nativeScript":  "\\u0e09\\u0e31\\u0e19\\u0e44\\u0e21\\u0e48\\u0e40\\u0e02\\u0e49\\u0e32\\u0e43\\u0e08",
+                                              "romanized":  "Chan mai khao jai"
+                                          },
+                                          {
+                                              "english":  "I don\u0027t speak Thai",
+                                              "nativeScript":  "\\u0e09\\u0e31\\u0e19\\u0e1e\\u0e39\\u0e14\\u0e20\\u0e32\\u0e29\\u0e32\\u0e44\\u0e17\\u0e22\\u0e44\\u0e21\\u0e48\\u0e44\\u0e14\\u0e49",
+                                              "romanized":  "Chan phut phasa thai mai dai"
+                                          }
+                                      ]
+                      },
+                      {
+                          "id":  "temple",
+                          "displayName":  "Temple / Wat",
+                          "icon":  "ðŸ¯",
+                          "description":  "Dress codes, sacred spaces, and Buddhist etiquette",
+                          "geofence":  "temple_zone",
+                          "locationKeywords":  [
+                                                   "temple",
+                                                   "wat",
+                                                   "buddha",
+                                                   "shrine",
+                                                   "stupa",
+                                                   "sacred",
+                                                   "pagoda",
+                                                   "grand palace"
+                                               ],
+                          "arrivalSteps":  [
+                                               {
+                                                   "stepIndex":  0,
+                                                   "title":  "Cover Shoulders and Knees",
+                                                   "description":  "Long sleeves and trousers or long skirts are required. Sarongs are often available to borrow at entrances."
+                                               },
+                                               {
+                                                   "stepIndex":  1,
+                                                   "title":  "Remove Shoes",
+                                                   "description":  "Remove footwear before entering any temple building. Look for the shoe rack."
+                                               },
+                                               {
+                                                   "stepIndex":  2,
+                                                   "title":  "Do Not Point Feet at Buddha",
+                                                   "description":  "Feet are considered spiritually low. Never point them at a Buddha image or a monk."
+                                               },
+                                               {
+                                                   "stepIndex":  3,
+                                                   "title":  "Women Must Not Touch Monks",
+                                                   "description":  "Buddhist monks cannot accept direct contact from women. Pass items through a cloth or tray."
+                                               }
+                                           ],
+                          "fallbackAlerts":  [
+                                                 {
+                                                     "alertId":  "th_temple_dress",
+                                                     "message":  "Temples require covered shoulders and knees. Visitors in shorts may be refused entry.",
+                                                     "riskLevel":  "SENSITIVE"
+                                                 },
+                                                 {
+                                                     "alertId":  "th_temple_feet",
+                                                     "message":  "Never point your feet toward a Buddha image or a monk â€” it is deeply offensive.",
+                                                     "riskLevel":  "SENSITIVE"
+                                                 },
+                                                 {
+                                                     "alertId":  "th_temple_monarch",
+                                                     "message":  "Criticising the Thai royal family (lÃ¨se-majestÃ©) is a criminal offence with up to 15 years imprisonment.",
+                                                     "riskLevel":  "LEGAL"
+                                                 }
+                                             ],
+                          "phrases":  [
+                                          {
+                                              "english":  "Hello",
+                                              "nativeScript":  "\\u0e2a\\u0e27\\u0e31\\u0e2a\\u0e14\\u0e35",
+                                              "romanized":  "Sawasdee"
+                                          },
+                                          {
+                                              "english":  "Goodbye",
+                                              "nativeScript":  "\\u0e25\\u0e32\\u0e01\\u0e48\\u0e2d\\u0e19",
+                                              "romanized":  "Laa gon"
+                                          },
+                                          {
+                                              "english":  "Please",
+                                              "nativeScript":  "\\u0e01\\u0e23\\u0e38\\u0e13\\u0e32",
+                                              "romanized":  "Karuna"
+                                          },
+                                          {
+                                              "english":  "Thank you",
+                                              "nativeScript":  "\\u0e02\\u0e2d\\u0e1a\\u0e04\\u0e38\\u0e13",
+                                              "romanized":  "Khop khun"
+                                          },
+                                          {
+                                              "english":  "Yes",
+                                              "nativeScript":  "\\u0e43\\u0e0a\\u0e48",
+                                              "romanized":  "Chai"
+                                          },
+                                          {
+                                              "english":  "No",
+                                              "nativeScript":  "\\u0e44\\u0e21\\u0e48",
+                                              "romanized":  "Mai"
+                                          },
+                                          {
+                                              "english":  "Excuse me",
+                                              "nativeScript":  "\\u0e02\\u0e2d\\u0e42\\u0e17\\u0e29",
+                                              "romanized":  "Khor thot"
+                                          },
+                                          {
+                                              "english":  "Sorry",
+                                              "nativeScript":  "\\u0e02\\u0e2d\\u0e42\\u0e17\\u0e29",
+                                              "romanized":  "Khor thot"
+                                          },
+                                          {
+                                              "english":  "Do you speak English?",
+                                              "nativeScript":  "\\u0e04\\u0e38\\u0e13\\u0e1e\\u0e39\\u0e14\\u0e20\\u0e32\\u0e29\\u0e32\\u0e2d\\u0e31\\u0e07\\u0e01\\u0e24\\u0e29\\u0e44\\u0e14\\u0e49\\u0e44\\u0e2b\\u0e21",
+                                              "romanized":  "Khun phut phasa angkrit dai mai?"
+                                          },
+                                          {
+                                              "english":  "Where is the bathroom?",
+                                              "nativeScript":  "\\u0e2b\\u0e49\\u0e2d\\u0e07\\u0e19\\u0e49\\u0e33\\u0e2d\\u0e22\\u0e39\\u0e48\\u0e17\\u0e35\\u0e48\\u0e44\\u0e2b\\u0e19",
+                                              "romanized":  "Hong nam yu thi nai?"
+                                          },
+                                          {
+                                              "english":  "How much does this cost?",
+                                              "nativeScript":  "\\u0e2d\\u0e31\\u0e19\\u0e19\\u0e35\\u0e49\\u0e23\\u0e32\\u0e04\\u0e32\\u0e40\\u0e17\\u0e48\\u0e32\\u0e44\\u0e2b\\u0e23\\u0e48",
+                                              "romanized":  "Anni rakha thao rai?"
+                                          },
+                                          {
+                                              "english":  "I would like...",
+                                              "nativeScript":  "\\u0e09\\u0e31\\u0e19\\u0e15\\u0e49\\u0e2d\\u0e07\\u0e01\\u0e32\\u0e23...",
+                                              "romanized":  "Chan tongkan..."
+                                          },
+                                          {
+                                              "english":  "Help!",
+                                              "nativeScript":  "\\u0e0a\\u0e48\\u0e27\\u0e22\\u0e14\\u0e49\\u0e27\\u0e22!",
+                                              "romanized":  "Chuai duai!"
+                                          },
+                                          {
+                                              "english":  "I don\u0027t understand",
+                                              "nativeScript":  "\\u0e09\\u0e31\\u0e19\\u0e44\\u0e21\\u0e48\\u0e40\\u0e02\\u0e49\\u0e32\\u0e43\\u0e08",
+                                              "romanized":  "Chan mai khao jai"
+                                          },
+                                          {
+                                              "english":  "I don\u0027t speak Thai",
+                                              "nativeScript":  "\\u0e09\\u0e31\\u0e19\\u0e1e\\u0e39\\u0e14\\u0e20\\u0e32\\u0e29\\u0e32\\u0e44\\u0e17\\u0e22\\u0e44\\u0e21\\u0e48\\u0e44\\u0e14\\u0e49",
+                                              "romanized":  "Chan phut phasa thai mai dai"
+                                          }
+                                      ]
+                      },
+                      {
+                          "id":  "taxi",
+                          "displayName":  "Taxi / Tuk-tuk",
+                          "icon":  "ðŸ›º",
+                          "description":  "Meter etiquette, fare negotiation, and transport safety",
+                          "geofence":  "taxi_stand",
+                          "locationKeywords":  [
+                                                   "taxi",
+                                                   "tuk-tuk",
+                                                   "grab",
+                                                   "transport",
+                                                   "ride",
+                                                   "cab"
+                                               ],
+                          "arrivalSteps":  [
+                                               {
+                                                   "stepIndex":  0,
+                                                   "title":  "Insist on the Meter",
+                                                   "description":  "Licensed taxis must use the meter. If a driver refuses, find another taxi."
+                                               },
+                                               {
+                                                   "stepIndex":  1,
+                                                   "title":  "Agree Tuk-tuk Fare First",
+                                                   "description":  "Tuk-tuks do not use meters. Always negotiate and agree the fare before getting in."
+                                               }
+                                           ],
+                          "fallbackAlerts":  [
+                                                 {
+                                                     "alertId":  "th_taxi_meter",
+                                                     "message":  "Always insist the meter is running. Unmetered fares are almost always inflated for tourists.",
+                                                     "riskLevel":  "NORM"
+                                                 },
+                                                 {
+                                                     "alertId":  "th_taxi_gem_scam",
+                                                     "message":  "Drivers offering to take you to a \u0027special gem store\u0027 or \u0027lucky Buddha\u0027 are running a scam. Decline politely.",
+                                                     "riskLevel":  "SENSITIVE"
+                                                 }
+                                             ],
+                          "phrases":  [
+                                          {
+                                              "english":  "Hello",
+                                              "nativeScript":  "\\u0e2a\\u0e27\\u0e31\\u0e2a\\u0e14\\u0e35",
+                                              "romanized":  "Sawasdee"
+                                          },
+                                          {
+                                              "english":  "Goodbye",
+                                              "nativeScript":  "\\u0e25\\u0e32\\u0e01\\u0e48\\u0e2d\\u0e19",
+                                              "romanized":  "Laa gon"
+                                          },
+                                          {
+                                              "english":  "Please",
+                                              "nativeScript":  "\\u0e01\\u0e23\\u0e38\\u0e13\\u0e32",
+                                              "romanized":  "Karuna"
+                                          },
+                                          {
+                                              "english":  "Thank you",
+                                              "nativeScript":  "\\u0e02\\u0e2d\\u0e1a\\u0e04\\u0e38\\u0e13",
+                                              "romanized":  "Khop khun"
+                                          },
+                                          {
+                                              "english":  "Yes",
+                                              "nativeScript":  "\\u0e43\\u0e0a\\u0e48",
+                                              "romanized":  "Chai"
+                                          },
+                                          {
+                                              "english":  "No",
+                                              "nativeScript":  "\\u0e44\\u0e21\\u0e48",
+                                              "romanized":  "Mai"
+                                          },
+                                          {
+                                              "english":  "Excuse me",
+                                              "nativeScript":  "\\u0e02\\u0e2d\\u0e42\\u0e17\\u0e29",
+                                              "romanized":  "Khor thot"
+                                          },
+                                          {
+                                              "english":  "Sorry",
+                                              "nativeScript":  "\\u0e02\\u0e2d\\u0e42\\u0e17\\u0e29",
+                                              "romanized":  "Khor thot"
+                                          },
+                                          {
+                                              "english":  "Do you speak English?",
+                                              "nativeScript":  "\\u0e04\\u0e38\\u0e13\\u0e1e\\u0e39\\u0e14\\u0e20\\u0e32\\u0e29\\u0e32\\u0e2d\\u0e31\\u0e07\\u0e01\\u0e24\\u0e29\\u0e44\\u0e14\\u0e49\\u0e44\\u0e2b\\u0e21",
+                                              "romanized":  "Khun phut phasa angkrit dai mai?"
+                                          },
+                                          {
+                                              "english":  "Where is the bathroom?",
+                                              "nativeScript":  "\\u0e2b\\u0e49\\u0e2d\\u0e07\\u0e19\\u0e49\\u0e33\\u0e2d\\u0e22\\u0e39\\u0e48\\u0e17\\u0e35\\u0e48\\u0e44\\u0e2b\\u0e19",
+                                              "romanized":  "Hong nam yu thi nai?"
+                                          },
+                                          {
+                                              "english":  "How much does this cost?",
+                                              "nativeScript":  "\\u0e2d\\u0e31\\u0e19\\u0e19\\u0e35\\u0e49\\u0e23\\u0e32\\u0e04\\u0e32\\u0e40\\u0e17\\u0e48\\u0e32\\u0e44\\u0e2b\\u0e23\\u0e48",
+                                              "romanized":  "Anni rakha thao rai?"
+                                          },
+                                          {
+                                              "english":  "I would like...",
+                                              "nativeScript":  "\\u0e09\\u0e31\\u0e19\\u0e15\\u0e49\\u0e2d\\u0e07\\u0e01\\u0e32\\u0e23...",
+                                              "romanized":  "Chan tongkan..."
+                                          },
+                                          {
+                                              "english":  "Help!",
+                                              "nativeScript":  "\\u0e0a\\u0e48\\u0e27\\u0e22\\u0e14\\u0e49\\u0e27\\u0e22!",
+                                              "romanized":  "Chuai duai!"
+                                          },
+                                          {
+                                              "english":  "I don\u0027t understand",
+                                              "nativeScript":  "\\u0e09\\u0e31\\u0e19\\u0e44\\u0e21\\u0e48\\u0e40\\u0e02\\u0e49\\u0e32\\u0e43\\u0e08",
+                                              "romanized":  "Chan mai khao jai"
+                                          },
+                                          {
+                                              "english":  "I don\u0027t speak Thai",
+                                              "nativeScript":  "\\u0e09\\u0e31\\u0e19\\u0e1e\\u0e39\\u0e14\\u0e20\\u0e32\\u0e29\\u0e32\\u0e44\\u0e17\\u0e22\\u0e44\\u0e21\\u0e48\\u0e44\\u0e14\\u0e49",
+                                              "romanized":  "Chan phut phasa thai mai dai"
+                                          }
+                                      ]
+                      },
+                      {
+                          "id":  "beach",
+                          "displayName":  "Beach / Island",
+                          "icon":  "ðŸ–ï¸",
+                          "description":  "Public beach rules, dress codes, and environmental laws",
+                          "geofence":  "beach_zone",
+                          "locationKeywords":  [
+                                                   "beach",
+                                                   "island",
+                                                   "koh",
+                                                   "ko",
+                                                   "phuket",
+                                                   "pattaya",
+                                                   "samui",
+                                                   "sea",
+                                                   "coast"
+                                               ],
+                          "arrivalSteps":  [
+                                               {
+                                                   "stepIndex":  0,
+                                                   "title":  "No Topless Sunbathing",
+                                                   "description":  "Topless sunbathing is illegal on public beaches in Thailand and may result in a fine."
+                                               },
+                                               {
+                                                   "stepIndex":  1,
+                                                   "title":  "Do Not Touch Coral",
+                                                   "description":  "Touching or removing coral is illegal. Fines can be significant."
+                                               }
+                                           ],
+                          "fallbackAlerts":  [
+                                                 {
+                                                     "alertId":  "th_beach_topless",
+                                                     "message":  "Topless sunbathing is illegal on Thai public beaches. Keep swimwear on at all times.",
+                                                     "riskLevel":  "LEGAL"
+                                                 },
+                                                 {
+                                                     "alertId":  "th_beach_trash",
+                                                     "message":  "Littering on beaches carries a fine of up to 2,000 THB.",
+                                                     "riskLevel":  "LEGAL"
+                                                 }
+                                             ],
+                          "phrases":  [
+                                          {
+                                              "english":  "Hello",
+                                              "nativeScript":  "\\u0e2a\\u0e27\\u0e31\\u0e2a\\u0e14\\u0e35",
+                                              "romanized":  "Sawasdee"
+                                          },
+                                          {
+                                              "english":  "Goodbye",
+                                              "nativeScript":  "\\u0e25\\u0e32\\u0e01\\u0e48\\u0e2d\\u0e19",
+                                              "romanized":  "Laa gon"
+                                          },
+                                          {
+                                              "english":  "Please",
+                                              "nativeScript":  "\\u0e01\\u0e23\\u0e38\\u0e13\\u0e32",
+                                              "romanized":  "Karuna"
+                                          },
+                                          {
+                                              "english":  "Thank you",
+                                              "nativeScript":  "\\u0e02\\u0e2d\\u0e1a\\u0e04\\u0e38\\u0e13",
+                                              "romanized":  "Khop khun"
+                                          },
+                                          {
+                                              "english":  "Yes",
+                                              "nativeScript":  "\\u0e43\\u0e0a\\u0e48",
+                                              "romanized":  "Chai"
+                                          },
+                                          {
+                                              "english":  "No",
+                                              "nativeScript":  "\\u0e44\\u0e21\\u0e48",
+                                              "romanized":  "Mai"
+                                          },
+                                          {
+                                              "english":  "Excuse me",
+                                              "nativeScript":  "\\u0e02\\u0e2d\\u0e42\\u0e17\\u0e29",
+                                              "romanized":  "Khor thot"
+                                          },
+                                          {
+                                              "english":  "Sorry",
+                                              "nativeScript":  "\\u0e02\\u0e2d\\u0e42\\u0e17\\u0e29",
+                                              "romanized":  "Khor thot"
+                                          },
+                                          {
+                                              "english":  "Do you speak English?",
+                                              "nativeScript":  "\\u0e04\\u0e38\\u0e13\\u0e1e\\u0e39\\u0e14\\u0e20\\u0e32\\u0e29\\u0e32\\u0e2d\\u0e31\\u0e07\\u0e01\\u0e24\\u0e29\\u0e44\\u0e14\\u0e49\\u0e44\\u0e2b\\u0e21",
+                                              "romanized":  "Khun phut phasa angkrit dai mai?"
+                                          },
+                                          {
+                                              "english":  "Where is the bathroom?",
+                                              "nativeScript":  "\\u0e2b\\u0e49\\u0e2d\\u0e07\\u0e19\\u0e49\\u0e33\\u0e2d\\u0e22\\u0e39\\u0e48\\u0e17\\u0e35\\u0e48\\u0e44\\u0e2b\\u0e19",
+                                              "romanized":  "Hong nam yu thi nai?"
+                                          },
+                                          {
+                                              "english":  "How much does this cost?",
+                                              "nativeScript":  "\\u0e2d\\u0e31\\u0e19\\u0e19\\u0e35\\u0e49\\u0e23\\u0e32\\u0e04\\u0e32\\u0e40\\u0e17\\u0e48\\u0e32\\u0e44\\u0e2b\\u0e23\\u0e48",
+                                              "romanized":  "Anni rakha thao rai?"
+                                          },
+                                          {
+                                              "english":  "I would like...",
+                                              "nativeScript":  "\\u0e09\\u0e31\\u0e19\\u0e15\\u0e49\\u0e2d\\u0e07\\u0e01\\u0e32\\u0e23...",
+                                              "romanized":  "Chan tongkan..."
+                                          },
+                                          {
+                                              "english":  "Help!",
+                                              "nativeScript":  "\\u0e0a\\u0e48\\u0e27\\u0e22\\u0e14\\u0e49\\u0e27\\u0e22!",
+                                              "romanized":  "Chuai duai!"
+                                          },
+                                          {
+                                              "english":  "I don\u0027t understand",
+                                              "nativeScript":  "\\u0e09\\u0e31\\u0e19\\u0e44\\u0e21\\u0e48\\u0e40\\u0e02\\u0e49\\u0e32\\u0e43\\u0e08",
+                                              "romanized":  "Chan mai khao jai"
+                                          },
+                                          {
+                                              "english":  "I don\u0027t speak Thai",
+                                              "nativeScript":  "\\u0e09\\u0e31\\u0e19\\u0e1e\\u0e39\\u0e14\\u0e20\\u0e32\\u0e29\\u0e32\\u0e44\\u0e17\\u0e22\\u0e44\\u0e21\\u0e48\\u0e44\\u0e14\\u0e49",
+                                              "romanized":  "Chan phut phasa thai mai dai"
+                                          }
+                                      ]
+                      }
+                  ]
 }

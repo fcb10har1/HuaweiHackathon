@@ -40,6 +40,53 @@ struct ConvoAssist {
   private translationService: TranslationService = new TranslationService();
   private ctx: common.UIAbilityContext | null = null;
 
+  private getFixedPhrases(): Phrase[] {
+    const jpPhrases: Phrase[] = [
+      { english: 'Hello', nativeScript: 'こんにちは', romanized: 'Konnichiwa' } as Phrase,
+      { english: 'Goodbye', nativeScript: 'さようなら', romanized: 'Sayonara' } as Phrase,
+      { english: 'Please', nativeScript: 'お願いします', romanized: 'Onegaishimasu' } as Phrase,
+      { english: 'Thank you', nativeScript: 'ありがとうございます', romanized: 'Arigatou gozaimasu' } as Phrase,
+      { english: 'Yes', nativeScript: 'はい', romanized: 'Hai' } as Phrase,
+      { english: 'No', nativeScript: 'いいえ', romanized: 'Iie' } as Phrase,
+      { english: 'Excuse me', nativeScript: 'すみません', romanized: 'Sumimasen' } as Phrase,
+      { english: 'Sorry', nativeScript: '申し訳ありません', romanized: 'Moushiwake arimasen' } as Phrase,
+      { english: 'Do you speak English?', nativeScript: '英語を話せますか？', romanized: 'Eigo o hanasemasu ka?' } as Phrase,
+      { english: 'Where is the bathroom?', nativeScript: 'お手洗いはどこですか？', romanized: 'Otearai wa doko desu ka?' } as Phrase,
+    ];
+    const thPhrases: Phrase[] = [
+      { english: 'Hello', nativeScript: 'สวัสดี', romanized: 'Sawasdee' } as Phrase,
+      { english: 'Goodbye', nativeScript: 'ลาก่อน', romanized: 'Laa gon' } as Phrase,
+      { english: 'Please', nativeScript: 'กรุณา', romanized: 'Karuna' } as Phrase,
+      { english: 'Thank you', nativeScript: 'ขอบคุณ', romanized: 'Khop khun' } as Phrase,
+      { english: 'Yes', nativeScript: 'ใช่', romanized: 'Chai' } as Phrase,
+      { english: 'No', nativeScript: 'ไม่', romanized: 'Mai' } as Phrase,
+      { english: 'Excuse me', nativeScript: 'ขอโทษ', romanized: 'Khor thot' } as Phrase,
+      { english: 'Sorry', nativeScript: 'ขอโทษ', romanized: 'Khor thot' } as Phrase,
+      { english: 'Do you speak English?', nativeScript: 'คุณพูดภาษาอังกฤษได้ไหม', romanized: 'Khun phut phasa angkrit dai mai?' } as Phrase,
+      { english: 'Where is the bathroom?', nativeScript: 'ห้องน้ำอยู่ที่ไหน', romanized: 'Hong nam yu thi nai?' } as Phrase,
+    ];
+    const idPhrases: Phrase[] = [
+      { english: 'Hello', nativeScript: 'Halo', romanized: 'Halo' } as Phrase,
+      { english: 'Goodbye', nativeScript: 'Selamat tinggal', romanized: 'Selamat tinggal' } as Phrase,
+      { english: 'Please', nativeScript: 'Tolong', romanized: 'Tolong' } as Phrase,
+      { english: 'Thank you', nativeScript: 'Terima kasih', romanized: 'Terima kasih' } as Phrase,
+      { english: 'Yes', nativeScript: 'Ya', romanized: 'Ya' } as Phrase,
+      { english: 'No', nativeScript: 'Tidak', romanized: 'Tidak' } as Phrase,
+      { english: 'Excuse me', nativeScript: 'Permisi', romanized: 'Permisi' } as Phrase,
+      { english: 'Sorry', nativeScript: 'Maaf', romanized: 'Maaf' } as Phrase,
+      { english: 'Do you speak English?', nativeScript: 'Apakah Anda bisa berbahasa Inggris?', romanized: 'Apakah Anda bisa berbahasa Inggris?' } as Phrase,
+      { english: 'Where is the bathroom?', nativeScript: 'Di mana kamar mandi?', romanized: 'Di mana kamar mandi?' } as Phrase,
+    ];
+    
+    const phraseSets: Record<string, Phrase[]> = {};
+    phraseSets['jp'] = jpPhrases;
+    phraseSets['th'] = thPhrases;
+    phraseSets['id'] = idPhrases;
+
+    const countryCode = this.trip.countryCode.toLowerCase();
+    return phraseSets[countryCode] ?? jpPhrases;
+  }
+
   aboutToAppear(): void {
     this.ctx = getContext(this) as common.UIAbilityContext;
     this.dataService = new CountryDataService(this.ctx);
@@ -47,13 +94,9 @@ struct ConvoAssist {
   }
 
   private loadPhrases(): void {
-    const scenarioId = this.venueType || '';
-    this.dataService?.getPhrases(this.trip.countryCode, scenarioId).then(phrases => {
-      this.phrases = phrases;
-      this.loadingPhrases = false;
-      this.llmService.generateExtraPhrases(this.trip.countryName, this.venueType || 'general')
-        .then(extras => { this.extraPhrases = extras; });
-    });
+    this.phrases = this.getFixedPhrases();
+    this.extraPhrases = [];
+    this.loadingPhrases = false;
   }
 
   private flipCard(idx: number): void {
