@@ -3,18 +3,18 @@
  *
  * Modes:
  *   phrases   — scrollable list of useful phrases (JSON + LLM extras)
- *   listening — mic active, 5-second recording countdown
- *   processing — transcribing and generating replies via LLM
+ *   picking   — sample audio file selector
+ *   processing — uploading and translating
  */
 import router from '@ohos.router';
 import common from '@ohos.app.ability.common';
 import { vibrator } from '@kit.SensorServiceKit';
-import { Trip, Phrase, SpeechReply, TranslationResponse } from '../common/Types';
+import { Trip, Phrase, TranslationResponse, AudioFile } from '../common/Types';
 import { CountryDataService } from '../services/CountryDataService';
-import { LlmService, TranscribeResult } from '../services/LlmService';
-import { MIC_DURATION_MS } from '../common/Config';
+import { LlmService } from '../services/LlmService';
+import { TranslationService } from '../services/TranslationService';
 
-type ConvoMode = 'phrases' | 'listening' | 'processing';
+type ConvoMode = 'phrases' | 'picking' | 'processing';
 
 @Entry
 @Component
@@ -27,23 +27,21 @@ struct ConvoAssist {
   @State phrases: Phrase[]      = [];
   @State extraPhrases: string[] = [];
   @State loadingPhrases: boolean = true;
-  @State secondsLeft: number    = 0;
+  @State audioFiles: AudioFile[] = [
+    { name: '🇯🇵 Japanese Sample', file: 'japanese_sample.wav' },
+    { name: '🇹🇭 Thai Sample',     file: 'thai_sample.wav'     },
+    { name: '🇮🇩 Indonesian Sample', file: 'indonesian_sample.wav' },
+  ];
 
   private dataService: CountryDataService | null = null;
   private llmService: LlmService = new LlmService();
+  private translationService: TranslationService = new TranslationService();
   private ctx: common.UIAbilityContext | null = null;
-  private countdownTimer: number = -1;
-  private cancelled: boolean = false;
 
   aboutToAppear(): void {
     this.ctx = getContext(this) as common.UIAbilityContext;
     this.dataService = new CountryDataService(this.ctx);
     this.loadPhrases();
-  }
-
-  aboutToDisappear(): void {
-    this.stopCountdown();
-    this.cancelled = true;
   }
 
   private loadPhrases(): void {
@@ -55,92 +53,44 @@ struct ConvoAssist {
     });
   }
 
-  private startCountdown(): void {
-    this.secondsLeft = Math.ceil(MIC_DURATION_MS / 1000);
-    this.countdownTimer = setInterval(() => {
-      if (this.secondsLeft > 1) {
-        this.secondsLeft--;
-      } else {
-        this.stopCountdown();
-      }
-    }, 1000);
+  private openPicker(): void {
+    try {
+      vibrator.startVibration({ type: 'time', duration: 60 }, { id: 0, usage: 'notification' });
+    } catch (_) {}
+    this.mode = 'picking';
   }
 
-  private stopCountdown(): void {
-    if (this.countdownTimer >= 0) {
-      clearInterval(this.countdownTimer);
-      this.countdownTimer = -1;
+  private async selectAudio(index: number): Promise<void> {
+    this.mode = 'processing';
+    try {
+      await this.uploadAndTranslate(this.audioFiles[index].file);
+    } catch (_) {
+      this.mode = 'picking';
+    }
+  }
+
+  private async uploadAndTranslate(filePath: string): Promise<void> {
+    try {
+      const result = await this.translationService.translateAudio(filePath);
+      router.pushUrl({
+        url: 'pages/SpeechResult',
+        params: {
+          translationResponseJson: JSON.stringify(result),
+          languageName: this.trip.languageName,
+        },
+      });
+      this.mode = 'phrases';
+    } catch (_) {
+      this.mode = 'phrases';
     }
   }
 
   private goBack(): void {
-    this.cancelled = true;
-    this.stopCountdown();
     if (this.mode !== 'phrases') {
       this.mode = 'phrases';
     } else {
       router.back();
     }
-  }
-
-  private async startListening(): Promise<void> {
-    if (!this.ctx) return;
-    this.cancelled = false;
-
-    try {
-      vibrator.startVibration({ type: 'time', duration: 80 }, { id: 0, usage: 'notification' });
-    } catch (_) {}
-
-    this.mode = 'listening';
-    this.startCountdown();
-
-    // Switch to processing display after the recording phase ends
-    setTimeout(() => {
-      this.stopCountdown();
-      if (this.mode === 'listening') {
-        this.mode = 'processing';
-      }
-    }, MIC_DURATION_MS + 300);
-
-    try {
-      const result: TranscribeResult = await this.llmService.transcribeAndReply(
-        this.ctx,
-        this.trip.countryName,
-        this.venueType || 'general',
-        this.trip.languageName,
-        this.trip.languageLocale,
-      );
-
-      if (this.cancelled) return;
-
-      // Map TranscribeResult → TranslationResponse for SpeechResult page
-      const localReplies: string[] = result.replies.map((r: SpeechReply) => r.local || r.english);
-      const englishReplies: string[] = result.replies.map((r: SpeechReply) => r.english);
-
-      const translationResp: TranslationResponse = {
-        sourceLanguage: this.trip.languageLocale,
-        transcript: '',
-        translationEnglish: result.transcribedEnglish,
-        replySuggestionsJapanese: localReplies,
-        ttsAudioUrl: '',
-        suggestionTranslations: englishReplies,
-      };
-
-      this.navigateToResult(translationResp);
-    } catch (_) {
-      if (!this.cancelled) this.mode = 'phrases';
-    }
-  }
-
-  private navigateToResult(result: TranslationResponse): void {
-    router.pushUrl({
-      url: 'pages/SpeechResult',
-      params: {
-        translationResponseJson: JSON.stringify(result),
-        languageName: this.trip.languageName,
-      },
-    });
-    this.mode = 'phrases';
   }
 
   build() {
@@ -153,7 +103,7 @@ struct ConvoAssist {
           .onClick(() => this.goBack())
           .padding({ left: 10, right: 8 })
         Text(
-          this.mode === 'listening'  ? 'Listening...' :
+          this.mode === 'picking'    ? 'Select Audio' :
           this.mode === 'processing' ? 'Processing...' :
                                        'Convo Assist'
         )
@@ -194,53 +144,54 @@ struct ConvoAssist {
             }
 
             Scroll() {
-              Column({ space: 5 }) {
+              Column({ space: 6 }) {
                 ForEach(this.phrases, (p: Phrase) => {
-                  Column({ space: 2 }) {
+                  Column({ space: 3 }) {
                     Text(p.english)
-                      .fontSize(10)
+                      .fontSize(11)
                       .fontColor('#E6EDF3')
                       .fontWeight(FontWeight.Medium)
                       .textAlign(TextAlign.Center)
                     Text(p.nativeScript)
-                      .fontSize(9)
+                      .fontSize(10)
                       .fontColor('#00E5C8')
                       .textAlign(TextAlign.Center)
-                      .lineHeight(13)
+                      .lineHeight(14)
                   }
                   .width('100%')
-                  .padding({ left: 6, right: 6, top: 6, bottom: 6 })
+                  .padding({ left: 8, right: 8, top: 8, bottom: 8 })
                   .backgroundColor('#161B22')
-                  .borderRadius(6)
+                  .borderRadius(8)
                 })
                 ForEach(this.extraPhrases, (ep: string) => {
                   Text(ep)
-                    .fontSize(9)
+                    .fontSize(10)
                     .fontColor('#C9D1D9')
                     .textAlign(TextAlign.Center)
                     .width('100%')
-                    .padding({ left: 6, right: 6, top: 5, bottom: 5 })
+                    .padding({ left: 8, right: 8, top: 6, bottom: 6 })
                     .backgroundColor('#0D1B2A')
-                    .borderRadius(6)
+                    .borderRadius(8)
                 })
-                // Spacer so content doesn't hide behind mic button
-                Text('').height(56)
+                Text('').height(60)
               }
               .width('100%')
               .alignItems(HorizontalAlign.Center)
             }
             .layoutWeight(1)
+            .scrollBar(BarState.Off)
+            .edgeEffect(EdgeEffect.Spring)
           }
           .width('100%')
           .layoutWeight(1)
           .alignItems(HorizontalAlign.Center)
-          .padding({ left: 14, right: 14 })
+          .padding({ left: 16, right: 16 })
 
-          // Mic button — circular, centered at bottom
+          // Record button — circular teal at bottom
           Button('🎤')
-            .onClick(() => this.startListening())
-            .backgroundColor('#238636')
-            .fontColor('#FFFFFF')
+            .onClick(() => this.openPicker())
+            .backgroundColor('#00C4AE')
+            .fontColor('#0D1117')
             .fontSize(22)
             .width(54)
             .height(54)
@@ -249,23 +200,30 @@ struct ConvoAssist {
         }
       }
 
-      // ── Listening mode ────────────────────────────────────────────────────────
-      if (this.mode === 'listening') {
+      // ── Picking mode ──────────────────────────────────────────────────────────
+      if (this.mode === 'picking') {
         Column({ space: 10 }) {
-          Text('🎤')
-            .fontSize(42)
-          Text('Listening')
-            .fontSize(15)
-            .fontWeight(FontWeight.Bold)
-            .fontColor('#00E5C8')
-          Text(`${this.secondsLeft}`)
-            .fontSize(28)
-            .fontWeight(FontWeight.Bold)
-            .fontColor('#E6EDF3')
-          Text(`Speak in ${this.trip.languageName}`)
-            .fontSize(9)
+          Text('Choose a sample')
+            .fontSize(11)
             .fontColor('#8B949E')
-            .textAlign(TextAlign.Center)
+            .margin({ top: 10 })
+
+          ForEach(this.audioFiles, (audioFile: AudioFile, index: number) => {
+            Button(audioFile.name)
+              .onClick(() => this.selectAudio(index))
+              .backgroundColor('#161B22')
+              .fontColor('#E6EDF3')
+              .fontSize(11)
+              .width('82%')
+              .height(38)
+              .borderRadius(10)
+              .border({ width: 1, color: '#00E5C8', style: BorderStyle.Solid })
+          })
+
+          Text('Tap to translate')
+            .fontSize(8)
+            .fontColor('#6E7681')
+            .margin({ top: 4 })
         }
         .width('100%')
         .layoutWeight(1)

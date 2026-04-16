@@ -95,7 +95,7 @@ struct SpeechResult {
                 .width('88%')
                 .lineHeight(19)
                 .padding({ top: 8, bottom: 8, left: 6, right: 6 })
-                .backgroundColor('#0D2818')
+                .backgroundColor('#0A1E1A')
                 .borderRadius(8)
 
               // English meaning below
@@ -157,6 +157,8 @@ struct SpeechResult {
         .alignItems(HorizontalAlign.Center)
       }
       .layoutWeight(1)
+      .scrollBar(BarState.Off)
+      .edgeEffect(EdgeEffect.Spring)
     }
     .width('100%')
     .height('100%')
