@@ -1,6 +1,6 @@
 /**
- * SpeechResult.ets — Shows what was said (translated to English)
- * and tap-friendly reply options in the local language.
+ * SpeechResult.ets — Translation result and reply suggestions.
+ * Shows: original transcript → English translation → local-language replies.
  */
 import router from '@ohos.router';
 import { TranslationResponse } from '../common/Types';
@@ -11,7 +11,7 @@ struct SpeechResult {
   private params: Record<string, string> = router.getParams() as Record<string, string>;
   private response: TranslationResponse =
     JSON.parse(this.params['translationResponseJson'] ?? '{}') as TranslationResponse;
-  private languageName: string = this.params['languageName'] ?? 'local language';
+  private languageName: string = this.params['languageName'] ?? '';
 
   @State selectedIdx: number = 0;
 
@@ -19,16 +19,8 @@ struct SpeechResult {
     return this.response.replySuggestionsJapanese ?? [];
   }
 
-  private get englishTranslations(): string[] {
+  private get englishHints(): string[] {
     return this.response.suggestionTranslations ?? [];
-  }
-
-  private get currentReply(): string {
-    return this.suggestions[this.selectedIdx] ?? '';
-  }
-
-  private get currentEnglish(): string {
-    return this.englishTranslations[this.selectedIdx] ?? '';
   }
 
   build() {
@@ -36,122 +28,143 @@ struct SpeechResult {
       // ── Header ──────────────────────────────────────────────────────────────
       Row() {
         Text('←')
-          .fontSize(18)
+          .fontSize(16)
           .fontColor('#8B949E')
           .onClick(() => router.back())
-          .padding({ left: 10, right: 8 })
+          .padding({ left: 12, right: 8 })
         Text('Translation')
-          .fontSize(13)
+          .fontSize(14)
           .fontWeight(FontWeight.Bold)
-          .fontColor('#E6EDF3')
+          .fontColor('#FFFFFF')
           .layoutWeight(1)
           .textAlign(TextAlign.Center)
-          .margin({ right: 30 })
+          .margin({ right: 32 })
       }
       .width('100%')
-      .height(38)
+      .height(40)
       .alignItems(VerticalAlign.Center)
 
-      Divider().color('#21262D')
+      Divider().color('#21262D').strokeWidth(0.5)
 
       Scroll() {
-        Column({ space: 8 }) {
+        Column({ space: 10 }) {
 
-          // ── What they said (English translation) ───────────────────────────
-          if (this.response.translationEnglish) {
-            Column({ space: 4 }) {
-              Text('They said:')
+          // ── THEY SAID — original language transcript ───────────────────────
+          if (this.response.transcript) {
+            Column({ space: 5 }) {
+              Text('THEY SAID')
                 .fontSize(9)
                 .fontColor('#8B949E')
-              Text(this.response.translationEnglish)
-                .fontSize(13)
-                .fontWeight(FontWeight.Bold)
-                .fontColor('#E6EDF3')
+                .letterSpacing(1.5)
+              Text(`"${this.response.transcript}"`)
+                .fontSize(12)
+                .fontColor('#C9D1D9')
+                .fontStyle(FontStyle.Italic)
                 .textAlign(TextAlign.Center)
-                .width('88%')
-                .lineHeight(19)
+                .width('86%')
+                .lineHeight(18)
             }
             .width('100%')
             .padding({ top: 10, bottom: 10, left: 4, right: 4 })
             .backgroundColor('#161B22')
-            .borderRadius(8)
+            .borderRadius(10)
             .alignItems(HorizontalAlign.Center)
-            .margin({ left: 14, right: 14, top: 8 })
+            .margin({ left: 16, right: 16, top: 8 })
           }
 
-          // ── Reply suggestions ──────────────────────────────────────────────
-          if (this.suggestions.length > 0) {
-            Column({ space: 6 }) {
-              Text(`Reply in ${this.languageName}:`)
+          // ── TRANSLATION — English meaning ─────────────────────────────────
+          if (this.response.translationEnglish) {
+            Column({ space: 5 }) {
+              Text('TRANSLATION')
                 .fontSize(9)
                 .fontColor('#8B949E')
+                .letterSpacing(1.5)
+              Text(this.response.translationEnglish)
+                .fontSize(14)
+                .fontWeight(FontWeight.Bold)
+                .fontColor('#FFFFFF')
+                .textAlign(TextAlign.Center)
+                .width('86%')
+                .lineHeight(20)
+            }
+            .width('100%')
+            .padding({ top: 10, bottom: 12, left: 4, right: 4 })
+            .backgroundColor('#161B22')
+            .borderRadius(10)
+            .alignItems(HorizontalAlign.Center)
+            .margin({ left: 16, right: 16 })
+          }
 
-              // Local-language reply (large, teal, tap-to-use)
-              Text(this.currentReply || this.currentEnglish)
+          // ── REPLY SUGGESTIONS ─────────────────────────────────────────────
+          if (this.suggestions.length > 0) {
+            Column({ space: 8 }) {
+              Text(`REPLY IN ${this.languageName.toUpperCase()}`)
+                .fontSize(9)
+                .fontColor('#8B949E')
+                .letterSpacing(1.5)
+
+              // Current reply — teal, prominent
+              Text(this.suggestions[this.selectedIdx] || this.englishHints[this.selectedIdx] || '')
                 .fontSize(13)
                 .fontWeight(FontWeight.Bold)
                 .fontColor('#00E5C8')
                 .textAlign(TextAlign.Center)
-                .width('88%')
+                .width('86%')
                 .lineHeight(19)
-                .padding({ top: 8, bottom: 8, left: 6, right: 6 })
+                .padding({ top: 10, bottom: 10, left: 8, right: 8 })
                 .backgroundColor('#0A1E1A')
                 .borderRadius(8)
 
-              // English meaning below
-              if (this.currentEnglish && this.currentReply !== this.currentEnglish) {
-                Text(this.currentEnglish)
+              // English hint below
+              if (this.englishHints[this.selectedIdx] &&
+                  this.suggestions[this.selectedIdx] !== this.englishHints[this.selectedIdx]) {
+                Text(this.englishHints[this.selectedIdx])
                   .fontSize(9)
-                  .fontColor('#8B949E')
+                  .fontColor('#6E7681')
                   .textAlign(TextAlign.Center)
-                  .width('86%')
-                  .lineHeight(13)
+                  .width('80%')
               }
 
-              // Pagination
+              // < > navigation
               if (this.suggestions.length > 1) {
-                Row({ space: 10 }) {
-                  Button('‹')
+                Row({ space: 20 }) {
+                  Button('<')
                     .onClick(() => { if (this.selectedIdx > 0) this.selectedIdx -= 1; })
-                    .backgroundColor(this.selectedIdx > 0 ? '#21262D' : '#0D1117')
-                    .fontColor(this.selectedIdx > 0 ? '#E6EDF3' : '#313940')
+                    .backgroundColor(this.selectedIdx > 0 ? '#00C4AE' : '#1C2430')
+                    .fontColor(this.selectedIdx > 0 ? '#0D1117' : '#444C56')
                     .fontSize(16)
-                    .width(38)
-                    .height(30)
-                    .enabled(this.selectedIdx > 0)
+                    .fontWeight(FontWeight.Bold)
+                    .width(36)
+                    .height(36)
+                    .borderRadius(18)
 
                   Text(`${this.selectedIdx + 1} / ${this.suggestions.length}`)
                     .fontSize(9)
                     .fontColor('#8B949E')
 
-                  Button('›')
+                  Button('>')
                     .onClick(() => {
                       if (this.selectedIdx < this.suggestions.length - 1) this.selectedIdx += 1;
                     })
-                    .backgroundColor(this.selectedIdx < this.suggestions.length - 1 ? '#21262D' : '#0D1117')
-                    .fontColor(this.selectedIdx < this.suggestions.length - 1 ? '#E6EDF3' : '#313940')
+                    .backgroundColor(this.selectedIdx < this.suggestions.length - 1 ? '#00C4AE' : '#1C2430')
+                    .fontColor(this.selectedIdx < this.suggestions.length - 1 ? '#0D1117' : '#444C56')
                     .fontSize(16)
-                    .width(38)
-                    .height(30)
-                    .enabled(this.selectedIdx < this.suggestions.length - 1)
+                    .fontWeight(FontWeight.Bold)
+                    .width(36)
+                    .height(36)
+                    .borderRadius(18)
                 }
                 .width('100%')
                 .justifyContent(FlexAlign.Center)
               }
             }
             .width('100%')
-            .padding({ top: 8, bottom: 10, left: 4, right: 4 })
+            .padding({ top: 10, bottom: 12, left: 4, right: 4 })
             .backgroundColor('#161B22')
-            .borderRadius(8)
+            .borderRadius(10)
             .alignItems(HorizontalAlign.Center)
-            .margin({ left: 14, right: 14, top: 4, bottom: 8 })
+            .margin({ left: 16, right: 16, bottom: 10 })
           }
-
-          Text('← Swipe to go back')
-            .fontSize(8)
-            .fontColor('#6E7681')
-            .textAlign(TextAlign.Center)
-            .margin({ bottom: 8 })
         }
         .width('100%')
         .alignItems(HorizontalAlign.Center)
@@ -159,6 +172,7 @@ struct SpeechResult {
       .layoutWeight(1)
       .scrollBar(BarState.Off)
       .edgeEffect(EdgeEffect.Spring)
+      .friction(0.85)
     }
     .width('100%')
     .height('100%')
