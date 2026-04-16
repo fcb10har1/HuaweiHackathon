@@ -1,6 +1,7 @@
 {
   "src": [
     "pages/Index",
+    "pages/AddTripName",
     "pages/AddTripCountry",
     "pages/AddTripDates",
     "pages/TripHome",

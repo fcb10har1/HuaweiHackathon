@@ -1,8 +1,7 @@
 
 /**
- * ArrivalSteps.ets — Step-by-step arrival checklist.
- * Teal arc ring around watch face edge tracks progress.
- * < > circle buttons for navigation. No emoji.
+ * ArrivalSteps.ets — Scrollable arrival checklist.
+ * All steps shown simultaneously. Tap the circle to tick a step.
  */
 import router from '@ohos.router';
 import common from '@ohos.app.ability.common';
@@ -15,59 +14,95 @@ struct ArrivalSteps {
   private params: Record<string, string> = router.getParams() as Record<string, string>;
   private trip: Trip = JSON.parse(this.params['tripJson'] ?? '{}') as Trip;
 
-  @State steps: ArrivalStep[] = [];
-  @State currentIdx: number   = 0;
-  @State loading: boolean     = true;
+  @State steps: ArrivalStep[]       = [];
+  @State completedSteps: boolean[]  = [];
+  @State loading: boolean           = true;
+  @State loadError: boolean         = false;
 
   private dataService: CountryDataService | null = null;
 
   aboutToAppear(): void {
     this.dataService = new CountryDataService(getContext(this) as common.UIAbilityContext);
-    this.dataService.getArrivalSteps(this.trip.countryCode).then(steps => {
-      this.steps   = steps;
-      this.loading = false;
-    });
+    this.dataService.getArrivalSteps(this.trip.countryCode)
+      .then(steps => {
+        this.steps = steps;
+        this.completedSteps = new Array<boolean>(steps.length).fill(false);
+        this.loading = false;
+      })
+      .catch(() => {
+        this.loading = false;
+        this.loadError = true;
+      });
+  }
+
+  private toggleStep(idx: number): void {
+    const updated = [...this.completedSteps];
+    updated[idx] = !updated[idx];
+    this.completedSteps = updated;
+  }
+
+  private get completedCount(): number {
+    return this.completedSteps.filter(v => v).length;
   }
 
   build() {
-    Stack({ alignContent: Alignment.Center }) {
+    Column() {
+      // ── Header ─────────────────────────────────────────────────────────────
+      Row() {
+        Text('←')
+          .fontSize(13)
+          .fontColor('#8B949E')
+          .onClick(() => router.back())
+          .padding({ left: 12, right: 8 })
 
-      // ── Teal progress arc ring ─────────────────────────────────────────────
-      if (!this.loading && this.steps.length > 0) {
-        Progress({
-          value: Math.min(this.currentIdx, this.steps.length),
-          total: this.steps.length,
-          type:  ProgressType.Ring,
-        })
-          .width('100%')
-          .height('100%')
-          .style({ strokeWidth: 4 })
-          .color('#00E5C8')
-          .backgroundColor('#1A2230')
+        Text(
+          this.loading    ? 'Arrival Steps' :
+          this.loadError  ? 'Arrival Steps' :
+          this.steps.length === 0 ? 'Arrival Steps' :
+          `${this.completedCount} of ${this.steps.length} done`
+        )
+          .fontSize(11)
+          .fontColor(this.completedCount === this.steps.length && this.steps.length > 0 ? '#00E5C8' : '#8B949E')
+          .letterSpacing(0.5)
+          .layoutWeight(1)
+          .textAlign(TextAlign.Center)
+          .margin({ right: 30 })
       }
+      .width('100%')
+      .height(34)
+      .alignItems(VerticalAlign.Center)
 
-      // ── Content column (transparent — ring shows at edges) ─────────────────
-      Column() {
+      Divider().color('#21262D').strokeWidth(0.5)
 
-        // Header
-        Row() {
-          Text('←')
-            .fontSize(13)
-            .fontColor('#8B949E')
-            .onClick(() => router.back())
-            .padding({ left: 12, right: 6 })
-          Text(
-            this.loading                         ? 'Arrival Steps' :
-            this.steps.length === 0              ? 'Arrival Steps' :
-            this.currentIdx >= this.steps.length ? 'Complete'      :
-            `${this.currentIdx + 1} of ${this.steps.length}`
-          )
+      // ── Body ───────────────────────────────────────────────────────────────
+      if (this.loading) {
+        Column({ space: 8 }) {
+          LoadingProgress().color('#00E5C8').width(32).height(32)
+          Text('Loading steps...')
             .fontSize(11)
             .fontColor('#8B949E')
-            .letterSpacing(0.5)
-            .layoutWeight(1)
-            .textAlign(TextAlign.Center)
-            .margin({ right: 30 })
+        }
+        .width('100%')
+        .layoutWeight(1)
+        .justifyContent(FlexAlign.Center)
+        .alignItems(HorizontalAlign.Center)
+
+      } else if (this.loadError) {
+        Column({ space: 8 }) {
+          Text('Could not load steps')
+            .fontSize(12)
+            .fontColor('#FF4444')
+          Text('Check rawfile assets')
+            .fontSize(9)
+            .fontColor('#6E7681')
+          Button('Back')
+            .onClick(() => router.back())
+            .backgroundColor('#21262D')
+            .fontColor('#8B949E')
+            .fontSize(10)
+            .height(30)
+            .width('55%')
+            .margin({ top: 8 })
         }
         .width('100%')
         .height(32)
@@ -143,78 +178,82 @@ struct ArrivalSteps {
         } else {
           Column() {
 
-            // Step card
-            Column({ space: 6 }) {
-              Text(this.steps[this.currentIdx]?.title ?? '')
-                .fontSize(13)
-                .fontWeight(FontWeight.Bold)
-                .fontColor('#FFFFFF')
-                .textAlign(TextAlign.Center)
-                .width('90%')
-                .lineHeight(19)
-                .maxLines(2)
-                .textOverflow({ overflow: TextOverflow.Ellipsis })
+            // Title — teal, no box
+            Text(this.steps[this.currentIdx]?.title ?? '')
+              .fontSize(13)
+              .fontWeight(FontWeight.Bold)
+              .fontColor('#00E5C8')
+              .textAlign(TextAlign.Center)
+              .width('86%')
+              .lineHeight(20)
+              .padding({ top: 10, bottom: 6 })
 
-              Divider().color('#2A3B50').width('60%').strokeWidth(0.5)
-                .margin({ top: 2, bottom: 2 })
-
-              Scroll() {
+            // Scrollable description — fills all remaining space
+            Scroll() {
+              Column() {
                 Text(this.steps[this.currentIdx]?.description ?? '')
                   .fontSize(10)
                   .fontColor('#C9D1D9')
                   .textAlign(TextAlign.Center)
-                  .width('88%')
-                  .lineHeight(15)
+                  .width('86%')
+                  .lineHeight(16)
+
+                // Bottom spacer so last line stays above the nav buttons
+                Text('').height(56)
               }
-              .height(78)
               .width('100%')
-              .scrollBar(BarState.Off)
+              .alignItems(HorizontalAlign.Center)
             }
-            .width('78%')
-            .padding({ left: 12, right: 12, top: 12, bottom: 12 })
-            .backgroundColor('#161B22')
-            .borderRadius(14)
-            .alignItems(HorizontalAlign.Center)
-            .border({ width: 1, color: '#00E5C8', style: BorderStyle.Solid })
-            .margin({ top: 10 })
+            .layoutWeight(1)
+            .width('100%')
+            .scrollBar(BarState.Off)
+            .edgeEffect(EdgeEffect.Spring)
+            .friction(0.85)
 
-            // < > navigation buttons
-            Row({ space: 28 }) {
-              // Back <
-              Button('<')
-                .onClick(() => { if (this.currentIdx > 0) this.currentIdx -= 1; })
+            // ── Fixed < > nav buttons ──────────────────────────────────────
+            Row({ space: 32 }) {
+              // < Previous
+              Text('<')
+                .fontSize(20)
+                .fontColor('#FFFFFF')
+                .fontWeight(FontWeight.Bold)
+                .width(38)
+                .height(38)
+                .textAlign(TextAlign.Center)
+                .lineHeight(38)
                 .backgroundColor(this.currentIdx > 0 ? '#00C4AE' : '#1C2430')
-                .fontColor(this.currentIdx > 0 ? '#0D1117' : '#3A4450')
-                .fontSize(18)
-                .fontWeight(FontWeight.Bold)
-                .width(46)
-                .height(46)
-                .borderRadius(23)
+                .borderRadius(19)
+                .onClick(() => { if (this.currentIdx > 0) this.currentIdx -= 1; })
 
-              // Next >
-              Button('>')
-                .onClick(() => { this.currentIdx += 1; })
-                .backgroundColor('#00C4AE')
-                .fontColor('#0D1117')
-                .fontSize(18)
+              // > Next
+              Text('>')
+                .fontSize(20)
+                .fontColor('#FFFFFF')
                 .fontWeight(FontWeight.Bold)
-                .width(46)
-                .height(46)
-                .borderRadius(23)
+                .width(38)
+                .height(38)
+                .textAlign(TextAlign.Center)
+                .lineHeight(38)
+                .backgroundColor('#00C4AE')
+                .borderRadius(19)
+                .onClick(() => { this.currentIdx += 1; })
             }
             .width('100%')
             .justifyContent(FlexAlign.Center)
-            .margin({ top: 14, bottom: 8 })
+            .padding({ top: 6, bottom: 12 })
 
           }
           .width('100%')
           .layoutWeight(1)
           .alignItems(HorizontalAlign.Center)
-          .justifyContent(FlexAlign.SpaceBetween)
         }
+        .width('100%')
+        .layoutWeight(1)
+        .padding({ left: 12, right: 12, top: 8, bottom: 8 })
+        .scrollBar(BarState.Off)
+        .edgeEffect(EdgeEffect.Spring)
+        .friction(0.85)
       }
-      .width('100%')
-      .height('100%')
     }
     .width('100%')
     .height('100%')

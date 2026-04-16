@@ -4,6 +4,7 @@
 
 export interface Trip {
   id: string;
+  tripName?: string;
   countryCode: string;
   countryName: string;
   flag: string;

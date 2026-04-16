@@ -22,3 +22,6 @@ SDK/
 
 # HarmonyOS API keys
 watch-app/entry/build-profile.json5
+
+phone-app/.gradle/
+phone-app/app/build/
