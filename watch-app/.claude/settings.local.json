@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(sort find:*)",
-      "Bash(xargs grep:*)"
+      "Bash(xargs grep:*)",
+      "Bash(python setup-env.py)",
+      "Bash(python -c ':*)"
     ]
   }
 }
