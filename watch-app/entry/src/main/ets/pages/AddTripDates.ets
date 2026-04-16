@@ -194,7 +194,7 @@ struct AddTripDates {
 
           Button(this.saving ? 'Saving...' : 'Save Trip ✓')
             .onClick(() => this.saveTrip())
-            .backgroundColor(this.saving ? '#21262D' : '#238636')
+            .backgroundColor(this.saving ? '#21262D' : '#00C4AE')
             .fontColor('#FFFFFF')
             .fontSize(13)
             .width('75%')

@@ -49,7 +49,7 @@ struct AddTripCountry {
               .layoutWeight(1)
               Text('›')
                 .fontSize(14)
-                .fontColor('#8B949E')
+                .fontColor('#00E5C8')
             }
             .width('100%')
             .padding({ left: 12, right: 12, top: 10, bottom: 10 })
@@ -73,6 +73,9 @@ struct AddTripCountry {
       .width('100%')
       .layoutWeight(1)
       .padding({ left: 18, right: 18, top: 6, bottom: 6 })
+      .scrollBar(BarState.Off)
+      .edgeEffect(EdgeEffect.Spring)
+      .friction(0.85)
     }
     .width('100%')
     .height('100%')

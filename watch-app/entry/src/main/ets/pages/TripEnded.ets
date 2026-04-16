@@ -48,8 +48,8 @@ struct TripEnded {
           // Pop back to the trip list (Index)
           router.back();
         })
-        .backgroundColor('#238636')
-        .fontColor('#FFFFFF')
+        .backgroundColor('#00C4AE')
+        .fontColor('#0D1117')
         .fontSize(13)
         .width('70%')
         .margin({ top: 8 })
