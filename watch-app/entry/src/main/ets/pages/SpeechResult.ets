@@ -1,114 +1,35 @@
 /**
- * SpeechResult.ets — Shows translation result and suggested Japanese replies
- * Includes TTS audio playback for the translated English text.
+ * SpeechResult.ets — Shows what was said (translated to English)
+ * and tap-friendly reply options in the local language.
  */
 import router from '@ohos.router';
-import media from '@ohos.multimedia.media';
-import http from '@ohos.net.http';
-import fs from '@ohos.file.fs';
-import common from '@ohos.app.ability.common';
-import util from '@ohos.util';
 import { TranslationResponse } from '../common/Types';
-
-// Base64 decoder helper function for HarmonyOS
-function base64ToUint8Array(base64Str: string): Uint8Array {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-  const bytes: number[] = [];
-  
-  for (let i = 0; i < base64Str.length; i += 4) {
-    const a = chars.indexOf(base64Str[i] ?? '');
-    const b = chars.indexOf(base64Str[i + 1] ?? '');
-    const c = chars.indexOf(base64Str[i + 2] ?? '');
-    const d = chars.indexOf(base64Str[i + 3] ?? '');
-    
-    bytes.push((a << 2) | (b >> 4));
-    if (c !== -1) {
-      bytes.push(((b & 15) << 4) | (c >> 2));
-    }
-    if (d !== -1) {
-      bytes.push(((c & 3) << 6) | d);
-    }
-  }
-  
-  return new Uint8Array(bytes);
-}
 
 @Entry
 @Component
 struct SpeechResult {
   private params: Record<string, string> = router.getParams() as Record<string, string>;
-  private response: TranslationResponse = JSON.parse(this.params['translationResponseJson'] ?? '{}') as TranslationResponse;
-  private languageName: string = this.params['languageName'] ?? '';
+  private response: TranslationResponse =
+    JSON.parse(this.params['translationResponseJson'] ?? '{}') as TranslationResponse;
+  private languageName: string = this.params['languageName'] ?? 'local language';
 
   @State selectedIdx: number = 0;
-  @State isPlayingAudio: boolean = false;
-  @State audioPlayError: string = '';
 
-  private ctx: common.UIAbilityContext | null = null;
-  private audioPlayer: media.AVPlayer | null = null;
-
-  aboutToAppear(): void {
-    this.ctx = getContext(this) as common.UIAbilityContext;
-    // Debug: Check if suggestions were received
-    console.info('[SpeechResult] ========== PAGE APPEARED ==========');
-    console.info('[SpeechResult] Full response object:', JSON.stringify(this.response));
-    console.info('[SpeechResult] replySuggestionsJapanese:', this.response.replySuggestionsJapanese);
-    console.info('[SpeechResult] replySuggestionsJapanese type:', typeof this.response.replySuggestionsJapanese);
-    console.info('[SpeechResult] replySuggestionsJapanese length:', this.response.replySuggestionsJapanese?.length);
-    console.info('[SpeechResult] selectedIdx:', this.selectedIdx);
-    console.info('[SpeechResult] currentSuggestion:', this.currentSuggestion);
-    console.info('[SpeechResult] Suggestion audio count:', this.response.suggestionAudios ? this.response.suggestionAudios.length : 'none');
+  private get suggestions(): string[] {
+    return this.response.replySuggestionsJapanese ?? [];
   }
 
-  aboutToDisappear(): void {
-    if (this.audioPlayer) {
-      try {
-        this.audioPlayer.reset();
-        this.audioPlayer.release();
-      } catch (_) {}
-      this.audioPlayer = null;
-    }
+  private get englishTranslations(): string[] {
+    return this.response.suggestionTranslations ?? [];
   }
 
-  private get currentSuggestion(): string {
-    const suggestions = this.response.replySuggestionsJapanese ?? [];
-    const result = suggestions[this.selectedIdx] ?? '';
-    console.info('[SpeechResult] currentSuggestion getter - selectedIdx:', this.selectedIdx, 'suggestions.length:', suggestions.length, 'result:', result);
-    return result;
+  private get currentReply(): string {
+    return this.suggestions[this.selectedIdx] ?? '';
   }
 
-  private async playTtsAudio(): Promise<void> {
-    this.isPlayingAudio = true;
-    this.audioPlayError = '';
-
-    try {
-      const httpClient = http.createHttp();
-      const requestUrl: string = `http://10.0.2.2:5000/api/save-audio/${this.selectedIdx}`;
-      
-      const response: http.HttpResponse = await httpClient.request(requestUrl, {
-        method: http.RequestMethod.POST,
-        expectDataType: http.HttpDataType.STRING,
-        connectTimeout: 30000,
-        readTimeout: 30000
-      });
-      
-      if (response.responseCode === 200) {
-        const result: Record<string, string> = JSON.parse(response.result as string);
-        console.info('[SpeechResult] ✓ Audio saved:', result.file);
-        this.audioPlayError = `✓ Saved: ${result.file}`;
-      } else {
-        console.error('[SpeechResult] Backend error:', response.responseCode);
-        this.audioPlayError = 'Failed to save audio';
-      }
-      httpClient.destroy();
-    } catch (error) {
-      console.error('[SpeechResult] ❌ Save failed:', error);
-      this.audioPlayError = 'Error saving to Desktop';
-    } finally {
-      this.isPlayingAudio = false;
-    }
+  private get currentEnglish(): string {
+    return this.englishTranslations[this.selectedIdx] ?? '';
   }
-
 
   build() {
     Column() {
@@ -118,16 +39,17 @@ struct SpeechResult {
           .fontSize(18)
           .fontColor('#8B949E')
           .onClick(() => router.back())
-          .padding({ left: 8, right: 8 })
-        Text('Translation Result')
+          .padding({ left: 10, right: 8 })
+        Text('Translation')
           .fontSize(13)
           .fontWeight(FontWeight.Bold)
           .fontColor('#E6EDF3')
           .layoutWeight(1)
           .textAlign(TextAlign.Center)
+          .margin({ right: 30 })
       }
       .width('100%')
-      .height(40)
+      .height(38)
       .alignItems(VerticalAlign.Center)
 
       Divider().color('#21262D')
@@ -135,150 +57,101 @@ struct SpeechResult {
       Scroll() {
         Column({ space: 8 }) {
 
-          // ── Original transcript (if available) ────────────────────────────────
-          if (this.response.transcript) {
-            Column({ space: 3 }) {
+          // ── What they said (English translation) ───────────────────────────
+          if (this.response.translationEnglish) {
+            Column({ space: 4 }) {
               Text('They said:')
                 .fontSize(9)
                 .fontColor('#8B949E')
-              Text(`"${this.response.transcript}"`)
-                .fontSize(10)
-                .fontColor('#C9D1D9')
-                .fontStyle(FontStyle.Italic)
-                .textAlign(TextAlign.Center)
-                .width('90%')
-                .lineHeight(16)
-            }
-            .width('100%')
-            .alignItems(HorizontalAlign.Center)
-            .padding({ top: 8, bottom: 6 })
-
-            Divider().color('#21262D').width('70%')
-          }
-
-          // ── Translation (English) ──────────────────────────────────────────────
-          if (this.response.translationEnglish) {
-            Column({ space: 6 }) {
-              Text('Translation:')
-                .fontSize(9)
-                .fontColor('#8B949E')
               Text(this.response.translationEnglish)
-                .fontSize(12)
+                .fontSize(13)
                 .fontWeight(FontWeight.Bold)
                 .fontColor('#E6EDF3')
                 .textAlign(TextAlign.Center)
-                .width('90%')
-                .lineHeight(18)
-
-              // Play TTS button
-              Button('▶ Play Audio')
-                .onClick(() => this.playTtsAudio())
-                .enabled(!this.isPlayingAudio)
-                .backgroundColor(this.isPlayingAudio ? '#21262D' : '#238636')
-                .fontColor('#FFFFFF')
-                .fontSize(10)
-                .width('70%')
-                .height(32)
-                .margin({ top: 6 })
-
-              // Audio error or playing indicator
-              if (this.audioPlayError) {
-                Text(this.audioPlayError)
-                  .fontSize(9)
-                  .fontColor('#FF4444')
-              } else if (this.isPlayingAudio) {
-                Text('Playing audio...')
-                  .fontSize(9)
-                  .fontColor('#00E5C8')
-              }
+                .width('88%')
+                .lineHeight(19)
             }
             .width('100%')
-            .padding(10)
+            .padding({ top: 10, bottom: 10, left: 4, right: 4 })
             .backgroundColor('#161B22')
-            .borderRadius(6)
+            .borderRadius(8)
             .alignItems(HorizontalAlign.Center)
-            .margin({ left: 8, right: 8, top: 4, bottom: 6 })
+            .margin({ left: 14, right: 14, top: 8 })
           }
 
-          // ── Japanese reply suggestions ─────────────────────────────────────────
-          if (this.response.replySuggestionsJapanese && this.response.replySuggestionsJapanese.length > 0) {
-            Column({ space: 8 }) {
-              Text('Reply (Japanese):')
+          // ── Reply suggestions ──────────────────────────────────────────────
+          if (this.suggestions.length > 0) {
+            Column({ space: 6 }) {
+              Text(`Reply in ${this.languageName}:`)
                 .fontSize(9)
                 .fontColor('#8B949E')
 
-              // Display current selected suggestion directly from array
-              Text(this.response.replySuggestionsJapanese[this.selectedIdx] || 'No suggestion')
-                .fontSize(11)
+              // Local-language reply (large, teal, tap-to-use)
+              Text(this.currentReply || this.currentEnglish)
+                .fontSize(13)
+                .fontWeight(FontWeight.Bold)
                 .fontColor('#00E5C8')
                 .textAlign(TextAlign.Center)
-                .width('95%')
-                .lineHeight(16)
-                .padding({ top: 8, bottom: 8, left: 4, right: 4 })
+                .width('88%')
+                .lineHeight(19)
+                .padding({ top: 8, bottom: 8, left: 6, right: 6 })
                 .backgroundColor('#0D2818')
-                .borderRadius(4)
+                .borderRadius(8)
 
-              // Display English translation below
-              if (this.response.suggestionTranslations && this.response.suggestionTranslations.length > this.selectedIdx) {
-                Text(this.response.suggestionTranslations[this.selectedIdx])
+              // English meaning below
+              if (this.currentEnglish && this.currentReply !== this.currentEnglish) {
+                Text(this.currentEnglish)
                   .fontSize(9)
                   .fontColor('#8B949E')
                   .textAlign(TextAlign.Center)
-                  .width('95%')
-                  .lineHeight(14)
-                  .padding({ top: 4, bottom: 4 })
+                  .width('86%')
+                  .lineHeight(13)
               }
 
-              // Pagination indicator
-              if (this.response.replySuggestionsJapanese.length > 1) {
-                Text(`${this.selectedIdx + 1} / ${this.response.replySuggestionsJapanese.length}`)
-                  .fontSize(8)
-                  .fontColor('#8B949E')
-              }
-
-              // Navigation buttons (smaller for circular screen)
-              if (this.response.replySuggestionsJapanese.length > 1) {
-                Row({ space: 8 }) {
+              // Pagination
+              if (this.suggestions.length > 1) {
+                Row({ space: 10 }) {
                   Button('‹')
-                    .onClick(() => {
-                      if (this.selectedIdx > 0) this.selectedIdx -= 1;
-                    })
+                    .onClick(() => { if (this.selectedIdx > 0) this.selectedIdx -= 1; })
                     .backgroundColor(this.selectedIdx > 0 ? '#21262D' : '#0D1117')
-                    .fontColor(this.selectedIdx > 0 ? '#E6EDF3' : '#21262D')
-                    .fontSize(14)
-                    .width('32%')
-                    .height(28)
+                    .fontColor(this.selectedIdx > 0 ? '#E6EDF3' : '#313940')
+                    .fontSize(16)
+                    .width(38)
+                    .height(30)
                     .enabled(this.selectedIdx > 0)
+
+                  Text(`${this.selectedIdx + 1} / ${this.suggestions.length}`)
+                    .fontSize(9)
+                    .fontColor('#8B949E')
 
                   Button('›')
                     .onClick(() => {
-                      if (this.selectedIdx < this.response.replySuggestionsJapanese.length - 1) {
-                        this.selectedIdx += 1;
-                      }
+                      if (this.selectedIdx < this.suggestions.length - 1) this.selectedIdx += 1;
                     })
-                    .backgroundColor(this.selectedIdx < this.response.replySuggestionsJapanese.length - 1 ? '#21262D' : '#0D1117')
-                    .fontColor(this.selectedIdx < this.response.replySuggestionsJapanese.length - 1 ? '#E6EDF3' : '#21262D')
-                    .fontSize(14)
-                    .width('32%')
-                    .height(28)
-                    .enabled(this.selectedIdx < this.response.replySuggestionsJapanese.length - 1)
+                    .backgroundColor(this.selectedIdx < this.suggestions.length - 1 ? '#21262D' : '#0D1117')
+                    .fontColor(this.selectedIdx < this.suggestions.length - 1 ? '#E6EDF3' : '#313940')
+                    .fontSize(16)
+                    .width(38)
+                    .height(30)
+                    .enabled(this.selectedIdx < this.suggestions.length - 1)
                 }
                 .width('100%')
                 .justifyContent(FlexAlign.Center)
               }
             }
             .width('100%')
-            .padding(10)
+            .padding({ top: 8, bottom: 10, left: 4, right: 4 })
             .backgroundColor('#161B22')
-            .borderRadius(6)
+            .borderRadius(8)
             .alignItems(HorizontalAlign.Center)
-            .margin({ left: 8, right: 8, top: 4, bottom: 8 })
+            .margin({ left: 14, right: 14, top: 4, bottom: 8 })
           }
 
-          Text('← Swipe or tap back')
+          Text('← Swipe to go back')
             .fontSize(8)
             .fontColor('#6E7681')
-            .margin({ top: 4, bottom: 8 })
+            .textAlign(TextAlign.Center)
+            .margin({ bottom: 8 })
         }
         .width('100%')
         .alignItems(HorizontalAlign.Center)
@@ -290,9 +163,7 @@ struct SpeechResult {
     .backgroundColor('#0D1117')
     .gesture(
       PanGesture({ direction: PanDirection.Right, distance: 50 })
-        .onActionEnd(() => {
-          router.back();
-        })
+        .onActionEnd(() => router.back())
     )
   }
 }
