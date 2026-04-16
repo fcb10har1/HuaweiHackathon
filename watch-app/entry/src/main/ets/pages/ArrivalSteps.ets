@@ -157,7 +157,7 @@ struct ArrivalSteps {
                 .width('90%')
                 .lineHeight(15)
             }
-            .maxHeight(90)
+            .height(90)
             .width('100%')
           }
           .width('88%')
