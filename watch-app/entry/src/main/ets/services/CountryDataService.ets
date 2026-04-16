@@ -24,7 +24,11 @@ export class CountryDataService {
       const rm = this.context.resourceManager;
       const uint8Array = await rm.getRawFileContent(`countries/${code}.json`);
       const decoder = new util.TextDecoder('utf-8');
-      const text = decoder.decode(uint8Array);
+      let text = decoder.decode(uint8Array);
+      // Strip UTF-8 BOM if present (some editors save with BOM)
+      if (text.charCodeAt(0) === 0xFEFF) {
+        text = text.slice(1);
+      }
       const pack = JSON.parse(text) as CountryPack;
       this.cache.set(code, pack);
       return pack;
