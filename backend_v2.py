@@ -3,12 +3,19 @@
 Translation Backend - Supports both OpenAI-based and fallback suggestions
 Uses OpenAI Whisper to transcribe sample audio files in real time.
 """
+import sys
 import os
 import base64
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 from pathlib import Path
 from datetime import datetime
+
+# Force UTF-8 stdout so Japanese/Thai/Indonesian chars don't crash on Windows
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 # Load environment variables from .env file
 load_dotenv()
@@ -18,9 +25,10 @@ app = Flask(__name__)
 # Store last suggestion audio for playback
 LAST_SUGGESTION_AUDIOS = []
 
-# Sample audio files live in the same folder as this script
+# Sample audio files live in the samples/ subfolder
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-print(f"[Backend] Looking for sample audio files in: {SCRIPT_DIR}")
+SAMPLES_DIR = os.path.join(SCRIPT_DIR, 'samples')
+print(f"[Backend] Looking for sample audio files in: {SAMPLES_DIR}")
 
 # Get NewRecordings folder path - save to C:\NewRecordings (outside OneDrive)
 RECORDINGS_PATH = r"C:\NewRecordings"
@@ -101,7 +109,7 @@ def transcribe_audio(filename):
         print(f"[Backend] No API key - cannot transcribe, using fallback transcript")
         return None, None
 
-    filepath = os.path.join(SCRIPT_DIR, filename)
+    filepath = os.path.join(SAMPLES_DIR, filename)
     if not os.path.exists(filepath):
         print(f"[Backend] [WARN] Audio file not found: {filepath}")
         return None, None
@@ -126,64 +134,67 @@ def transcribe_audio(filename):
 
 def get_ai_suggestions(transcript, language_code, target_language):
     """
-    Generate AI-powered suggestions using OpenAI or return fallback.
+    Generate AI-powered reply suggestions + English translations in one API call.
+    Uses JSON mode to guarantee parseable output.
+    Falls back to hardcoded phrases if OpenAI is unavailable.
     """
+    fallback_suggestions = SUGGESTION_REPLIES.get(language_code, SUGGESTION_REPLIES['ja'])
+    fallback_translations = {
+        'ja': ['Thank you very much', 'Sorry, I do not understand', 'Could you say that again?'],
+        'th': ['Thank you', 'Sorry, I do not understand', 'Could you say that again?'],
+        'id': ['Thank you', 'Sorry, I do not understand', 'Could you say that again?'],
+    }
+    fallback_trans = fallback_translations.get(language_code, fallback_translations['ja'])
+
     if not OPENAI_API_KEY:
-        print(f"[Backend] No API key - using fallback")
-        return SUGGESTION_REPLIES.get(language_code, SUGGESTION_REPLIES['ja']), ['I am from Japan', 'America', 'India']
-    
+        print("[Backend] No API key - using fallback suggestions")
+        return fallback_suggestions, fallback_trans
+
     try:
-        print(f"[Backend] [AI] Calling OpenAI for {target_language}...")
+        print(f"[Backend] [AI] Generating suggestions + translations for {target_language}...")
         from openai import OpenAI
-        
+        import json as _json
+
         client = OpenAI(api_key=OPENAI_API_KEY)
-        
-        # Generate suggestions RELEVANT to what the user asked
-        prompt = f"A traveler said in {target_language}: \"{transcript}\"\n\nGenerate 3 polite and relevant {target_language} responses to this. Return ONLY a JSON array like [\"response1\", \"response2\", \"response3\"]"
-        
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.7,
-            max_tokens=150
+
+        prompt = (
+            f'A traveler is speaking with a local. The local said in {target_language}: "{transcript}"\n'
+            f'Generate 3 short, practical {target_language} replies the traveler could say back.\n'
+            f'For each reply include the {target_language} phrase and its English translation.\n'
+            f'Respond ONLY with valid JSON: '
+            f'{{"replies":[{{"local":"phrase","english":"translation"}},'
+            f'{{"local":"phrase","english":"translation"}},'
+            f'{{"local":"phrase","english":"translation"}}]}}'
         )
-        
-        reply_text = response.choices[0].message.content.strip()
-        print(f"[Backend] OpenAI returned: {reply_text}")
-        
-        # Parse JSON
-        import json
-        suggestions = json.loads(reply_text)
-        if isinstance(suggestions, list) and len(suggestions) >= 3:
-            print(f"[Backend] [OK] Using AI suggestions: {suggestions[:3]}")
-            
-            # Now translate each suggestion to English
-            print(f"[Backend] Translating suggestions to English...")
-            translations = []
-            for suggestion in suggestions[:3]:
-                try:
-                    trans_response = client.chat.completions.create(
-                        model="gpt-3.5-turbo",
-                        messages=[{"role": "user", "content": f"Translate this {target_language} phrase to English. Return ONLY the translation, nothing else:\n{suggestion}"}],
-                        temperature=0.3,
-                        max_tokens=50
-                    )
-                    translation = trans_response.choices[0].message.content.strip()
-                    translations.append(translation)
-                    print(f"[Backend]   {suggestion} → {translation}")
-                except Exception as e:
-                    print(f"[Backend]   Translation failed: {e}")
-                    translations.append("")
-            
-            return suggestions[:3], translations
-        else:
-            print(f"[Backend] Invalid format, using fallback")
-            return SUGGESTION_REPLIES.get(language_code, SUGGESTION_REPLIES['ja']), ['I am from Japan', 'America', 'India']
-        
+
+        response = client.chat.completions.create(
+            model='gpt-3.5-turbo',
+            response_format={'type': 'json_object'},
+            messages=[
+                {'role': 'system', 'content': 'You are a travel language assistant. Always respond with valid JSON only.'},
+                {'role': 'user', 'content': prompt},
+            ],
+            temperature=0.7,
+            max_tokens=200,
+        )
+
+        content = _json.loads(response.choices[0].message.content)
+        replies = content.get('replies', [])
+
+        if isinstance(replies, list) and len(replies) >= 3:
+            suggestions = [r['local'] for r in replies[:3]]
+            translations = [r['english'] for r in replies[:3]]
+            print(f"[Backend] [OK] AI suggestions ready")
+            for s, t in zip(suggestions, translations):
+                print(f"[Backend]   {s}  ->  {t}")
+            return suggestions, translations
+
+        print("[Backend] Unexpected JSON shape, using fallback")
+        return fallback_suggestions, fallback_trans
+
     except Exception as e:
-        print(f"[Backend] [ERR] OpenAI error: {type(e).__name__}: {str(e)}")
-        print(f"[Backend] Falling back to hardcoded suggestions")
-        return SUGGESTION_REPLIES.get(language_code, SUGGESTION_REPLIES['ja']), ['I am from Japan', 'America', 'India']
+        print(f"[Backend] [ERR] get_ai_suggestions: {type(e).__name__}: {e}")
+        return fallback_suggestions, fallback_trans
 
 
 @app.route('/health', methods=['GET'])
@@ -250,8 +261,8 @@ def translate():
     # Get suggestions (AI-powered or fallback)
     print(f"[Backend] Getting {language_name} suggestions...")
     suggestions, translations = get_ai_suggestions(transcript, language_code, language_name)
-    print(f"[Backend] Suggestions: {suggestions}")
-    print(f"[Backend] Translations: {translations}")
+    print(f"[Backend] Suggestions count: {len(suggestions)}")
+    print(f"[Backend] Translations count: {len(translations)}")
     
     # Generate TTS audio for each suggestion
     print(f"[Backend] Generating TTS audio for {len(suggestions)} suggestions...")
