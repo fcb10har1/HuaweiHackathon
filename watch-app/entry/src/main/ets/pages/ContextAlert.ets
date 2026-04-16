@@ -25,13 +25,13 @@ struct ContextAlertPage {
         .fontSize(13)
         .fontWeight(FontWeight.Bold)
         .fontColor(riskColor(this.alert.riskLevel))
-        .margin({ top: 20 })
 
       // Location name (if available)
       if (this.alert.locationName) {
-        Text(`📍 ${this.alert.locationName}`)
-          .fontSize(10)
+        Text(this.alert.locationName.toUpperCase())
+          .fontSize(9)
           .fontColor('#8B949E')
+          .letterSpacing(1.5)
       }
 
       Divider()
@@ -42,22 +42,26 @@ struct ContextAlertPage {
       // Alert message
       Scroll() {
         Text(this.alert.message)
-          .fontSize(12)
+          .fontSize(11)
           .fontColor('#E6EDF3')
           .textAlign(TextAlign.Center)
           .width('88%')
-          .lineHeight(19)
+          .lineHeight(18)
+          .padding({ left: 8, right: 8 })
       }
-      .height(120)
+      .height(110)
+      .scrollBar(BarState.Off)
+      .edgeEffect(EdgeEffect.Spring)
 
       // Dismiss button
-      Button('OK, Got It')
+      Button('Got It')
         .onClick(() => router.back())
         .backgroundColor('#21262D')
         .fontColor('#8B949E')
-        .fontSize(12)
-        .width('70%')
-        .margin({ bottom: 16 })
+        .fontSize(11)
+        .fontWeight(FontWeight.Bold)
+        .width('65%')
+        .margin({ bottom: 14 })
     }
     .width('100%')
     .height('100%')
