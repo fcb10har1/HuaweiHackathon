@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
 Translation Backend - Supports both OpenAI-based and fallback suggestions
+Uses OpenAI Whisper to transcribe sample audio files in real time.
 """
 import os
 import base64
@@ -16,6 +17,10 @@ app = Flask(__name__)
 
 # Store last suggestion audio for playback
 LAST_SUGGESTION_AUDIOS = []
+
+# Sample audio files live in the same folder as this script
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+print(f"[Backend] Looking for sample audio files in: {SCRIPT_DIR}")
 
 # Get NewRecordings folder path - save to C:\NewRecordings (outside OneDrive)
 RECORDINGS_PATH = r"C:\NewRecordings"
@@ -84,6 +89,39 @@ def generate_tts_audio(text, language_code='ja'):
     except Exception as e:
         print(f"[Backend] TTS generation failed: {e}")
         return None
+
+
+def transcribe_audio(filename):
+    """
+    Transcribe a sample audio file using OpenAI Whisper.
+    Looks for the file in the same directory as this script.
+    Returns (transcript, language_code) or (None, None) on failure.
+    """
+    if not OPENAI_API_KEY:
+        print(f"[Backend] No API key - cannot transcribe, using fallback transcript")
+        return None, None
+
+    filepath = os.path.join(SCRIPT_DIR, filename)
+    if not os.path.exists(filepath):
+        print(f"[Backend] ⚠ Audio file not found: {filepath}")
+        return None, None
+
+    try:
+        from openai import OpenAI
+        client = OpenAI(api_key=OPENAI_API_KEY)
+        print(f"[Backend] 🎙 Transcribing with Whisper: {filepath}")
+        with open(filepath, 'rb') as f:
+            result = client.audio.transcriptions.create(
+                model="whisper-1",
+                file=f,
+            )
+        transcript = result.text.strip()
+        language = result.language if hasattr(result, 'language') else None
+        print(f"[Backend] ✓ Whisper transcript: {transcript} (detected language: {language})")
+        return transcript, language
+    except Exception as e:
+        print(f"[Backend] ❌ Whisper transcription failed: {e}")
+        return None, None
 
 
 def get_ai_suggestions(transcript, language_code, target_language):
@@ -167,23 +205,47 @@ def translate():
     filename = request.args.get('filename', 'japanese_sample.wav')
     print(f"\n[Backend] 🌐 Processing translation request")
     print(f"[Backend] Filename: {filename}")
-    
-    # Determine language from filename
+
+    # Determine language from filename (used as fallback if Whisper fails)
     if 'thai' in filename.lower() or 'th' in filename.lower():
         language_code = 'th'
         language_name = 'Thai'
-        transcript = 'สวัสดีค่ะ คุณพูดภาษาอังกฤษได้ไหมค่ะ'
-        translation = 'Hello, do you speak English?'
+        fallback_transcript = 'สวัสดีค่ะ คุณพูดภาษาอังกฤษได้ไหมค่ะ'
+        fallback_translation = 'Hello, do you speak English?'
     elif 'indo' in filename.lower() or 'id' in filename.lower():
         language_code = 'id'
         language_name = 'Indonesian'
-        transcript = 'Halo, bisakah Anda berbicara bahasa Inggris?'
-        translation = 'Hello, can you speak English?'
+        fallback_transcript = 'Halo, bisakah Anda berbicara bahasa Inggris?'
+        fallback_translation = 'Hello, can you speak English?'
     else:  # Japanese
         language_code = 'ja'
         language_name = 'Japanese'
-        transcript = 'こんにちは、あなたはどこの出身ですか？'
-        translation = 'Hi, where are you from?'
+        fallback_transcript = 'こんにちは、あなたはどこの出身ですか？'
+        fallback_translation = 'Hi, where are you from?'
+
+    # Try real Whisper transcription first
+    whisper_transcript, _ = transcribe_audio(filename)
+    if whisper_transcript:
+        transcript = whisper_transcript
+        # Translate the real transcript to English using GPT
+        try:
+            from openai import OpenAI
+            client = OpenAI(api_key=OPENAI_API_KEY)
+            trans_resp = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[{"role": "user", "content": f"Translate this {language_name} text to English. Return ONLY the translation:\n{transcript}"}],
+                temperature=0.3,
+                max_tokens=100
+            )
+            translation = trans_resp.choices[0].message.content.strip()
+            print(f"[Backend] ✓ Translation: {translation}")
+        except Exception as e:
+            print(f"[Backend] ⚠ Translation failed, using fallback: {e}")
+            translation = fallback_translation
+    else:
+        print(f"[Backend] Using fallback transcript for demo")
+        transcript = fallback_transcript
+        translation = fallback_translation
     
     # Get suggestions (AI-powered or fallback)
     print(f"[Backend] Getting {language_name} suggestions...")

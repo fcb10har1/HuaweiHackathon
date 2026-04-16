@@ -1,181 +1,291 @@
 /**
- * SpeechResult.ets — Translation result and reply suggestions.
- * Shows: original transcript → English translation → local-language replies.
+ * SpeechResult.ets — Shows translation result and suggested Japanese replies
+ * Includes TTS audio playback for the translated English text.
  */
 import router from '@ohos.router';
+import media from '@ohos.multimedia.media';
+import http from '@ohos.net.http';
+import fs from '@ohos.file.fs';
+import common from '@ohos.app.ability.common';
+import util from '@ohos.util';
 import { TranslationResponse } from '../common/Types';
+
+// Base64 decoder helper function for HarmonyOS
+function base64ToUint8Array(base64Str: string): Uint8Array {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  const bytes: number[] = [];
+
+  for (let i = 0; i < base64Str.length; i += 4) {
+    const a = chars.indexOf(base64Str[i] ?? '');
+    const b = chars.indexOf(base64Str[i + 1] ?? '');
+    const c = chars.indexOf(base64Str[i + 2] ?? '');
+    const d = chars.indexOf(base64Str[i + 3] ?? '');
+
+    bytes.push((a << 2) | (b >> 4));
+    if (c !== -1) {
+      bytes.push(((b & 15) << 4) | (c >> 2));
+    }
+    if (d !== -1) {
+      bytes.push(((c & 3) << 6) | d);
+    }
+  }
+
+  return new Uint8Array(bytes);
+}
 
 @Entry
 @Component
 struct SpeechResult {
   private params: Record<string, string> = router.getParams() as Record<string, string>;
-  private response: TranslationResponse =
-    JSON.parse(this.params['translationResponseJson'] ?? '{}') as TranslationResponse;
+  private response: TranslationResponse = JSON.parse(this.params['translationResponseJson'] ?? '{}') as TranslationResponse;
   private languageName: string = this.params['languageName'] ?? '';
 
   @State selectedIdx: number = 0;
+  @State isPlayingAudio: boolean = false;
+  @State audioPlayError: string = '';
+
+  private ctx: common.UIAbilityContext | null = null;
+  private audioPlayer: media.AVPlayer | null = null;
+
+  aboutToAppear(): void {
+    this.ctx = getContext(this) as common.UIAbilityContext;
+    console.info('[SpeechResult] ========== PAGE APPEARED ==========');
+    console.info('[SpeechResult] Full response object:', JSON.stringify(this.response));
+    console.info('[SpeechResult] replySuggestionsJapanese:', this.response.replySuggestionsJapanese);
+    console.info('[SpeechResult] replySuggestionsJapanese type:', typeof this.response.replySuggestionsJapanese);
+    const suggestions = this.response.replySuggestionsJapanese ?? [];
+    console.info('[SpeechResult] replySuggestionsJapanese length:', suggestions.length);
+    console.info('[SpeechResult] selectedIdx:', this.selectedIdx);
+    console.info('[SpeechResult] currentSuggestion:', suggestions[this.selectedIdx]);
+    console.info('[SpeechResult] Suggestion audio count:', this.response.suggestionAudios ? this.response.suggestionAudios.length : 'none');
+  }
+
+  aboutToDisappear(): void {
+    if (this.audioPlayer) {
+      try {
+        this.audioPlayer.reset();
+        this.audioPlayer.release();
+      } catch (_) {}
+      this.audioPlayer = null;
+    }
+  }
+
+  private async playTtsAudio(): Promise<void> {
+    this.isPlayingAudio = true;
+    this.audioPlayError = '';
+
+    try {
+      const httpClient = http.createHttp();
+      const requestUrl: string = `http://10.0.2.2:5000/api/save-audio/${this.selectedIdx}`;
+
+      const response: http.HttpResponse = await httpClient.request(requestUrl, {
+        method: http.RequestMethod.POST,
+        expectDataType: http.HttpDataType.STRING,
+        connectTimeout: 30000,
+        readTimeout: 30000
+      });
+
+      if (response.responseCode === 200) {
+        const result: Record<string, string> = JSON.parse(response.result as string);
+        console.info('[SpeechResult] ✓ Audio saved:', result.file);
+        this.audioPlayError = `✓ Saved: ${result.file}`;
+      } else {
+        console.error('[SpeechResult] Backend error:', response.responseCode);
+        this.audioPlayError = 'Failed to save audio';
+      }
+      httpClient.destroy();
+    } catch (error) {
+      console.error('[SpeechResult] ❌ Save failed:', error);
+      this.audioPlayError = 'Error saving to Desktop';
+    } finally {
+      this.isPlayingAudio = false;
+    }
+  }
+
 
   build() {
     Column() {
       // ── Header ──────────────────────────────────────────────────────────────
       Row() {
         Text('←')
-          .fontSize(16)
+          .fontSize(18)
           .fontColor('#8B949E')
           .onClick(() => router.back())
-          .padding({ left: 12, right: 8 })
-        Text('Translation')
-          .fontSize(14)
+          .padding({ left: 8, right: 8 })
+        Text('Translation Result')
+          .fontSize(13)
           .fontWeight(FontWeight.Bold)
-          .fontColor('#FFFFFF')
+          .fontColor('#E6EDF3')
           .layoutWeight(1)
           .textAlign(TextAlign.Center)
-          .margin({ right: 32 })
       }
       .width('100%')
       .height(40)
       .alignItems(VerticalAlign.Center)
 
-      Divider().color('#21262D').strokeWidth(0.5)
+      Divider().color('#21262D')
 
       Scroll() {
-        Column({ space: 10 }) {
+        Column({ space: 8 }) {
 
-          // ── THEY SAID — original language transcript ───────────────────────
+          // ── Original transcript (if available) ────────────────────────────────
           if (this.response.transcript) {
-            Column({ space: 5 }) {
-              Text('THEY SAID')
+            Column({ space: 3 }) {
+              Text('They said:')
                 .fontSize(9)
                 .fontColor('#8B949E')
-                .letterSpacing(1.5)
               Text(`"${this.response.transcript}"`)
-                .fontSize(12)
+                .fontSize(10)
                 .fontColor('#C9D1D9')
                 .fontStyle(FontStyle.Italic)
                 .textAlign(TextAlign.Center)
-                .width('86%')
-                .lineHeight(18)
+                .width('90%')
+                .lineHeight(16)
             }
             .width('100%')
-            .padding({ top: 10, bottom: 10, left: 4, right: 4 })
-            .backgroundColor('#161B22')
-            .borderRadius(10)
             .alignItems(HorizontalAlign.Center)
-            .margin({ left: 16, right: 16, top: 8 })
+            .padding({ top: 8, bottom: 6 })
+
+            Divider().color('#21262D').width('70%')
           }
 
-          // ── TRANSLATION — English meaning ─────────────────────────────────
+          // ── Translation (English) ──────────────────────────────────────────────
           if (this.response.translationEnglish) {
-            Column({ space: 5 }) {
-              Text('TRANSLATION')
+            Column({ space: 6 }) {
+              Text('Translation:')
                 .fontSize(9)
                 .fontColor('#8B949E')
-                .letterSpacing(1.5)
               Text(this.response.translationEnglish)
-                .fontSize(14)
+                .fontSize(12)
                 .fontWeight(FontWeight.Bold)
-                .fontColor('#FFFFFF')
+                .fontColor('#E6EDF3')
                 .textAlign(TextAlign.Center)
-                .width('86%')
-                .lineHeight(20)
+                .width('90%')
+                .lineHeight(18)
+
+              // Play TTS button
+              Button('▶ Play Audio')
+                .onClick(() => this.playTtsAudio())
+                .enabled(!this.isPlayingAudio)
+                .backgroundColor(this.isPlayingAudio ? '#21262D' : '#238636')
+                .fontColor('#FFFFFF')
+                .fontSize(10)
+                .width('70%')
+                .height(32)
+                .margin({ top: 6 })
+
+              // Audio error or playing indicator
+              if (this.audioPlayError) {
+                Text(this.audioPlayError)
+                  .fontSize(9)
+                  .fontColor('#FF4444')
+              } else if (this.isPlayingAudio) {
+                Text('Playing audio...')
+                  .fontSize(9)
+                  .fontColor('#00E5C8')
+              }
             }
             .width('100%')
-            .padding({ top: 10, bottom: 12, left: 4, right: 4 })
+            .padding(10)
             .backgroundColor('#161B22')
-            .borderRadius(10)
+            .borderRadius(6)
             .alignItems(HorizontalAlign.Center)
-            .margin({ left: 16, right: 16 })
+            .margin({ left: 8, right: 8, top: 4, bottom: 6 })
           }
 
-          // ── REPLY SUGGESTIONS ─────────────────────────────────────────────
+          // ── Japanese reply suggestions ─────────────────────────────────────────
           if (this.response.replySuggestionsJapanese && this.response.replySuggestionsJapanese.length > 0) {
             Column({ space: 8 }) {
-              Text(`REPLY IN ${this.languageName.toUpperCase()}`)
+              Text('Reply (Japanese):')
                 .fontSize(9)
                 .fontColor('#8B949E')
-                .letterSpacing(1.5)
 
-              // Current reply — teal, prominent
-              Text(this.response.replySuggestionsJapanese[this.selectedIdx] || '')
-                .fontSize(13)
-                .fontWeight(FontWeight.Bold)
+              // Display current selected suggestion directly from array
+              Text(this.response.replySuggestionsJapanese[this.selectedIdx] || 'No suggestion')
+                .fontSize(11)
                 .fontColor('#00E5C8')
                 .textAlign(TextAlign.Center)
-                .width('86%')
-                .lineHeight(19)
-                .padding({ top: 10, bottom: 10, left: 8, right: 8 })
-                .backgroundColor('#0A1E1A')
-                .borderRadius(8)
+                .width('95%')
+                .lineHeight(16)
+                .padding({ top: 8, bottom: 8, left: 4, right: 4 })
+                .backgroundColor('#0D2818')
+                .borderRadius(4)
 
-              // English hint below (if available and different from local)
-              if (this.response.suggestionTranslations &&
-                  this.response.suggestionTranslations.length > this.selectedIdx &&
-                  this.response.suggestionTranslations[this.selectedIdx] &&
-                  this.response.replySuggestionsJapanese[this.selectedIdx] !== this.response.suggestionTranslations[this.selectedIdx]) {
+              // Display English translation below
+              if (this.response.suggestionTranslations && this.response.suggestionTranslations.length > this.selectedIdx) {
                 Text(this.response.suggestionTranslations[this.selectedIdx])
                   .fontSize(9)
-                  .fontColor('#6E7681')
+                  .fontColor('#8B949E')
                   .textAlign(TextAlign.Center)
-                  .width('80%')
+                  .width('95%')
+                  .lineHeight(14)
+                  .padding({ top: 4, bottom: 4 })
               }
 
-              // < > navigation
+              // Pagination indicator
               if (this.response.replySuggestionsJapanese.length > 1) {
-                Row({ space: 20 }) {
-                  Button('<')
-                    .onClick(() => { if (this.selectedIdx > 0) this.selectedIdx -= 1; })
-                    .backgroundColor(this.selectedIdx > 0 ? '#00C4AE' : '#1C2430')
-                    .fontColor(this.selectedIdx > 0 ? '#0D1117' : '#444C56')
-                    .fontSize(16)
-                    .fontWeight(FontWeight.Bold)
-                    .width(36)
-                    .height(36)
-                    .borderRadius(18)
+                Text(`${this.selectedIdx + 1} / ${this.response.replySuggestionsJapanese.length}`)
+                  .fontSize(8)
+                  .fontColor('#8B949E')
+              }
 
-                  Text(`${this.selectedIdx + 1} / ${this.response.replySuggestionsJapanese.length}`)
-                    .fontSize(9)
-                    .fontColor('#8B949E')
+              // Navigation buttons (smaller for circular screen)
+              if (this.response.replySuggestionsJapanese.length > 1) {
+                Row({ space: 8 }) {
+                  Button('‹')
+                    .onClick(() => {
+                      if (this.selectedIdx > 0) this.selectedIdx -= 1;
+                    })
+                    .backgroundColor(this.selectedIdx > 0 ? '#21262D' : '#0D1117')
+                    .fontColor(this.selectedIdx > 0 ? '#E6EDF3' : '#21262D')
+                    .fontSize(14)
+                    .width('32%')
+                    .height(28)
+                    .enabled(this.selectedIdx > 0)
 
-                  Button('>')
+                  Button('›')
                     .onClick(() => {
                       if (this.selectedIdx < this.response.replySuggestionsJapanese.length - 1) {
                         this.selectedIdx += 1;
                       }
                     })
-                    .backgroundColor(this.selectedIdx < this.response.replySuggestionsJapanese.length - 1 ? '#00C4AE' : '#1C2430')
-                    .fontColor(this.selectedIdx < this.response.replySuggestionsJapanese.length - 1 ? '#0D1117' : '#444C56')
-                    .fontSize(16)
-                    .fontWeight(FontWeight.Bold)
-                    .width(36)
-                    .height(36)
-                    .borderRadius(18)
+                    .backgroundColor(this.selectedIdx < this.response.replySuggestionsJapanese.length - 1 ? '#21262D' : '#0D1117')
+                    .fontColor(this.selectedIdx < this.response.replySuggestionsJapanese.length - 1 ? '#E6EDF3' : '#21262D')
+                    .fontSize(14)
+                    .width('32%')
+                    .height(28)
+                    .enabled(this.selectedIdx < this.response.replySuggestionsJapanese.length - 1)
                 }
                 .width('100%')
                 .justifyContent(FlexAlign.Center)
               }
             }
             .width('100%')
-            .padding({ top: 10, bottom: 12, left: 4, right: 4 })
+            .padding(10)
             .backgroundColor('#161B22')
-            .borderRadius(10)
+            .borderRadius(6)
             .alignItems(HorizontalAlign.Center)
-            .margin({ left: 16, right: 16, bottom: 10 })
+            .margin({ left: 8, right: 8, top: 4, bottom: 8 })
           }
+
+          Text('← Swipe or tap back')
+            .fontSize(8)
+            .fontColor('#6E7681')
+            .margin({ top: 4, bottom: 8 })
         }
         .width('100%')
         .alignItems(HorizontalAlign.Center)
       }
       .layoutWeight(1)
-      .scrollBar(BarState.Off)
-      .edgeEffect(EdgeEffect.Spring)
-      .friction(0.85)
     }
     .width('100%')
     .height('100%')
     .backgroundColor('#0D1117')
     .gesture(
       PanGesture({ direction: PanDirection.Right, distance: 50 })
-        .onActionEnd(() => router.back())
+        .onActionEnd(() => {
+          router.back();
+        })
     )
   }
 }
