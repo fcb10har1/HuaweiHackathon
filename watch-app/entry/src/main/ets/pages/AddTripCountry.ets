@@ -1,5 +1,5 @@
 /**
- * AddTripCountry.ets — Step 1: select destination country
+ * AddTripCountry.ets — Step 2: select destination country
  */
 import router from '@ohos.router';
 import { SUPPORTED_COUNTRIES, CountryEntry } from '../common/Types';
@@ -7,6 +7,9 @@ import { SUPPORTED_COUNTRIES, CountryEntry } from '../common/Types';
 @Entry
 @Component
 struct AddTripCountry {
+  private params: Record<string, string> = router.getParams() as Record<string, string>;
+  private tripName: string = this.params['tripName'] ?? '';
+
   build() {
     Column() {
       // ── Header ──────────────────────────────────────────────────────────────
@@ -16,8 +19,8 @@ struct AddTripCountry {
           .fontColor('#8B949E')
           .onClick(() => router.back())
           .padding({ left: 10, right: 8 })
-        Text('Select Country')
-          .fontSize(13)
+        Text('Where are you going?')
+          .fontSize(12)
           .fontWeight(FontWeight.Bold)
           .fontColor('#E6EDF3')
           .layoutWeight(1)
@@ -59,6 +62,7 @@ struct AddTripCountry {
               router.pushUrl({
                 url: 'pages/AddTripDates',
                 params: {
+                  tripName:       this.tripName,
                   countryCode:    entry.code,
                   countryName:    entry.name,
                   flag:           entry.flag,

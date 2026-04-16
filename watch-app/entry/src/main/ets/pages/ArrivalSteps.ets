@@ -104,105 +104,147 @@ struct ArrivalSteps {
             .margin({ top: 8 })
         }
         .width('100%')
-        .layoutWeight(1)
-        .justifyContent(FlexAlign.Center)
-        .alignItems(HorizontalAlign.Center)
+        .height(32)
+        .alignItems(VerticalAlign.Center)
 
-      } else if (this.steps.length === 0) {
-        Column({ space: 8 }) {
-          Text('No steps available')
-            .fontSize(12)
-            .fontColor('#8B949E')
-          Button('Back')
-            .onClick(() => router.back())
-            .backgroundColor('#21262D')
-            .fontColor('#8B949E')
-            .fontSize(10)
-            .height(30)
-            .width('55%')
-            .margin({ top: 8 })
-        }
-        .width('100%')
-        .layoutWeight(1)
-        .justifyContent(FlexAlign.Center)
-        .alignItems(HorizontalAlign.Center)
+        Divider().color('#21262D').strokeWidth(0.5)
 
-      } else {
-        List({ space: 8 }) {
-          ForEach(this.steps, (step: ArrivalStep, idx: number) => {
-            ListItem() {
-              Row({ space: 10 }) {
-                // Tick circle
-                Text(this.completedSteps[idx] ? '✓' : '')
-                  .fontSize(13)
-                  .fontColor('#0D1117')
-                  .width(28)
-                  .height(28)
+        // ── Loading ──────────────────────────────────────────────────────────
+        if (this.loading) {
+          Column() {
+            LoadingProgress().color('#00E5C8').width(32).height(32)
+            Text('Loading steps...')
+              .fontSize(11)
+              .fontColor('#8B949E')
+              .margin({ top: 8 })
+          }
+          .width('100%')
+          .layoutWeight(1)
+          .justifyContent(FlexAlign.Center)
+          .alignItems(HorizontalAlign.Center)
+
+        // ── No steps ────────────────────────────────────────────────────────
+        } else if (this.steps.length === 0) {
+          Column() {
+            Text('No steps available')
+              .fontSize(13)
+              .fontColor('#8B949E')
+          }
+          .width('100%')
+          .layoutWeight(1)
+          .justifyContent(FlexAlign.Center)
+          .alignItems(HorizontalAlign.Center)
+
+        // ── Complete ─────────────────────────────────────────────────────────
+        } else if (this.currentIdx >= this.steps.length) {
+          Column({ space: 10 }) {
+            // Teal checkmark circle — no emoji
+            Text('✓')
+              .fontSize(24)
+              .fontColor('#0D1117')
+              .width(54)
+              .height(54)
+              .textAlign(TextAlign.Center)
+              .lineHeight(54)
+              .backgroundColor('#00E5C8')
+              .borderRadius(27)
+
+            Text('All Done')
+              .fontSize(16)
+              .fontWeight(FontWeight.Bold)
+              .fontColor('#FFFFFF')
+
+            Text('Arrival checklist complete')
+              .fontSize(10)
+              .fontColor('#8B949E')
+              .textAlign(TextAlign.Center)
+
+            Button('Back to Trip')
+              .onClick(() => router.back())
+              .backgroundColor('#21262D')
+              .fontColor('#8B949E')
+              .fontSize(10)
+              .width('62%')
+              .height(32)
+              .margin({ top: 6 })
+          }
+          .width('100%')
+          .layoutWeight(1)
+          .justifyContent(FlexAlign.Center)
+          .alignItems(HorizontalAlign.Center)
+
+        // ── Current step ──────────────────────────────────────────────────────
+        } else {
+          Column() {
+
+            // Title — teal, no box
+            Text(this.steps[this.currentIdx]?.title ?? '')
+              .fontSize(13)
+              .fontWeight(FontWeight.Bold)
+              .fontColor('#00E5C8')
+              .textAlign(TextAlign.Center)
+              .width('86%')
+              .lineHeight(20)
+              .padding({ top: 10, bottom: 6 })
+
+            // Scrollable description — fills all remaining space
+            Scroll() {
+              Column() {
+                Text(this.steps[this.currentIdx]?.description ?? '')
+                  .fontSize(10)
+                  .fontColor('#C9D1D9')
                   .textAlign(TextAlign.Center)
-                  .lineHeight(28)
-                  .backgroundColor(this.completedSteps[idx] ? '#00E5C8' : 'transparent')
-                  .borderRadius(14)
-                  .border({
-                    width: 1.5,
-                    color: this.completedSteps[idx] ? '#00E5C8' : '#3A4A5C',
-                    style: BorderStyle.Solid,
-                  })
-                  .onClick(() => this.toggleStep(idx))
-                  .flexShrink(0)
+                  .width('86%')
+                  .lineHeight(16)
 
-                // Step text
-                Column({ space: 3 }) {
-                  Text(step.title)
-                    .fontSize(11)
-                    .fontWeight(FontWeight.Bold)
-                    .fontColor(this.completedSteps[idx] ? '#4A5568' : '#E6EDF3')
-                    .lineHeight(16)
-                    .decoration(this.completedSteps[idx]
-                      ? { type: TextDecorationType.LineThrough, color: '#4A5568' }
-                      : { type: TextDecorationType.None })
-
-                  if (step.description) {
-                    Text(step.description)
-                      .fontSize(9)
-                      .fontColor(this.completedSteps[idx] ? '#3A4450' : '#8B949E')
-                      .lineHeight(13)
-                      .maxLines(3)
-                      .textOverflow({ overflow: TextOverflow.Ellipsis })
-                  }
-                }
-                .layoutWeight(1)
-                .alignItems(HorizontalAlign.Start)
+                // Bottom spacer so last line stays above the nav buttons
+                Text('').height(56)
               }
               .width('100%')
-              .padding({ left: 10, right: 10, top: 10, bottom: 10 })
-              .backgroundColor(this.completedSteps[idx] ? '#0D120D' : '#161B22')
-              .borderRadius(10)
-              .alignItems(VerticalAlign.Center)
-            }
-          })
-
-          // All done footer
-          ListItem() {
-            if (this.completedCount === this.steps.length) {
-              Column({ space: 6 }) {
-                Text('All Done')
-                  .fontSize(13)
-                  .fontWeight(FontWeight.Bold)
-                  .fontColor('#00E5C8')
-                Button('Back to Trip')
-                  .onClick(() => router.back())
-                  .backgroundColor('#00C4AE')
-                  .fontColor('#0D1117')
-                  .fontSize(11)
-                  .fontWeight(FontWeight.Bold)
-                  .height(34)
-                  .width('65%')
-              }
-              .width('100%')
-              .padding({ top: 12, bottom: 12 })
               .alignItems(HorizontalAlign.Center)
             }
+            .layoutWeight(1)
+            .width('100%')
+            .scrollBar(BarState.Off)
+            .edgeEffect(EdgeEffect.Spring)
+            .friction(0.85)
+
+            // ── Fixed < > nav buttons ──────────────────────────────────────
+            Row({ space: 32 }) {
+              // < Previous
+              Text('<')
+                .fontSize(20)
+                .fontColor('#FFFFFF')
+                .fontWeight(FontWeight.Bold)
+                .width(38)
+                .height(38)
+                .textAlign(TextAlign.Center)
+                .lineHeight(38)
+                .backgroundColor(this.currentIdx > 0 ? '#00C4AE' : '#1C2430')
+                .borderRadius(19)
+                .onClick(() => { if (this.currentIdx > 0) this.currentIdx -= 1; })
+
+              // > Next
+              Text('>')
+                .fontSize(20)
+                .fontColor('#FFFFFF')
+                .fontWeight(FontWeight.Bold)
+                .width(38)
+                .height(38)
+                .textAlign(TextAlign.Center)
+                .lineHeight(38)
+                .backgroundColor('#00C4AE')
+                .borderRadius(19)
+                .onClick(() => { this.currentIdx += 1; })
+            }
+            .width('100%')
+            .justifyContent(FlexAlign.Center)
+            .padding({ top: 6, bottom: 12 })
+
           }
+          .width('100%')
+          .layoutWeight(1)
+          .alignItems(HorizontalAlign.Center)
         }
         .width('100%')
         .layoutWeight(1)
