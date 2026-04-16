@@ -15,43 +15,44 @@
       "icon": "✈️",
       "description": "Immigration, customs, and arrival procedures",
       "geofence": "airport_arrivals",
-      "locationKeywords": ["airport", "arrivals", "terminal", "narita", "haneda", "kansai"],
+      "locationKeywords": [
+        "airport",
+        "arrivals",
+        "terminal",
+        "narita",
+        "haneda",
+        "kansai"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "Complete Visit Japan Web / Arrival Card",
-          "description": "Before or on the flight, register on Visit Japan Web (vjw-lp.digital.go.jp) to pre-register your immigration and customs info, or fill out the paper Disembarkation Card for Foreigner provided on board. Provide name, passport number, flight number, intended address in Japan, and purpose of visit.",
-          "riskLevel": "NORM"
+          "description": "Before or on the flight, register on Visit Japan Web (vjw-lp.digital.go.jp) to pre-register your immigration and customs info, or fill out the paper Disembarkation Card for Foreigner provided on board. Provide name, passport number, flight number, intended address in Japan, and purpose of visit."
         },
         {
           "stepIndex": 1,
           "title": "Quarantine / Health Screening",
-          "description": "Proceed through the health/quarantine checkpoint after deplaning. COVID-era requirements have been lifted as of 2024. Declare any restricted items (fresh produce, meat) on your customs form.",
-          "riskLevel": "NORM"
+          "description": "Proceed through the health/quarantine checkpoint after deplaning. COVID-era requirements have been lifted as of 2024. Declare any restricted items (fresh produce, meat) on your customs form."
         },
         {
           "stepIndex": 2,
           "title": "Immigration (Passport Control)",
-          "description": "Join the foreigner queue at Immigration Control. Present your passport, disembarkation card (or Visit Japan Web QR code), and any required visa. All visitors aged 16+ must provide fingerprint scans and a facial photograph.",
-          "riskLevel": "SENSITIVE"
+          "description": "Join the foreigner queue at Immigration Control. Present your passport, disembarkation card (or Visit Japan Web QR code), and any required visa. All visitors aged 16+ must provide fingerprint scans and a facial photograph."
         },
         {
           "stepIndex": 3,
           "title": "Baggage Claim",
-          "description": "Collect your checked baggage from the designated carousel. Keep your baggage claim tags as officers may check them against bags before you exit the hall.",
-          "riskLevel": "NORM"
+          "description": "Collect your checked baggage from the designated carousel. Keep your baggage claim tags as officers may check them against bags before you exit the hall."
         },
         {
           "stepIndex": 4,
           "title": "Customs Declaration",
-          "description": "Submit the Customs Declaration form (one per family). Declare cash exceeding JPY 1,000,000, gifts over JPY 200,000 duty-free value, and any restricted goods. The Visit Japan Web QR code can be used for the electronic declaration lane.",
-          "riskLevel": "LEGAL"
+          "description": "Submit the Customs Declaration form (one per family). Declare cash exceeding JPY 1,000,000, gifts over JPY 200,000 duty-free value, and any restricted goods. The Visit Japan Web QR code can be used for the electronic declaration lane."
         },
         {
           "stepIndex": 5,
           "title": "Plant / Animal Quarantine (if applicable)",
-          "description": "If carrying fresh fruit, vegetables, meat, or live animals, present them at the Quarantine counter before the customs exit. Undeclared prohibited agricultural items can result in fines or deportation.",
-          "riskLevel": "LEGAL"
+          "description": "If carrying fresh fruit, vegetables, meat, or live animals, present them at the Quarantine counter before the customs exit. Undeclared prohibited agricultural items can result in fines or deportation."
         }
       ],
       "fallbackAlerts": [
@@ -95,25 +96,32 @@
       "icon": "⛩️",
       "description": "Sacred sites, dress codes, and ritual etiquette",
       "geofence": "temple_zone",
-      "locationKeywords": ["temple", "shrine", "jinja", "torii", "senso", "fushimi", "kinkaku", "meiji", "sacred"],
+      "locationKeywords": [
+        "temple",
+        "shrine",
+        "jinja",
+        "torii",
+        "senso",
+        "fushimi",
+        "kinkaku",
+        "meiji",
+        "sacred"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "Remove Shoes if Required",
-          "description": "Look for a sign or a rack of shoes. If present, remove yours before entering the inner hall.",
-          "riskLevel": "SENSITIVE"
+          "description": "Look for a sign or a rack of shoes. If present, remove yours before entering the inner hall."
         },
         {
           "stepIndex": 1,
           "title": "Purify at the Temizuya",
-          "description": "At the water basin, rinse left hand, right hand, then mouth (do not drink). Use the ladle.",
-          "riskLevel": "NORM"
+          "description": "At the water basin, rinse left hand, right hand, then mouth (do not drink). Use the ladle."
         },
         {
           "stepIndex": 2,
           "title": "Bow at the Torii Gate",
-          "description": "Bow once before passing through the torii gate as a sign of respect.",
-          "riskLevel": "NORM"
+          "description": "Bow once before passing through the torii gate as a sign of respect."
         }
       ],
       "fallbackAlerts": [
@@ -152,25 +160,31 @@
       "icon": "🚕",
       "description": "Taxis, trains, and transit etiquette",
       "geofence": "taxi_stand",
-      "locationKeywords": ["taxi", "cab", "transport", "train", "station", "shinkansen", "metro", "subway"],
+      "locationKeywords": [
+        "taxi",
+        "cab",
+        "transport",
+        "train",
+        "station",
+        "shinkansen",
+        "metro",
+        "subway"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "Do Not Open the Door",
-          "description": "Taxi doors in Japan open and close automatically. Never touch the door handle.",
-          "riskLevel": "NORM"
+          "description": "Taxi doors in Japan open and close automatically. Never touch the door handle."
         },
         {
           "stepIndex": 1,
           "title": "Show the Address in Japanese",
-          "description": "Most drivers do not speak English. Show a printed or phone address in Japanese characters.",
-          "riskLevel": "NORM"
+          "description": "Most drivers do not speak English. Show a printed or phone address in Japanese characters."
         },
         {
           "stepIndex": 2,
           "title": "No Eating or Calls in Trains",
-          "description": "Eating and loud phone calls are strongly discouraged on trains and buses.",
-          "riskLevel": "SENSITIVE"
+          "description": "Eating and loud phone calls are strongly discouraged on trains and buses."
         }
       ],
       "fallbackAlerts": [
@@ -209,19 +223,26 @@
       "icon": "🍜",
       "description": "Dining customs, tipping culture, and table etiquette",
       "geofence": "restaurant_zone",
-      "locationKeywords": ["restaurant", "izakaya", "ramen", "sushi", "kaiseki", "dining", "food", "eat"],
+      "locationKeywords": [
+        "restaurant",
+        "izakaya",
+        "ramen",
+        "sushi",
+        "kaiseki",
+        "dining",
+        "food",
+        "eat"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "Do Not Tip",
-          "description": "Tipping is not customary in Japan and may be refused or cause embarrassment.",
-          "riskLevel": "SENSITIVE"
+          "description": "Tipping is not customary in Japan and may be refused or cause embarrassment."
         },
         {
           "stepIndex": 1,
           "title": "Say 'Itadakimasu' Before Eating",
-          "description": "This phrase (いただきます) expresses gratitude before a meal. It is polite to say it.",
-          "riskLevel": "NORM"
+          "description": "This phrase (いただきます) expresses gratitude before a meal. It is polite to say it."
         }
       ],
       "fallbackAlerts": [
@@ -255,19 +276,24 @@
       "icon": "🛂",
       "description": "Passport control and visa requirements",
       "geofence": "airport_immigration",
-      "locationKeywords": ["immigration", "customs", "border", "passport", "visa", "control"],
+      "locationKeywords": [
+        "immigration",
+        "customs",
+        "border",
+        "passport",
+        "visa",
+        "control"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "Biometric Registration",
-          "description": "All visitors must provide fingerprints and a photo at immigration. This is mandatory.",
-          "riskLevel": "LEGAL"
+          "description": "All visitors must provide fingerprints and a photo at immigration. This is mandatory."
         },
         {
           "stepIndex": 1,
           "title": "Declare Medications",
-          "description": "Some medications common abroad (e.g. pseudoephedrine, certain ADHD drugs) are illegal in Japan. Declare them.",
-          "riskLevel": "LEGAL"
+          "description": "Some medications common abroad (e.g. pseudoephedrine, certain ADHD drugs) are illegal in Japan. Declare them."
         }
       ],
       "fallbackAlerts": [

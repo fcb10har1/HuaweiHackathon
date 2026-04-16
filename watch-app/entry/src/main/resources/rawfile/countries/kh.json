@@ -15,43 +15,44 @@
       "icon": "✈️",
       "description": "Immigration and customs at Cambodian airports",
       "geofence": "airport_arrivals",
-      "locationKeywords": ["airport", "arrivals", "terminal", "phnom penh", "siem reap", "sihanoukville"],
+      "locationKeywords": [
+        "airport",
+        "arrivals",
+        "terminal",
+        "phnom penh",
+        "siem reap",
+        "sihanoukville"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "Visa / e-Visa Preparation",
-          "description": "Apply for a Cambodian e-Visa (Tourist T class, USD 30 + USD 6 processing fee, 30-day single entry) at evisa.gov.kh at least 3 business days before arrival. Alternatively, Visa on Arrival (USD 30 for tourist) is available at Phnom Penh, Siem Reap, and Sihanoukville international airports. ASEAN citizens are visa-exempt.",
-          "riskLevel": "LEGAL"
+          "description": "Apply for a Cambodian e-Visa (Tourist T class, USD 30 fee, 30-day single entry) at evisa.gov.kh at least 3 business days before arrival. Alternatively, Visa on Arrival (USD 30 for tourist) is available at Phnom Penh, Siem Reap, and Sihanoukville international airports. ASEAN citizens are visa-exempt."
         },
         {
           "stepIndex": 1,
           "title": "Health Declaration",
-          "description": "Complete the health declaration form if required at your point of entry. Yellow fever certificate is mandatory if arriving from or via a yellow fever endemic country.",
-          "riskLevel": "NORM"
+          "description": "Complete the health declaration form if required at your point of entry. Yellow fever certificate is mandatory if arriving from or via a yellow fever endemic country."
         },
         {
           "stepIndex": 2,
           "title": "Arrival Card Completion",
-          "description": "Fill in the Cambodian arrival/departure card (available on the aircraft or at the terminal). Provide your passport details, flight number, Cambodian accommodation address, and purpose of visit.",
-          "riskLevel": "NORM"
+          "description": "Fill in the Cambodian arrival/departure card (available on the aircraft or at the terminal). Provide your passport details, flight number, Cambodian accommodation address, and purpose of visit."
         },
         {
           "stepIndex": 3,
           "title": "Passport Control / Immigration",
-          "description": "Join the foreigner queue and present your passport, e-Visa or VOA receipt, and completed arrival card. Officers will photograph you and may fingerprint you. Your passport will be stamped with the permitted duration of stay (typically 30 days).",
-          "riskLevel": "SENSITIVE"
+          "description": "Join the foreigner queue and present your passport, e-Visa or VOA receipt, and completed arrival card. Officers will photograph you and may fingerprint you. Your passport will be stamped with the permitted duration of stay (typically 30 days)."
         },
         {
           "stepIndex": 4,
           "title": "Baggage Claim",
-          "description": "Collect luggage from the carousel. Baggage may be screened by X-ray before you exit the customs zone.",
-          "riskLevel": "NORM"
+          "description": "Collect luggage from the carousel. Baggage may be screened by X-ray before you exit the customs zone."
         },
         {
           "stepIndex": 5,
           "title": "Customs Declaration",
-          "description": "Duty-free: 200 cigarettes or 50 cigars, 1L of spirits, and USD 200 in goods. Declare cash exceeding USD 10,000. Prohibited: narcotics, pornographic material, and weapons. Note: unofficial 'processing fees' are sometimes requested at land borders — these are not legally required.",
-          "riskLevel": "LEGAL"
+          "description": "Duty-free: 200 cigarettes or 50 cigars, 1L of spirits, and USD 200 in goods. Declare cash exceeding USD 10,000. Prohibited: narcotics, pornographic material, and weapons. Note: unofficial 'processing fees' are sometimes requested at land borders — these are not legally required."
         }
       ],
       "fallbackAlerts": [
@@ -85,25 +86,31 @@
       "icon": "🏯",
       "description": "Angkor Wat and Khmer temple etiquette",
       "geofence": "temple_zone",
-      "locationKeywords": ["temple", "angkor", "wat", "khmer", "bayon", "ta prohm", "preah", "sacred"],
+      "locationKeywords": [
+        "temple",
+        "angkor",
+        "wat",
+        "khmer",
+        "bayon",
+        "ta prohm",
+        "preah",
+        "sacred"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "Angkor Pass Required",
-          "description": "Purchase your Angkor Archaeological Pass before entering Angkor Wat (1-day $37 USD, 3-day $62 USD). Checks are strict.",
-          "riskLevel": "LEGAL"
+          "description": "Purchase your Angkor Archaeological Pass before entering Angkor Wat (1-day $37 USD, 3-day $62 USD). Checks are strict."
         },
         {
           "stepIndex": 1,
           "title": "Dress Code Strictly Enforced",
-          "description": "Shoulders and knees must be covered to enter Angkor Wat's inner sanctuary. Guards will turn you away.",
-          "riskLevel": "SENSITIVE"
+          "description": "Shoulders and knees must be covered to enter Angkor Wat's inner sanctuary. Guards will turn you away."
         },
         {
           "stepIndex": 2,
           "title": "Do Not Climb Restricted Areas",
-          "description": "Several structures are off-limits for climbing. Fines and expulsion from the park apply.",
-          "riskLevel": "LEGAL"
+          "description": "Several structures are off-limits for climbing. Fines and expulsion from the park apply."
         }
       ],
       "fallbackAlerts": [
@@ -142,19 +149,26 @@
       "icon": "🛺",
       "description": "Tuk-tuk negotiation and transport safety in Cambodia",
       "geofence": "taxi_stand",
-      "locationKeywords": ["taxi", "tuk-tuk", "tuktuk", "transport", "grab", "passapp", "cab", "ride"],
+      "locationKeywords": [
+        "taxi",
+        "tuk-tuk",
+        "tuktuk",
+        "transport",
+        "grab",
+        "passapp",
+        "cab",
+        "ride"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "Negotiate Before You Board",
-          "description": "Always agree on a fare before getting into a tuk-tuk. There are no meters. Grab and PassApp offer fixed prices.",
-          "riskLevel": "NORM"
+          "description": "Always agree on a fare before getting into a tuk-tuk. There are no meters. Grab and PassApp offer fixed prices."
         },
         {
           "stepIndex": 1,
           "title": "USD is Widely Accepted",
-          "description": "USD and Cambodian Riel are both accepted everywhere. Change is often given in Riel.",
-          "riskLevel": "NORM"
+          "description": "USD and Cambodian Riel are both accepted everywhere. Change is often given in Riel."
         }
       ],
       "fallbackAlerts": [

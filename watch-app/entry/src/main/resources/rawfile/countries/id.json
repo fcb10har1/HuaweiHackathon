@@ -15,43 +15,46 @@
       "icon": "✈️",
       "description": "Immigration and customs in Indonesia",
       "geofence": "airport_arrivals",
-      "locationKeywords": ["airport", "arrivals", "terminal", "soetta", "ngurah rai", "bali", "halim", "juanda"],
+      "locationKeywords": [
+        "airport",
+        "arrivals",
+        "terminal",
+        "soetta",
+        "ngurah rai",
+        "bali",
+        "halim",
+        "juanda"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "Visa / Visa on Arrival (VOA) Preparation",
-          "description": "Citizens of 90+ countries are eligible for the e-VOA paid online at molina.imigrasi.go.id before travel, or at the on-arrival counter at major airports. Cost: IDR 500,000 (approx. USD 30) for a 30-day stay, extendable once. Pre-purchase online to avoid airport queues. Some nationalities receive free visa-free access for 30 days.",
-          "riskLevel": "LEGAL"
+          "description": "Citizens of 97+ countries are eligible for the e-VOA paid online at molina.imigrasi.go.id before travel, or at the on-arrival counter at major airports. Cost: IDR 500,000 (approx. USD 35) for a 30-day stay, extendable once. Pre-purchase online to avoid airport queues. Some nationalities receive free visa-free access for 30 days."
         },
         {
           "stepIndex": 1,
           "title": "Health & Customs e-Declaration",
-          "description": "Complete the Electronic Customs Declaration (CD) via the Indonesian Customs app (Bea Cukai) or the paper form on arrival. At major airports, this is mandated before reaching the baggage carousel.",
-          "riskLevel": "NORM"
+          "description": "Complete the Electronic Customs Declaration (CD) via the All Indonesia platform at allindonesia.imigrasi.go.id"
         },
         {
           "stepIndex": 2,
           "title": "Passport Control / Immigration Counter",
-          "description": "Present your passport and VOA payment receipt (or visa) at the immigration counter. Officers will verify your documents, take a facial photograph, and stamp your passport. Confirm your intended address and duration of stay.",
-          "riskLevel": "SENSITIVE"
+          "description": "Present your passport and VOA payment receipt (or visa) at the immigration counter. Officers will verify your documents, take a facial photograph, and stamp your passport. Confirm your intended address and duration of stay."
         },
         {
           "stepIndex": 3,
           "title": "Biometrics",
-          "description": "Fingerprint scans (both index fingers) and a facial photograph are taken at the immigration counter for all foreign nationals. This is mandatory under Indonesian immigration law.",
-          "riskLevel": "SENSITIVE"
+          "description": "Fingerprint scans (both index fingers) and a facial photograph are taken at the immigration counter for all foreign nationals. This is mandatory under Indonesian immigration law."
         },
         {
           "stepIndex": 4,
           "title": "Baggage Claim",
-          "description": "Collect luggage from the designated carousel. Retain baggage receipts as they are checked at the exit. Random luggage scans are common at Bali and Jakarta airports.",
-          "riskLevel": "NORM"
+          "description": "Collect luggage from the designated carousel. Retain baggage receipts as they are checked at the exit. Random luggage scans are common at Bali and Jakarta airports."
         },
         {
           "stepIndex": 5,
           "title": "Customs Declaration",
-          "description": "Duty-free: goods up to USD 500 per person, 200 cigarettes, 25 cigars or 100g tobacco, 1L alcohol. Declare cash over USD 10,000. Strictly prohibited: narcotics (death penalty enforced), pornographic material, and agricultural products without a phytosanitary certificate.",
-          "riskLevel": "LEGAL"
+          "description": "Duty-free: goods up to USD 500 per person, 200 cigarettes, 25 cigars or 100g tobacco, 1L alcohol. Declare cash over USD 10,000. Strictly prohibited: narcotics (death penalty enforced), pornographic material, and agricultural products without a phytosanitary certificate."
         }
       ],
       "fallbackAlerts": [
@@ -85,25 +88,31 @@
       "icon": "🏯",
       "description": "Balinese Hindu temple etiquette and dress requirements",
       "geofence": "temple_zone",
-      "locationKeywords": ["temple", "pura", "prambanan", "borobudur", "bali", "hinduism", "sacred", "shrine"],
+      "locationKeywords": [
+        "temple",
+        "pura",
+        "prambanan",
+        "borobudur",
+        "bali",
+        "hinduism",
+        "sacred",
+        "shrine"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "Wear a Sarong and Sash",
-          "description": "A sarong and a sash (selendang) must be worn to enter any Balinese Hindu temple. They are available to rent at the entrance.",
-          "riskLevel": "SENSITIVE"
+          "description": "A sarong and a sash (selendang) must be worn to enter any Balinese Hindu temple. They are available to rent at the entrance."
         },
         {
           "stepIndex": 1,
           "title": "Women on Menstruation Must Not Enter",
-          "description": "By Balinese Hindu custom, women who are menstruating should not enter the inner temple. Signs are posted.",
-          "riskLevel": "SENSITIVE"
+          "description": "By Balinese Hindu custom, women who are menstruating should not enter the inner temple. Signs are posted."
         },
         {
           "stepIndex": 2,
           "title": "Never Point Your Feet at Shrines",
-          "description": "Sit with legs folded away from shrines and offerings. Pointing feet at sacred objects is deeply offensive.",
-          "riskLevel": "SENSITIVE"
+          "description": "Sit with legs folded away from shrines and offerings. Pointing feet at sacred objects is deeply offensive."
         }
       ],
       "fallbackAlerts": [
@@ -137,25 +146,29 @@
       "icon": "🕌",
       "description": "Mosque etiquette in the world's largest Muslim-majority country",
       "geofence": "mosque_zone",
-      "locationKeywords": ["mosque", "masjid", "istiqlal", "prayer", "friday prayer", "azan"],
+      "locationKeywords": [
+        "mosque",
+        "masjid",
+        "istiqlal",
+        "prayer",
+        "friday prayer",
+        "azan"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "Cover Up Completely",
-          "description": "Women must cover their hair, arms, and legs. Men must cover from navel to knees at minimum.",
-          "riskLevel": "SENSITIVE"
+          "description": "Women must cover their hair, arms, and legs. Men must cover from navel to knees at minimum."
         },
         {
           "stepIndex": 1,
           "title": "Remove Shoes",
-          "description": "Remove all footwear before entering the prayer hall.",
-          "riskLevel": "SENSITIVE"
+          "description": "Remove all footwear before entering the prayer hall."
         },
         {
           "stepIndex": 2,
           "title": "Do Not Disturb Friday Prayers",
-          "description": "Friday midday (Jumah) prayer is obligatory for Muslim men. Avoid entering mosques during this time unless invited.",
-          "riskLevel": "SENSITIVE"
+          "description": "Friday midday (Jumah) prayer is obligatory for Muslim men. Avoid entering mosques during this time unless invited."
         }
       ],
       "fallbackAlerts": [
@@ -179,19 +192,27 @@
       "icon": "🏖️",
       "description": "Beach laws, surf safety, and coral reef protection",
       "geofence": "beach_zone",
-      "locationKeywords": ["beach", "pantai", "kuta", "seminyak", "lombok", "gili", "island", "sea", "surf"],
+      "locationKeywords": [
+        "beach",
+        "pantai",
+        "kuta",
+        "seminyak",
+        "lombok",
+        "gili",
+        "island",
+        "sea",
+        "surf"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "No Touching Coral",
-          "description": "Touching, breaking, or removing coral is illegal under Indonesian environmental law.",
-          "riskLevel": "LEGAL"
+          "description": "Touching, breaking, or removing coral is illegal under Indonesian environmental law."
         },
         {
           "stepIndex": 1,
           "title": "Public Displays of Affection",
-          "description": "Kissing or embracing in public on beaches can cause offence. Be modest in non-resort areas.",
-          "riskLevel": "SENSITIVE"
+          "description": "Kissing or embracing in public on beaches can cause offence. Be modest in non-resort areas."
         }
       ],
       "fallbackAlerts": [

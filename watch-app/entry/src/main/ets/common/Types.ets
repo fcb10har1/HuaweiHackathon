@@ -18,7 +18,6 @@ export interface ArrivalStep {
   stepIndex: number;
   title: string;
   description: string;
-  riskLevel: string;
 }
 
 export interface Phrase {

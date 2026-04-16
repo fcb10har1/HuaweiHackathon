@@ -15,43 +15,47 @@
       "icon": "✈️",
       "description": "Immigration, customs, and arrival at Changi",
       "geofence": "airport_arrivals",
-      "locationKeywords": ["airport", "arrivals", "terminal", "changi", "jewel", "t1", "t2", "t3", "t4"],
+      "locationKeywords": [
+        "airport",
+        "arrivals",
+        "terminal",
+        "changi",
+        "jewel",
+        "t1",
+        "t2",
+        "t3",
+        "t4"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "SG Arrival Card (SGAC) Submission",
-          "description": "All visitors must submit the SG Arrival Card with health declaration via the ICA website (ica.gov.sg/arrive) or the MyICA mobile app within 3 days before arrival. This is mandatory and replaces the paper disembarkation card. Failure to submit is a legal offence.",
-          "riskLevel": "LEGAL"
+          "description": "All visitors must submit the SG Arrival Card with health declaration via the ICA website (ica.gov.sg/arrive) or the MyICA mobile app within 3 days before arrival. This is mandatory and replaces the paper disembarkation card. Failure to submit is a legal offence."
         },
         {
           "stepIndex": 1,
           "title": "Passport Control / Automated Clearance",
-          "description": "Many nationalities from visa-exempt countries can use Automated Immigration Lanes (e-Gates) with a biometric passport. First-time visitors may need to enroll fingerprints at a manual counter. Present your passport and SGAC confirmation QR code.",
-          "riskLevel": "SENSITIVE"
+          "description": "Many nationalities from visa-exempt countries can use Automated Immigration Lanes (e-Gates) with a biometric passport. First-time visitors may need to enroll fingerprints at a manual counter. Present your passport and SGAC confirmation QR code."
         },
         {
           "stepIndex": 2,
           "title": "Biometric Enrollment (first-time visitors)",
-          "description": "First-time visitors at manual counters will have fingerprints and a facial photograph captured. Returning visitors with stored biometrics can use Automated Immigration Lanes for faster clearance.",
-          "riskLevel": "SENSITIVE"
+          "description": "First-time visitors at manual counters will have fingerprints and a facial photograph captured. Returning visitors with stored biometrics can use Automated Immigration Lanes for faster clearance."
         },
         {
           "stepIndex": 3,
           "title": "Baggage Claim",
-          "description": "Collect luggage from the assigned carousel in the baggage hall. Random baggage screening is conducted by Singapore Customs X-ray before the exit.",
-          "riskLevel": "NORM"
+          "description": "Collect luggage from the assigned carousel in the baggage hall. Random baggage screening is conducted by Singapore Customs X-ray before the exit."
         },
         {
           "stepIndex": 4,
           "title": "Customs Declaration",
-          "description": "GST relief applies on overseas goods up to SGD 500. Duty-free alcohol: 2L wine/beer and 1L spirits (for stays over 48 hours outside Singapore). There is NO duty-free tobacco allowance — all tobacco must be declared and duty paid. Prohibited: chewing gum (therapeutic types excepted), e-cigarettes, firecrackers.",
-          "riskLevel": "LEGAL"
+          "description": "GST relief applies on overseas goods up to SGD 500. Duty-free alcohol: 2L wine/beer and 1L spirits (for stays over 48 hours outside Singapore). There is NO duty-free tobacco allowance — all tobacco must be declared and duty paid. Prohibited: chewing gum (therapeutic types excepted), e-cigarettes, firecrackers."
         },
         {
           "stepIndex": 5,
           "title": "Prohibited Goods — Serious Offences",
-          "description": "Singapore enforces strict penalties including mandatory death penalty for drug trafficking above threshold quantities. Carry only prescribed medications with a doctor's letter. Declare all firearms, ammunition, and controlled items at the Red Channel.",
-          "riskLevel": "LEGAL"
+          "description": "Singapore enforces strict penalties including mandatory death penalty for drug trafficking above threshold quantities. Carry only prescribed medications with a doctor's letter. Declare all firearms, ammunition, and controlled items at the Red Channel."
         }
       ],
       "fallbackAlerts": [
@@ -85,25 +89,30 @@
       "icon": "🍱",
       "description": "Food court etiquette, chope culture, and ordering",
       "geofence": "hawker_zone",
-      "locationKeywords": ["hawker", "food court", "kopitiam", "foodcourt", "lau pa sat", "maxwell", "newton"],
+      "locationKeywords": [
+        "hawker",
+        "food court",
+        "kopitiam",
+        "foodcourt",
+        "lau pa sat",
+        "maxwell",
+        "newton"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "Chope Your Seat First",
-          "description": "Leave a tissue packet or umbrella on an empty seat to reserve it. This is widely practised and respected.",
-          "riskLevel": "NORM"
+          "description": "Leave a tissue packet or umbrella on an empty seat to reserve it. This is widely practised and respected."
         },
         {
           "stepIndex": 1,
           "title": "Return Your Tray",
-          "description": "Since 2021 it is mandatory to return your tray and clear your table after eating. Fines apply.",
-          "riskLevel": "LEGAL"
+          "description": "Since 2021 it is mandatory to return your tray and clear your table after eating. Fines apply."
         },
         {
           "stepIndex": 2,
           "title": "Order Directly at Stalls",
-          "description": "Walk to each stall to order and collect your food. Payment is usually at point of order.",
-          "riskLevel": "NORM"
+          "description": "Walk to each stall to order and collect your food. Payment is usually at point of order."
         }
       ],
       "fallbackAlerts": [
@@ -115,7 +124,6 @@
         {
           "alertId": "sg_hawker_chope",
           "description": "A tissue packet on a seat means it is reserved — this is the local 'chope' system. Respect it.",
-          "alertId": "sg_hawker_chope",
           "message": "A tissue packet on a seat means it is reserved — this is the local 'chope' system. Respect it.",
           "riskLevel": "NORM"
         }
@@ -139,25 +147,31 @@
       "icon": "🚇",
       "description": "MRT rules, fines, and transit etiquette",
       "geofence": "mrt_zone",
-      "locationKeywords": ["mrt", "train", "subway", "transit", "bus", "lrt", "transport", "station"],
+      "locationKeywords": [
+        "mrt",
+        "train",
+        "subway",
+        "transit",
+        "bus",
+        "lrt",
+        "transport",
+        "station"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "No Food or Drink",
-          "description": "Eating and drinking on the MRT or buses is strictly prohibited. Fines up to SGD 500.",
-          "riskLevel": "LEGAL"
+          "description": "Eating and drinking on the MRT or buses is strictly prohibited. Fines up to SGD 500."
         },
         {
           "stepIndex": 1,
           "title": "Priority Seats",
-          "description": "Priority seats are for the elderly, pregnant, and disabled. Vacate them if needed — passengers will ask.",
-          "riskLevel": "NORM"
+          "description": "Priority seats are for the elderly, pregnant, and disabled. Vacate them if needed — passengers will ask."
         },
         {
           "stepIndex": 2,
           "title": "Queue to Board",
-          "description": "Form an orderly queue along the marked lines on the platform. Board only after passengers have exited.",
-          "riskLevel": "NORM"
+          "description": "Form an orderly queue along the marked lines on the platform. Board only after passengers have exited."
         }
       ],
       "fallbackAlerts": [
@@ -186,19 +200,25 @@
       "icon": "🛕",
       "description": "Multi-faith etiquette at Singapore's temples, mosques, and churches",
       "geofence": "temple_zone",
-      "locationKeywords": ["temple", "shrine", "mosque", "church", "sri mariamman", "thian hock keng", "sultan mosque"],
+      "locationKeywords": [
+        "temple",
+        "shrine",
+        "mosque",
+        "church",
+        "sri mariamman",
+        "thian hock keng",
+        "sultan mosque"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "Remove Shoes at Temples",
-          "description": "Remove footwear before entering Hindu and Buddhist temples. Mosques also require bare feet or socks.",
-          "riskLevel": "SENSITIVE"
+          "description": "Remove footwear before entering Hindu and Buddhist temples. Mosques also require bare feet or socks."
         },
         {
           "stepIndex": 1,
           "title": "Modest Dress",
-          "description": "Cover shoulders and knees at all places of worship. Sarongs are available to borrow at some entrances.",
-          "riskLevel": "SENSITIVE"
+          "description": "Cover shoulders and knees at all places of worship. Sarongs are available to borrow at some entrances."
         }
       ],
       "fallbackAlerts": [

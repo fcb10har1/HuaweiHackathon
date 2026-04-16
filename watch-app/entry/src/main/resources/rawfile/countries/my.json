@@ -15,43 +15,46 @@
       "icon": "✈️",
       "description": "Immigration and customs at KLIA",
       "geofence": "airport_arrivals",
-      "locationKeywords": ["airport", "arrivals", "terminal", "klia", "klia2", "kuala lumpur", "penang", "kota kinabalu"],
+      "locationKeywords": [
+        "airport",
+        "arrivals",
+        "terminal",
+        "klia",
+        "klia2",
+        "kuala lumpur",
+        "penang",
+        "kota kinabalu"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "Visa Requirements & MDAC",
-          "description": "Most nationalities from Commonwealth, ASEAN, and major Western nations receive visa-free entry for 30–90 days. The Malaysia Digital Arrival Card (MDAC) at imigresen-online.imi.gov.my is mandatory for all foreign visitors and must be completed within 3 days before arrival.",
-          "riskLevel": "LEGAL"
+          "description": "Most nationalities from Commonwealth, ASEAN, and major Western nations receive visa-free entry for 30–90 days. The Malaysia Digital Arrival Card (MDAC) at imigresen-online.imi.gov.my is mandatory for all foreign visitors and must be completed within 3 days before arrival."
         },
         {
           "stepIndex": 1,
           "title": "Passport Control / Immigration",
-          "description": "Proceed to the foreigners' immigration queue at KLIA, klia2, or other entry points. Present your passport and MDAC confirmation. Officers will check documentation, ask about purpose and duration of stay, and verify your accommodation address.",
-          "riskLevel": "SENSITIVE"
+          "description": "Proceed to the foreigners' immigration queue at KLIA, klia2, or other entry points. Present your passport and MDAC confirmation. Officers will check documentation, ask about purpose and duration of stay, and verify your accommodation address."
         },
         {
           "stepIndex": 2,
           "title": "Biometrics",
-          "description": "Fingerprints (both index fingers) are scanned at the immigration counter for all non-Malaysian citizens. A facial photograph is also taken. Biometric data is stored for future entries.",
-          "riskLevel": "SENSITIVE"
+          "description": "Fingerprints (both index fingers) are scanned at the immigration counter for all non-Malaysian citizens. A facial photograph is also taken. Biometric data is stored for future entries."
         },
         {
           "stepIndex": 3,
           "title": "Baggage Claim",
-          "description": "Collect your checked baggage from the designated carousel. Retain your baggage claim tags as they are checked by customs officers at the exit.",
-          "riskLevel": "NORM"
+          "description": "Collect your checked baggage from the designated carousel. Retain your baggage claim tags as they are checked by customs officers at the exit."
         },
         {
           "stepIndex": 4,
           "title": "Customs Declaration",
-          "description": "Duty-free allowance: goods up to MYR 500, 200 cigarettes or 225g tobacco, 1L alcohol (non-Muslim). Declare cash or monetary instruments over MYR 30,000. Prohibited: drugs (mandatory death penalty for trafficking), pornographic material, firearms without permit.",
-          "riskLevel": "LEGAL"
+          "description": "Duty-free allowance: goods up to MYR 500, 200 cigarettes or 225g tobacco, 1L alcohol (non-Muslim). Declare cash or monetary instruments over MYR 30,000. Prohibited: drugs (mandatory death penalty for trafficking), pornographic material, firearms without permit."
         },
         {
           "stepIndex": 5,
           "title": "Exit to Arrivals Hall",
-          "description": "After customs clearance, proceed to the arrivals hall. At KLIA, the KLIA Ekspres train provides fast access to Kuala Lumpur city centre (28 minutes). Registered taxis and e-hailing apps (Grab) are available from designated bays.",
-          "riskLevel": "NORM"
+          "description": "After customs clearance, proceed to the arrivals hall. At KLIA, the KLIA Ekspres train provides fast access to Kuala Lumpur city centre (28 minutes). Registered taxis and e-hailing apps (Grab) are available from designated bays."
         }
       ],
       "fallbackAlerts": [
@@ -80,25 +83,30 @@
       "icon": "🕌",
       "description": "Mosque etiquette and dress code in Malaysia",
       "geofence": "mosque_zone",
-      "locationKeywords": ["mosque", "masjid", "surau", "prayer", "national mosque", "putra mosque", "blue mosque"],
+      "locationKeywords": [
+        "mosque",
+        "masjid",
+        "surau",
+        "prayer",
+        "national mosque",
+        "putra mosque",
+        "blue mosque"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "Robes Provided at Tourist Mosques",
-          "description": "Major tourist mosques like Masjid Putra provide robes and headscarves at the entrance for visitors.",
-          "riskLevel": "NORM"
+          "description": "Major tourist mosques like Masjid Putra provide robes and headscarves at the entrance for visitors."
         },
         {
           "stepIndex": 1,
           "title": "Remove Shoes",
-          "description": "All footwear must be removed before entering any mosque.",
-          "riskLevel": "SENSITIVE"
+          "description": "All footwear must be removed before entering any mosque."
         },
         {
           "stepIndex": 2,
           "title": "Non-Muslims in Non-Prayer Areas Only",
-          "description": "Non-Muslims are usually welcome in designated visitor areas but must not enter active prayer halls.",
-          "riskLevel": "SENSITIVE"
+          "description": "Non-Muslims are usually welcome in designated visitor areas but must not enter active prayer halls."
         }
       ],
       "fallbackAlerts": [
@@ -127,19 +135,25 @@
       "icon": "🛕",
       "description": "Etiquette at Chinese and Hindu temples",
       "geofence": "temple_zone",
-      "locationKeywords": ["temple", "batu caves", "sri mahamariamman", "thean hou", "buddhist", "chinese temple", "shrine"],
+      "locationKeywords": [
+        "temple",
+        "batu caves",
+        "sri mahamariamman",
+        "thean hou",
+        "buddhist",
+        "chinese temple",
+        "shrine"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "Remove Shoes at Entrances",
-          "description": "Footwear must be removed before entering any Hindu or Buddhist temple.",
-          "riskLevel": "SENSITIVE"
+          "description": "Footwear must be removed before entering any Hindu or Buddhist temple."
         },
         {
           "stepIndex": 1,
           "title": "Dress Modestly",
-          "description": "Shorts and sleeveless tops are generally not acceptable. Long pants or skirts are preferred.",
-          "riskLevel": "SENSITIVE"
+          "description": "Shorts and sleeveless tops are generally not acceptable. Long pants or skirts are preferred."
         }
       ],
       "fallbackAlerts": [
@@ -163,13 +177,20 @@
       "icon": "🌙",
       "description": "Street food, bargaining, and hawker culture",
       "geofence": "market_zone",
-      "locationKeywords": ["market", "pasar", "night market", "pasar malam", "bazaar", "hawker", "street food"],
+      "locationKeywords": [
+        "market",
+        "pasar",
+        "night market",
+        "pasar malam",
+        "bazaar",
+        "hawker",
+        "street food"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "Bargaining is Acceptable",
-          "description": "Gentle bargaining is common at markets. Fixed-price stalls usually display price tags.",
-          "riskLevel": "NORM"
+          "description": "Gentle bargaining is common at markets. Fixed-price stalls usually display price tags."
         }
       ],
       "fallbackAlerts": [

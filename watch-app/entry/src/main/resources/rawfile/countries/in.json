@@ -15,43 +15,44 @@
       "icon": "✈️",
       "description": "Immigration, customs, and arrival procedures",
       "geofence": "airport_arrivals",
-      "locationKeywords": ["airport", "arrivals", "terminal", "indira gandhi", "chhatrapati", "kempegowda"],
+      "locationKeywords": [
+        "airport",
+        "arrivals",
+        "terminal",
+        "indira gandhi",
+        "chhatrapati",
+        "kempegowda"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "Complete e-Arrival Card",
-          "description": "India requires a mandatory online e-Arrival Card (arrive.gov.in) submitted within 72 hours before arrival. Fill in passport details, flight number, Indian address, and health declaration. Keep the confirmation reference handy.",
-          "riskLevel": "NORM"
+          "description": "India requires a mandatory online e-Arrival Card (arrive.gov.in) submitted within 72 hours before arrival. Fill in passport details, flight number, Indian address, and health declaration. Keep the confirmation reference handy."
         },
         {
           "stepIndex": 1,
           "title": "Health Screening",
-          "description": "Thermal screening is conducted at the entry point. Passengers arriving from countries flagged for specific disease alerts may be subject to additional checks or require a health certificate.",
-          "riskLevel": "NORM"
+          "description": "Thermal screening is conducted at the entry point. Passengers arriving from countries flagged for specific disease alerts may be subject to additional checks or require a health certificate."
         },
         {
           "stepIndex": 2,
           "title": "Immigration / Passport Control",
-          "description": "Join the designated foreigner or e-Visa queue. Present your passport, e-Visa (or sticker visa), and e-Arrival Card confirmation. Officers will verify documents and may ask about intended activities and accommodation in India.",
-          "riskLevel": "SENSITIVE"
+          "description": "Join the designated foreigner or e-Visa queue. Present your passport, e-Visa (or sticker visa), and e-Arrival Card confirmation. Officers will verify documents and may ask about intended activities and accommodation in India."
         },
         {
           "stepIndex": 3,
           "title": "Biometrics Collection",
-          "description": "All foreign nationals must provide fingerprint scans (all 10 fingers) and a facial photograph at the immigration counter. This is mandatory for visa holders including e-Visa entrants.",
-          "riskLevel": "SENSITIVE"
+          "description": "All foreign nationals must provide fingerprint scans (all 10 fingers) and a facial photograph at the immigration counter. This is mandatory for visa holders including e-Visa entrants."
         },
         {
           "stepIndex": 4,
           "title": "Baggage Claim",
-          "description": "Proceed to the baggage hall and collect luggage from the assigned carousel. Retain baggage tags as they may be checked at the exit gate.",
-          "riskLevel": "NORM"
+          "description": "Proceed to the baggage hall and collect luggage from the assigned carousel. Retain baggage tags as they may be checked at the exit gate."
         },
         {
           "stepIndex": 5,
           "title": "Customs Declaration",
-          "description": "Declare currency/foreign exchange over USD 5,000 (or equivalent). Declare dutiable goods over INR 50,000 duty-free allowance. Prohibited items include satellite phones, certain drones, and narcotics. Use Red Channel to declare; Green Channel if nothing to declare.",
-          "riskLevel": "LEGAL"
+          "description": "Declare currency/foreign exchange over USD 5,000 (or equivalent). Declare dutiable goods over INR 50,000 duty-free allowance. Prohibited items include satellite phones, certain drones, and narcotics. Use Red Channel to declare; Green Channel if nothing to declare."
         }
       ],
       "fallbackAlerts": [
@@ -85,25 +86,32 @@
       "icon": "🛕",
       "description": "Dress codes, shoe rules, and religious etiquette",
       "geofence": "temple_zone",
-      "locationKeywords": ["temple", "mandir", "shrine", "gurdwara", "mosque", "masjid", "dargah", "sacred", "golden temple"],
+      "locationKeywords": [
+        "temple",
+        "mandir",
+        "shrine",
+        "gurdwara",
+        "mosque",
+        "masjid",
+        "dargah",
+        "sacred",
+        "golden temple"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "Remove Shoes",
-          "description": "Shoes must be removed before entering any place of worship. Shoe racks are at the entrance.",
-          "riskLevel": "SENSITIVE"
+          "description": "Shoes must be removed before entering any place of worship. Shoe racks are at the entrance."
         },
         {
           "stepIndex": 1,
           "title": "Cover Your Head at Gurdwaras",
-          "description": "A head covering is mandatory in all Sikh Gurdwaras. Scarves are usually provided free at the entrance.",
-          "riskLevel": "SENSITIVE"
+          "description": "A head covering is mandatory in all Sikh Gurdwaras. Scarves are usually provided free at the entrance."
         },
         {
           "stepIndex": 2,
           "title": "Modest Dress Required",
-          "description": "Cover shoulders and legs. Sleeveless tops and shorts are not acceptable in most temples.",
-          "riskLevel": "SENSITIVE"
+          "description": "Cover shoulders and legs. Sleeveless tops and shorts are not acceptable in most temples."
         }
       ],
       "fallbackAlerts": [
@@ -142,25 +150,31 @@
       "icon": "🛺",
       "description": "Meter rules, fare negotiation, and ride apps",
       "geofence": "taxi_stand",
-      "locationKeywords": ["taxi", "auto", "rickshaw", "uber", "ola", "cab", "transport", "tuk-tuk"],
+      "locationKeywords": [
+        "taxi",
+        "auto",
+        "rickshaw",
+        "uber",
+        "ola",
+        "cab",
+        "transport",
+        "tuk-tuk"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "Use Ride Apps",
-          "description": "Uber and Ola are widely available and reliable. Always preferred over hailing a street cab.",
-          "riskLevel": "NORM"
+          "description": "Uber and Ola are widely available and reliable. Always preferred over hailing a street cab."
         },
         {
           "stepIndex": 1,
           "title": "Confirm Fare Before Boarding Auto",
-          "description": "Auto-rickshaws may negotiate fares. Agree on a price before you board, or insist on the meter.",
-          "riskLevel": "NORM"
+          "description": "Auto-rickshaws may negotiate fares. Agree on a price before you board, or insist on the meter."
         },
         {
           "stepIndex": 2,
           "title": "Cash is King",
-          "description": "Keep small denomination notes (₹10–₹100) handy. Many drivers do not carry change for large notes.",
-          "riskLevel": "NORM"
+          "description": "Keep small denomination notes (₹10–₹100) handy. Many drivers do not carry change for large notes."
         }
       ],
       "fallbackAlerts": [
@@ -199,13 +213,19 @@
       "icon": "🛍️",
       "description": "Bargaining customs, scam awareness, and shopping etiquette",
       "geofence": "market_zone",
-      "locationKeywords": ["market", "bazaar", "shopping", "bazar", "chowk", "mall"],
+      "locationKeywords": [
+        "market",
+        "bazaar",
+        "shopping",
+        "bazar",
+        "chowk",
+        "mall"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "Bargaining is Expected",
-          "description": "At street markets and bazaars, initial prices are inflated. Counter-offering at 40–60% of the asking price is normal.",
-          "riskLevel": "NORM"
+          "description": "At street markets and bazaars, initial prices are inflated. Counter-offering at 40–60% of the asking price is normal."
         }
       ],
       "fallbackAlerts": [

@@ -15,43 +15,43 @@
       "icon": "✈️",
       "description": "Immigration, customs, and arrival procedures",
       "geofence": "airport_arrivals",
-      "locationKeywords": ["airport", "arrivals", "terminal", "suvarnabhumi", "don mueang"],
+      "locationKeywords": [
+        "airport",
+        "arrivals",
+        "terminal",
+        "suvarnabhumi",
+        "don mueang"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "Complete Arrival Card / Digital Arrival Card",
-          "description": "Thailand phased out the paper TM6 card at major airports in 2022. A Thailand Digital Arrival Card (TDAC) system is in use — check current requirements before travel. If issued a paper TM6 on the aircraft, fill in your passport details, Thai address, and flight number.",
-          "riskLevel": "NORM"
+          "description": "Thailand phased out the paper TM6 card at major airports in 2022. A Thailand Digital Arrival Card (TDAC) system is in use — check current requirements before travel. If issued a paper TM6 on the aircraft, fill in your passport details, Thai address, and flight number."
         },
         {
           "stepIndex": 1,
           "title": "Health Declaration (if applicable)",
-          "description": "No health certificate or Thailand Pass is currently required for entry. Proceed directly to immigration unless a specific health advisory is active at the time of travel.",
-          "riskLevel": "NORM"
+          "description": "No health certificate or Thailand Pass is currently required for entry. Proceed directly to immigration unless a specific health advisory is active at the time of travel."
         },
         {
           "stepIndex": 2,
           "title": "Visa / Entry Stamp at Immigration Counter",
-          "description": "Join the foreigners queue. Most nationalities receive a 30–60 day visa exemption (policy expanded in 2024). Present passport and proof of onward travel. Officers may ask for proof of sufficient funds (THB 10,000 per person / THB 20,000 per family).",
-          "riskLevel": "SENSITIVE"
+          "description": "Join the foreigners queue. Most nationalities receive a 30–60 day visa exemption (policy expanded in 2024). Present passport and proof of onward travel. Officers may ask for proof of sufficient funds (THB 10,000 per person / THB 20,000 per family)."
         },
         {
           "stepIndex": 3,
           "title": "Biometric Collection",
-          "description": "Fingerprints of both index fingers are scanned at the immigration counter for all foreign nationals. A facial photograph may also be taken.",
-          "riskLevel": "SENSITIVE"
+          "description": "Fingerprints of both index fingers are scanned at the immigration counter for all foreign nationals. A facial photograph may also be taken."
         },
         {
           "stepIndex": 4,
           "title": "Baggage Claim",
-          "description": "Collect luggage from the assigned carousel. Keep your baggage tag stubs for inspection at the exit.",
-          "riskLevel": "NORM"
+          "description": "Collect luggage from the assigned carousel. Keep your baggage tag stubs for inspection at the exit."
         },
         {
           "stepIndex": 5,
           "title": "Customs Declaration",
-          "description": "Pass through the Red Channel if carrying goods over THB 20,000, more than 200 cigarettes, 1L of alcohol, or cash exceeding THB 450,000. Use the Green Channel if you have nothing to declare. Drugs carry the death penalty.",
-          "riskLevel": "LEGAL"
+          "description": "Pass through the Red Channel if carrying goods over THB 20,000, more than 200 cigarettes, 1L of alcohol, or cash exceeding THB 450,000. Use the Green Channel if you have nothing to declare. Drugs carry the death penalty."
         }
       ],
       "fallbackAlerts": [
@@ -85,31 +85,36 @@
       "icon": "🏯",
       "description": "Dress codes, sacred spaces, and Buddhist etiquette",
       "geofence": "temple_zone",
-      "locationKeywords": ["temple", "wat", "buddha", "shrine", "stupa", "sacred", "pagoda", "grand palace"],
+      "locationKeywords": [
+        "temple",
+        "wat",
+        "buddha",
+        "shrine",
+        "stupa",
+        "sacred",
+        "pagoda",
+        "grand palace"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "Cover Shoulders and Knees",
-          "description": "Long sleeves and trousers or long skirts are required. Sarongs are often available to borrow at entrances.",
-          "riskLevel": "LEGAL"
+          "description": "Long sleeves and trousers or long skirts are required. Sarongs are often available to borrow at entrances."
         },
         {
           "stepIndex": 1,
           "title": "Remove Shoes",
-          "description": "Remove footwear before entering any temple building. Look for the shoe rack.",
-          "riskLevel": "SENSITIVE"
+          "description": "Remove footwear before entering any temple building. Look for the shoe rack."
         },
         {
           "stepIndex": 2,
           "title": "Do Not Point Feet at Buddha",
-          "description": "Feet are considered spiritually low. Never point them at a Buddha image or a monk.",
-          "riskLevel": "SENSITIVE"
+          "description": "Feet are considered spiritually low. Never point them at a Buddha image or a monk."
         },
         {
           "stepIndex": 3,
           "title": "Women Must Not Touch Monks",
-          "description": "Buddhist monks cannot accept direct contact from women. Pass items through a cloth or tray.",
-          "riskLevel": "SENSITIVE"
+          "description": "Buddhist monks cannot accept direct contact from women. Pass items through a cloth or tray."
         }
       ],
       "fallbackAlerts": [
@@ -148,19 +153,24 @@
       "icon": "🛺",
       "description": "Meter etiquette, fare negotiation, and transport safety",
       "geofence": "taxi_stand",
-      "locationKeywords": ["taxi", "tuk-tuk", "grab", "transport", "ride", "cab"],
+      "locationKeywords": [
+        "taxi",
+        "tuk-tuk",
+        "grab",
+        "transport",
+        "ride",
+        "cab"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "Insist on the Meter",
-          "description": "Licensed taxis must use the meter. If a driver refuses, find another taxi.",
-          "riskLevel": "NORM"
+          "description": "Licensed taxis must use the meter. If a driver refuses, find another taxi."
         },
         {
           "stepIndex": 1,
           "title": "Agree Tuk-tuk Fare First",
-          "description": "Tuk-tuks do not use meters. Always negotiate and agree the fare before getting in.",
-          "riskLevel": "NORM"
+          "description": "Tuk-tuks do not use meters. Always negotiate and agree the fare before getting in."
         }
       ],
       "fallbackAlerts": [
@@ -199,19 +209,27 @@
       "icon": "🏖️",
       "description": "Public beach rules, dress codes, and environmental laws",
       "geofence": "beach_zone",
-      "locationKeywords": ["beach", "island", "koh", "ko", "phuket", "pattaya", "samui", "sea", "coast"],
+      "locationKeywords": [
+        "beach",
+        "island",
+        "koh",
+        "ko",
+        "phuket",
+        "pattaya",
+        "samui",
+        "sea",
+        "coast"
+      ],
       "arrivalSteps": [
         {
           "stepIndex": 0,
           "title": "No Topless Sunbathing",
-          "description": "Topless sunbathing is illegal on public beaches in Thailand and may result in a fine.",
-          "riskLevel": "LEGAL"
+          "description": "Topless sunbathing is illegal on public beaches in Thailand and may result in a fine."
         },
         {
           "stepIndex": 1,
           "title": "Do Not Touch Coral",
-          "description": "Touching or removing coral is illegal. Fines can be significant.",
-          "riskLevel": "LEGAL"
+          "description": "Touching or removing coral is illegal. Fines can be significant."
         }
       ],
       "fallbackAlerts": [
