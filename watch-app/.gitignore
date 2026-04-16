@@ -10,3 +10,23 @@
 /.clang-tidy
 **/.test
 /.appanalyzer
+
+# Build folders
+build/
+.gradle/
+
+# Compiled files
+*.class
+
+# Local config
+local.properties
+
+# Environment / secrets
+*.env
+*.properties
+
+# VS Code
+.vscode/
+
+# Mac
+.DS_Store
