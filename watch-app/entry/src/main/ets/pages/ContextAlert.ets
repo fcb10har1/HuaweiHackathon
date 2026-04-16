@@ -1,9 +1,12 @@
 /**
  * ContextAlert.ets — Full-screen cultural/legal alert pushed by TripHome's GPS pipeline.
  * Risk levels: NORM (cyan), SENSITIVE (amber), LEGAL (red).
+ * SENSITIVE and LEGAL alerts are saved to storage on dismiss so they appear in AlertsList.
  */
 import router from '@ohos.router';
+import common from '@ohos.app.ability.common';
 import { ContextAlert, riskColor, riskLabel } from '../common/Types';
+import { StorageService } from '../services/StorageService';
 
 @Entry
 @Component
@@ -11,6 +14,21 @@ struct ContextAlertPage {
   private params: Record<string, string> = router.getParams() as Record<string, string>;
   private alert: ContextAlert = JSON.parse(this.params['alertJson'] ?? '{}') as ContextAlert;
   private countryName: string = this.params['countryName'] ?? '';
+  private countryCode: string = this.params['countryCode'] ?? '';
+
+  private storage: StorageService | null = null;
+
+  aboutToAppear(): void {
+    this.storage = new StorageService(getContext(this) as common.UIAbilityContext);
+  }
+
+  private dismiss(): void {
+    // Persist SENSITIVE and LEGAL alerts so they appear in the Alerts list
+    if (this.countryCode && (this.alert.riskLevel === 'SENSITIVE' || this.alert.riskLevel === 'LEGAL')) {
+      this.storage?.saveTriggeredAlert(this.countryCode, this.alert);
+    }
+    router.back();
+  }
 
   build() {
     Column({ space: 12 }) {
@@ -46,10 +64,11 @@ struct ContextAlertPage {
       .height(110)
       .scrollBar(BarState.Off)
       .edgeEffect(EdgeEffect.Spring)
+      .friction(6.0)
 
       // Dismiss button
       Button('Got It')
-        .onClick(() => router.back())
+        .onClick(() => this.dismiss())
         .backgroundColor('#21262D')
         .fontColor('#8B949E')
         .fontSize(11)
@@ -68,7 +87,7 @@ struct ContextAlertPage {
     )
     .gesture(
       PanGesture({ direction: PanDirection.Right, distance: 50 })
-        .onActionEnd(() => router.back())
+        .onActionEnd(() => this.dismiss())
     )
   }
 }

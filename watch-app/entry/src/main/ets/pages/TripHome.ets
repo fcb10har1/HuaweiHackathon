@@ -112,7 +112,11 @@ struct TripHome {
 
     router.pushUrl({
       url: 'pages/ContextAlert',
-      params: { alertJson: JSON.stringify(alert), countryName: this.trip.countryName },
+      params: {
+        alertJson:   JSON.stringify(alert),
+        countryName: this.trip.countryName,
+        countryCode: this.trip.countryCode,
+      },
     });
   }
 
@@ -129,61 +133,51 @@ struct TripHome {
         .padding({ left: 14, top: 10, bottom: 4 })
 
       // ── Main hub content ─────────────────────────────────────────────────────
-      Column({ space: 4 }) {
+      Column({ space: 0 }) {
         // Country flag + "Ready for X?" headline
         Text(this.trip.flag)
-          .fontSize(30)
+          .fontSize(22)
 
         Text('Ready for')
-          .fontSize(10)
+          .fontSize(9)
           .fontColor('#8B949E')
 
         Text(this.trip.countryName + '?')
-          .fontSize(17)
+          .fontSize(14)
           .fontWeight(FontWeight.Bold)
           .fontColor('#E6EDF3')
 
         Text(`${formatDate(this.trip.startTimestamp)} – ${formatDate(this.trip.endTimestamp)}`)
           .fontSize(8)
           .fontColor('#6E7681')
-          .margin({ bottom: 10 })
+          .margin({ bottom: 18 })
 
-        // Action buttons — teal neon-glow circles with icon shapes
-        Row({ space: 28 }) {
+        // ── Single row: Arrival Steps | Alerts | Convo ───────────────────────
+        Row({ space: 14 }) {
 
-          // ── Arrival Steps ──────────────────────────────────────────────────
-          Column({ space: 8 }) {
+          // ── Arrival Steps ─────────────────────────────────────────────────
+          Column({ space: 4 }) {
             Stack({ alignContent: Alignment.Center }) {
-              // Glow circle background
               Column()
-                .width(72)
-                .height(72)
-                .borderRadius(36)
+                .width(42)
+                .height(42)
+                .borderRadius(21)
                 .backgroundColor('#071A15')
                 .border({ width: 1.5, color: '#00E5C8', style: BorderStyle.Solid })
-                .shadow({ radius: 18, color: '#00E5C850', offsetX: 0, offsetY: 0 })
+                .shadow({ radius: 8, color: '#00E5C840', offsetX: 0, offsetY: 0 })
 
-              // Document icon: rect outline + 3 lines
+              // Document icon
               Stack({ alignContent: Alignment.Center }) {
-                // Document outline
                 Column()
-                  .width(26)
-                  .height(32)
-                  .borderRadius(4)
+                  .width(15)
+                  .height(18)
+                  .borderRadius(2)
                   .backgroundColor('transparent')
                   .border({ width: 1.5, color: '#00E5C8', style: BorderStyle.Solid })
-
-                // Three horizontal lines inside
-                Column({ space: 5 }) {
-                  Row()
-                    .width(16).height(1.5)
-                    .backgroundColor('#00E5C8').borderRadius(1)
-                  Row()
-                    .width(16).height(1.5)
-                    .backgroundColor('#00E5C8').borderRadius(1)
-                  Row()
-                    .width(11).height(1.5)
-                    .backgroundColor('#00E5C8').borderRadius(1)
+                Column({ space: 3 }) {
+                  Row().width(9).height(1.5).backgroundColor('#00E5C8').borderRadius(1)
+                  Row().width(9).height(1.5).backgroundColor('#00E5C8').borderRadius(1)
+                  Row().width(6).height(1.5).backgroundColor('#00E5C8').borderRadius(1)
                 }
               }
             }
@@ -195,68 +189,92 @@ struct TripHome {
             })
 
             Text('Arrival Steps')
-              .fontSize(9)
+              .fontSize(8)
               .fontColor('#8B949E')
               .textAlign(TextAlign.Center)
           }
           .alignItems(HorizontalAlign.Center)
 
-          // ── Convo Assist ───────────────────────────────────────────────────
-          Column({ space: 8 }) {
+          // ── Alerts ────────────────────────────────────────────────────────
+          Column({ space: 4 }) {
             Stack({ alignContent: Alignment.Center }) {
-              // Glow circle background
               Column()
-                .width(72)
-                .height(72)
-                .borderRadius(36)
+                .width(42)
+                .height(42)
+                .borderRadius(21)
                 .backgroundColor('#071A15')
                 .border({ width: 1.5, color: '#00E5C8', style: BorderStyle.Solid })
-                .shadow({ radius: 18, color: '#00E5C850', offsetX: 0, offsetY: 0 })
+                .shadow({ radius: 8, color: '#00E5C840', offsetX: 0, offsetY: 0 })
 
-              // Microphone icon
-              Column({ space: 0 }) {
-                // Mic capsule (rounded rect outline)
+              // Warning triangle icon (solid teal triangle + dark ! inside)
+              Stack({ alignContent: Alignment.Center }) {
+                // Solid upward-pointing triangle via border trick
                 Column()
-                  .width(16)
-                  .height(22)
-                  .borderRadius(8)
+                  .width(0)
+                  .height(0)
+                  .border({
+                    width: { top: 0, bottom: 18, left: 10, right: 10 },
+                    color: { top: Color.Transparent, bottom: '#00E5C8', left: Color.Transparent, right: Color.Transparent },
+                    style: BorderStyle.Solid,
+                  })
+                // Exclamation mark: bar + dot
+                Column({ space: 2 }) {
+                  Column()
+                    .width(2).height(7)
+                    .backgroundColor('#071A15')
+                    .borderRadius(1)
+                  Column()
+                    .width(2).height(2)
+                    .borderRadius(1)
+                    .backgroundColor('#071A15')
+                }
+                .alignItems(HorizontalAlign.Center)
+                .margin({ top: 5 })
+              }
+            }
+            .onClick(() => {
+              router.pushUrl({
+                url: 'pages/AlertsList',
+                params: { tripJson: this.params['tripJson'] },
+              });
+            })
+
+            Text('Alerts')
+              .fontSize(8)
+              .fontColor('#8B949E')
+              .textAlign(TextAlign.Center)
+          }
+          .alignItems(HorizontalAlign.Center)
+
+          // ── Convo Assist ──────────────────────────────────────────────────
+          Column({ space: 4 }) {
+            Stack({ alignContent: Alignment.Center }) {
+              Column()
+                .width(42)
+                .height(42)
+                .borderRadius(21)
+                .backgroundColor('#071A15')
+                .border({ width: 1.5, color: '#00E5C8', style: BorderStyle.Solid })
+                .shadow({ radius: 8, color: '#00E5C840', offsetX: 0, offsetY: 0 })
+
+              // Mic icon — 2 shapes only
+              Column({ space: 1 }) {
+                Column()
+                  .width(8)
+                  .height(12)
+                  .borderRadius(4)
                   .backgroundColor('transparent')
                   .border({ width: 1.5, color: '#00E5C8', style: BorderStyle.Solid })
-
-                // Mic stand arc — left arm, bottom curve, right arm
-                Row({ space: 0 }) {
-                  // Left arm
-                  Column()
-                    .width(1.5).height(8)
-                    .backgroundColor('#00E5C8')
-                  // Bottom curve (approximated as a rounded bottom column)
-                  Column()
-                    .width(14).height(8)
-                    .borderRadius({ topLeft: 0, topRight: 0, bottomLeft: 7, bottomRight: 7 })
-                    .backgroundColor('transparent')
-                    .border({ width: 1.5, color: '#00E5C8', style: BorderStyle.Solid })
-                    .margin({ left: -1.5 })
-                  // Right arm
-                  Column()
-                    .width(1.5).height(8)
-                    .backgroundColor('#00E5C8')
-                    .margin({ left: -1.5 })
-                }
-                .alignItems(VerticalAlign.Top)
-                .margin({ top: 2 })
-
-                // Vertical stem
                 Column()
-                  .width(1.5).height(5)
-                  .backgroundColor('#00E5C8')
-                  .alignSelf(ItemAlign.Center)
-
-                // Base line
-                Column()
-                  .width(14).height(1.5)
-                  .backgroundColor('#00E5C8')
-                  .borderRadius(1)
-                  .alignSelf(ItemAlign.Center)
+                  .width(13)
+                  .height(6)
+                  .backgroundColor('transparent')
+                  .border({
+                    width: { top: 0, left: 1.5, right: 1.5, bottom: 1.5 },
+                    color: '#00E5C8',
+                    style: BorderStyle.Solid,
+                    radius: { topLeft: 0, topRight: 0, bottomLeft: 7, bottomRight: 7 },
+                  })
               }
               .alignItems(HorizontalAlign.Center)
             }
@@ -271,11 +289,12 @@ struct TripHome {
             })
 
             Text('Convo')
-              .fontSize(9)
+              .fontSize(8)
               .fontColor('#8B949E')
               .textAlign(TextAlign.Center)
           }
           .alignItems(HorizontalAlign.Center)
+
         }
         .justifyContent(FlexAlign.Center)
       }

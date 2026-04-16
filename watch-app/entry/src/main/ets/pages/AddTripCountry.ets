@@ -79,7 +79,7 @@ struct AddTripCountry {
       .padding({ left: 18, right: 18, top: 6, bottom: 6 })
       .scrollBar(BarState.Off)
       .edgeEffect(EdgeEffect.Spring)
-      .friction(0.85)
+      .friction(6.0)
     }
     .width('100%')
     .height('100%')

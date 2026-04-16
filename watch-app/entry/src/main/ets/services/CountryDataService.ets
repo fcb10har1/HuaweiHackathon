@@ -5,7 +5,7 @@
  */
 import common from '@ohos.app.ability.common';
 import util from '@ohos.util';
-import { CountryPack, ArrivalStep, Scenario, FallbackAlert, Phrase } from '../common/Types';
+import { CountryPack, ArrivalStep, Scenario, FallbackAlert, Phrase, ContextAlert } from '../common/Types';
 
 export class CountryDataService {
   private context: common.UIAbilityContext;
@@ -65,5 +65,23 @@ export class CountryDataService {
     const scenario = await this.getScenarioByVenueType(countryCode, venueType);
     if (!scenario || scenario.fallbackAlerts.length === 0) return null;
     return scenario.fallbackAlerts[0];
+  }
+
+  // Returns all fallbackAlerts across every scenario as ContextAlert[]
+  async getAllFallbackAlerts(countryCode: string): Promise<ContextAlert[]> {
+    const pack = await this.loadCountryPack(countryCode);
+    if (!pack) return [];
+    const result: ContextAlert[] = [];
+    for (const scenario of pack.scenarios) {
+      for (const fa of scenario.fallbackAlerts) {
+        result.push({
+          alertId:      fa.alertId,
+          message:      fa.message,
+          riskLevel:    fa.riskLevel,
+          locationName: scenario.displayName,
+        });
+      }
+    }
+    return result;
   }
 }

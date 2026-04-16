@@ -106,22 +106,25 @@ struct SpeechResult {
   build() {
     Column() {
       // ── Header ──────────────────────────────────────────────────────────────
-      Row() {
-        Text('←')
-          .fontSize(18)
-          .fontColor('#8B949E')
-          .onClick(() => router.back())
-          .padding({ left: 8, right: 8 })
+      Stack({ alignContent: Alignment.Center }) {
         Text('Translation Result')
-          .fontSize(13)
+          .fontSize(11)
           .fontWeight(FontWeight.Bold)
           .fontColor('#E6EDF3')
-          .layoutWeight(1)
           .textAlign(TextAlign.Center)
+          .width('100%')
+        Row() {
+          Text('←')
+            .fontSize(18)
+            .fontColor('#8B949E')
+            .padding({ left: 8, right: 8 })
+            .onClick(() => router.back())
+          Blank()
+        }
+        .width('100%')
       }
       .width('100%')
       .height(40)
-      .alignItems(VerticalAlign.Center)
 
       Divider().color('#21262D')
 
@@ -162,28 +165,6 @@ struct SpeechResult {
                 .textAlign(TextAlign.Center)
                 .width('90%')
                 .lineHeight(18)
-
-              // Play TTS button
-              Button('▶ Play Audio')
-                .onClick(() => this.playTtsAudio())
-                .enabled(!this.isPlayingAudio)
-                .backgroundColor(this.isPlayingAudio ? '#21262D' : '#238636')
-                .fontColor('#FFFFFF')
-                .fontSize(10)
-                .width('70%')
-                .height(32)
-                .margin({ top: 6 })
-
-              // Audio error or playing indicator
-              if (this.audioPlayError) {
-                Text(this.audioPlayError)
-                  .fontSize(9)
-                  .fontColor('#FF4444')
-              } else if (this.isPlayingAudio) {
-                Text('Playing audio...')
-                  .fontSize(9)
-                  .fontColor('#00E5C8')
-              }
             }
             .width('100%')
             .padding(10)
@@ -268,6 +249,35 @@ struct SpeechResult {
             .margin({ left: 8, right: 8, top: 4, bottom: 8 })
           }
 
+          // ── Play Audio button — below Japanese replies ────────────────────────
+          if (this.response.translationEnglish) {
+            Column({ space: 4 }) {
+              Button('▶ Play Audio')
+                .onClick(() => this.playTtsAudio())
+                .enabled(!this.isPlayingAudio)
+                .backgroundColor(this.isPlayingAudio ? '#1C2430' : '#00C4AE')
+                .fontColor(this.isPlayingAudio ? '#8B949E' : '#0D1117')
+                .fontWeight(FontWeight.Bold)
+                .fontSize(11)
+                .width('70%')
+                .height(34)
+
+              if (this.audioPlayError) {
+                Text(this.audioPlayError)
+                  .fontSize(9)
+                  .fontColor('#FF4444')
+                  .textAlign(TextAlign.Center)
+              } else if (this.isPlayingAudio) {
+                Text('Playing audio...')
+                  .fontSize(9)
+                  .fontColor('#00E5C8')
+              }
+            }
+            .width('100%')
+            .alignItems(HorizontalAlign.Center)
+            .margin({ top: 4, bottom: 4 })
+          }
+
           Text('← Swipe or tap back')
             .fontSize(8)
             .fontColor('#6E7681')
@@ -277,6 +287,9 @@ struct SpeechResult {
         .alignItems(HorizontalAlign.Center)
       }
       .layoutWeight(1)
+      .scrollBar(BarState.Off)
+      .edgeEffect(EdgeEffect.Spring)
+      .friction(6.0)
     }
     .width('100%')
     .height('100%')

@@ -9,6 +9,7 @@
     "pages/ConvoAssist",
     "pages/SpeechResult",
     "pages/ContextAlert",
+    "pages/AlertsList",
     "pages/TripEnded"
   ]
 }

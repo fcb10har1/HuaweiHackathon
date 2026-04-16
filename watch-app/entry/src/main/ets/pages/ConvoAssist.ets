@@ -223,18 +223,31 @@ struct ConvoAssist {
 
                 // JSON phrases — English on front, native on back (flip on tap)
                 ForEach(this.phrases, (p: Phrase, idx: number) => {
-                  Column() {
+                  Column({ space: 6 }) {
                     if (this.flippedIdx === idx) {
-                      // ── Flipped: show native translation ──
+                      // ── Flipped: native script large so locals can read it ──
                       Text(p.nativeScript || p.english)
-                        .fontSize(12)
+                        .fontSize(22)
                         .fontColor('#00E5C8')
-                        .fontWeight(FontWeight.Medium)
+                        .fontWeight(FontWeight.Bold)
                         .textAlign(TextAlign.Center)
                         .width('100%')
-                        .lineHeight(18)
+                        .lineHeight(30)
+                      if (p.romanized) {
+                        Text(p.romanized)
+                          .fontSize(10)
+                          .fontColor('#6E9E98')
+                          .textAlign(TextAlign.Center)
+                          .width('100%')
+                          .lineHeight(15)
+                      }
+                      Text('Tap to go back')
+                        .fontSize(8)
+                        .fontColor('#3A5050')
+                        .textAlign(TextAlign.Center)
+                        .margin({ top: 4 })
                     } else {
-                      // ── Default: show English ──
+                      // ── Default: English ──
                       Text(p.english)
                         .fontSize(12)
                         .fontColor('#E6EDF3')
@@ -242,12 +255,22 @@ struct ConvoAssist {
                         .textAlign(TextAlign.Center)
                         .width('100%')
                         .lineHeight(18)
+                      Text('Tap to translate')
+                        .fontSize(8)
+                        .fontColor('#4A5568')
+                        .textAlign(TextAlign.Center)
+                        .margin({ top: 4 })
                     }
                   }
-                  .width('80%')
+                  .width('86%')
                   .padding({ left: 14, right: 14, top: 14, bottom: 14 })
                   .backgroundColor(this.flippedIdx === idx ? '#0A1E1A' : '#161B22')
                   .borderRadius(12)
+                  .border({
+                    width: 1,
+                    color: this.flippedIdx === idx ? '#00E5C8' : '#21262D',
+                    style: BorderStyle.Solid,
+                  })
                   .alignItems(HorizontalAlign.Center)
                   .onClick(() => this.flipCard(idx))
                 })
@@ -270,7 +293,7 @@ struct ConvoAssist {
                 })
 
                 // Bottom spacer so last card isn't hidden behind mic button
-                Text('').height(70)
+                Text('').height(44)
               }
               .width('100%')
               .alignItems(HorizontalAlign.Center)
@@ -278,7 +301,7 @@ struct ConvoAssist {
             .layoutWeight(1)
             .scrollBar(BarState.Off)
             .edgeEffect(EdgeEffect.Spring)
-            .friction(0.95)
+            .friction(6.0)
           }
           .width('100%')
           .layoutWeight(1)
@@ -288,57 +311,37 @@ struct ConvoAssist {
           Stack({ alignContent: Alignment.Center }) {
             // Circle background
             Column()
-              .width(58)
-              .height(58)
-              .borderRadius(29)
+              .width(28)
+              .height(28)
+              .borderRadius(14)
               .backgroundColor('#00C4AE')
-              .shadow({ radius: 14, color: '#00C4AE60', offsetX: 0, offsetY: 0 })
+              .shadow({ radius: 6, color: '#00C4AE50', offsetX: 0, offsetY: 0 })
 
-            // Microphone icon (white shapes)
-            Column({ space: 2 }) {
-              // Capsule body with grill lines
-              Stack({ alignContent: Alignment.Center }) {
-                Column()
-                  .width(16)
-                  .height(22)
-                  .borderRadius(8)
-                  .backgroundColor('#FFFFFF')
-                Column({ space: 3 }) {
-                  Row().width(9).height(1.5).backgroundColor('#00B09C').borderRadius(1)
-                  Row().width(9).height(1.5).backgroundColor('#00B09C').borderRadius(1)
-                  Row().width(9).height(1.5).backgroundColor('#00B09C').borderRadius(1)
-                }
-              }
-
-              // U-shaped stand (left+bottom+right border, no top)
+            // Mic: just 2 shapes — pill head + U arc
+            Column({ space: 1 }) {
+              // Mic head — solid white pill
               Column()
-                .width(22)
+                .width(6)
                 .height(9)
+                .borderRadius(3)
+                .backgroundColor('#FFFFFF')
+
+              // Stand — U arc only, no stem/base
+              Column()
+                .width(10)
+                .height(4)
                 .backgroundColor('transparent')
                 .border({
-                  width: { top: 0, left: 2, right: 2, bottom: 2 },
+                  width: { top: 0, left: 1.5, right: 1.5, bottom: 1.5 },
                   color: '#FFFFFF',
                   style: BorderStyle.Solid,
-                  radius: { topLeft: 0, topRight: 0, bottomLeft: 11, bottomRight: 11 },
+                  radius: { topLeft: 0, topRight: 0, bottomLeft: 5, bottomRight: 5 },
                 })
-
-              // Vertical stem
-              Column()
-                .width(2)
-                .height(4)
-                .backgroundColor('#FFFFFF')
-
-              // Horizontal base
-              Column()
-                .width(14)
-                .height(2)
-                .backgroundColor('#FFFFFF')
-                .borderRadius(1)
             }
             .alignItems(HorizontalAlign.Center)
           }
           .onClick(() => this.startFilePicker())
-          .margin({ bottom: 14 })
+          .margin({ bottom: 10 })
         }
       }
 

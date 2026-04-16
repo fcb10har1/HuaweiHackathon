@@ -72,18 +72,20 @@ struct Index {
             .lineHeight(22)
 
           // Circular teal add button
-          Text('+')
-            .fontSize(28)
-            .fontColor('#0D1117')
-            .fontWeight(FontWeight.Bold)
-            .width(56)
-            .height(56)
-            .textAlign(TextAlign.Center)
-            .lineHeight(54)
-            .backgroundColor('#00C4AE')
-            .borderRadius(28)
-            .onClick(() => router.pushUrl({ url: 'pages/AddTripName' }))
-            .margin({ top: 8 })
+          Stack({ alignContent: Alignment.Center }) {
+            Column()
+              .width(34)
+              .height(34)
+              .borderRadius(17)
+              .backgroundColor('#00C4AE')
+            Text('+')
+              .fontSize(18)
+              .fontColor('#0D1117')
+              .fontWeight(FontWeight.Bold)
+              .margin({ bottom: 2 })
+          }
+          .onClick(() => router.pushUrl({ url: 'pages/AddTripName' }))
+          .margin({ top: 8 })
         }
         .width('100%')
         .height('100%')
@@ -135,11 +137,11 @@ struct Index {
                   .borderRadius(8)
                 } else {
                   // Trip card
-                  Row({ space: 10 }) {
-                    Text(trip.flag).fontSize(22)
+                  Row({ space: 8 }) {
+                    Text(trip.flag).fontSize(20).flexShrink(0)
                     Column({ space: 3 }) {
                       Text(trip.tripName || trip.countryName)
-                        .fontSize(13)
+                        .fontSize(12)
                         .fontWeight(FontWeight.Bold)
                         .fontColor('#E6EDF3')
                         .maxLines(1)
@@ -153,35 +155,52 @@ struct Index {
                     .alignItems(HorizontalAlign.Start)
                     .layoutWeight(1)
 
+                    // Status + arrow
                     Column({ space: 3 }) {
                       Text(this.statusBadge(trip))
                         .fontSize(7)
                         .fontColor(this.statusColor(trip))
                         .letterSpacing(0.5)
                       Text('›')
-                        .fontSize(16)
+                        .fontSize(14)
                         .fontColor('#8B949E')
                     }
                     .alignItems(HorizontalAlign.End)
+                    .flexShrink(0)
+
+                    // Small red trash button
+                    Stack({ alignContent: Alignment.Center }) {
+                      Column()
+                        .width(22)
+                        .height(22)
+                        .borderRadius(5)
+                        .backgroundColor('#3A0000')
+                        .border({ width: 1, color: '#FF4444', style: BorderStyle.Solid })
+
+                      Column({ space: 1 }) {
+                        // Lid
+                        Column()
+                          .width(12).height(2)
+                          .backgroundColor('#FF4444')
+                          .borderRadius(1)
+                        // Body
+                        Column()
+                          .width(10).height(8)
+                          .backgroundColor('transparent')
+                          .border({ width: 1.5, color: '#FF4444', style: BorderStyle.Solid })
+                          .borderRadius({ topLeft: 0, topRight: 0, bottomLeft: 2, bottomRight: 2 })
+                      }
+                      .alignItems(HorizontalAlign.Center)
+                    }
+                    .onClick(() => { this.deletingId = trip.id; })
+                    .flexShrink(0)
                   }
                   .width('100%')
-                  .padding({ left: 14, right: 12, top: 12, bottom: 12 })
+                  .padding({ left: 12, right: 10, top: 10, bottom: 10 })
                   .backgroundColor('#161B22')
                   .borderRadius(10)
                   .alignItems(VerticalAlign.Center)
                   .onClick(() => this.openTrip(trip))
-                  .gesture(
-                    LongPressGesture()
-                      .onAction(() => {
-                        this.deletingId = trip.id;
-                        try {
-                          vibrator.startVibration(
-                            { type: 'time', duration: 60 },
-                            { id: 0, usage: 'notification' }
-                          );
-                        } catch (_) {}
-                      })
-                  )
                 }
               }
             })
@@ -191,21 +210,23 @@ struct Index {
           .padding({ left: 18, right: 18, top: 8, bottom: 4 })
           .scrollBar(BarState.Off)
           .edgeEffect(EdgeEffect.Spring)
-          .friction(0.85)
+          .friction(6.0)
 
           // ── Bottom teal add button ───────────────────────────────────────────
-          Text('+')
-            .fontSize(28)
-            .fontColor('#0D1117')
-            .fontWeight(FontWeight.Bold)
-            .width(52)
-            .height(52)
-            .textAlign(TextAlign.Center)
-            .lineHeight(50)
-            .backgroundColor('#00C4AE')
-            .borderRadius(26)
-            .onClick(() => router.pushUrl({ url: 'pages/AddTripName' }))
-            .margin({ bottom: 14 })
+          Stack({ alignContent: Alignment.Center }) {
+            Column()
+              .width(34)
+              .height(34)
+              .borderRadius(17)
+              .backgroundColor('#00C4AE')
+            Text('+')
+              .fontSize(18)
+              .fontColor('#0D1117')
+              .fontWeight(FontWeight.Bold)
+              .margin({ bottom: 2 })
+          }
+          .onClick(() => router.pushUrl({ url: 'pages/AddTripName' }))
+          .margin({ bottom: 14 })
         }
         .width('100%')
         .height('100%')
