@@ -13,12 +13,11 @@ import { CountryDataService } from '../services/CountryDataService';
 struct ArrivalSteps {
   private params: Record<string, string> = router.getParams() as Record<string, string>;
   private trip: Trip = JSON.parse(this.params['tripJson'] ?? '{}') as Trip;
-
-  @State steps: ArrivalStep[]       = [];
-  @State completedSteps: boolean[]  = [];
-  @State loading: boolean           = true;
-  @State loadError: boolean         = false;
-
+  @State steps: ArrivalStep[] = [];
+  @State completedSteps: boolean[] = [];
+  @State loading: boolean = true;
+  @State loadError: boolean = false;
+  @State currentIdx: number = 0;
   private dataService: CountryDataService | null = null;
 
   aboutToAppear(): void {
@@ -47,7 +46,6 @@ struct ArrivalSteps {
 
   build() {
     Column() {
-      // ── Header ─────────────────────────────────────────────────────────────
       Row() {
         Text('←')
           .fontSize(13)
@@ -56,10 +54,13 @@ struct ArrivalSteps {
           .padding({ left: 12, right: 8 })
 
         Text(
-          this.loading    ? 'Arrival Steps' :
-          this.loadError  ? 'Arrival Steps' :
-          this.steps.length === 0 ? 'Arrival Steps' :
-          `${this.completedCount} of ${this.steps.length} done`
+          this.loading
+            ? 'Arrival Steps'
+            : this.loadError
+            ? 'Arrival Steps'
+            : this.steps.length === 0
+              ? 'Arrival Steps'
+              : `${this.completedCount} of ${this.steps.length} done`
         )
           .fontSize(11)
           .fontColor(this.completedCount === this.steps.length && this.steps.length > 0 ? '#00E5C8' : '#8B949E')
@@ -74,7 +75,6 @@ struct ArrivalSteps {
 
       Divider().color('#21262D').strokeWidth(0.5)
 
-      // ── Body ───────────────────────────────────────────────────────────────
       if (this.loading) {
         Column({ space: 8 }) {
           LoadingProgress().color('#00E5C8').width(32).height(32)
@@ -105,154 +105,124 @@ struct ArrivalSteps {
             .margin({ top: 8 })
         }
         .width('100%')
-        .height(32)
-        .alignItems(VerticalAlign.Center)
+        .layoutWeight(1)
+        .justifyContent(FlexAlign.Center)
+        .alignItems(HorizontalAlign.Center)
 
-        Divider().color('#21262D').strokeWidth(0.5)
-
-        // ── Loading ──────────────────────────────────────────────────────────
-        if (this.loading) {
-          Column() {
-            LoadingProgress().color('#00E5C8').width(32).height(32)
-            Text('Loading steps...')
-              .fontSize(11)
-              .fontColor('#8B949E')
-              .margin({ top: 8 })
-          }
-          .width('100%')
-          .layoutWeight(1)
-          .justifyContent(FlexAlign.Center)
-          .alignItems(HorizontalAlign.Center)
-
-        // ── No steps ────────────────────────────────────────────────────────
-        } else if (this.steps.length === 0) {
-          Column() {
-            Text('No steps available')
-              .fontSize(13)
-              .fontColor('#8B949E')
-          }
-          .width('100%')
-          .layoutWeight(1)
-          .justifyContent(FlexAlign.Center)
-          .alignItems(HorizontalAlign.Center)
-
-        // ── Complete ─────────────────────────────────────────────────────────
-        } else if (this.currentIdx >= this.steps.length) {
-          Column({ space: 10 }) {
-            // Teal checkmark circle — no emoji
-            Text('✓')
-              .fontSize(24)
-              .fontColor('#0D1117')
-              .width(54)
-              .height(54)
-              .textAlign(TextAlign.Center)
-              .lineHeight(54)
-              .backgroundColor('#00E5C8')
-              .borderRadius(27)
-
-            Text('All Done')
-              .fontSize(16)
-              .fontWeight(FontWeight.Bold)
-              .fontColor('#FFFFFF')
-
-            Text('Arrival checklist complete')
-              .fontSize(10)
-              .fontColor('#8B949E')
-              .textAlign(TextAlign.Center)
-
-            Button('Back to Trip')
-              .onClick(() => router.back())
-              .backgroundColor('#21262D')
-              .fontColor('#8B949E')
-              .fontSize(10)
-              .width('62%')
-              .height(32)
-              .margin({ top: 6 })
-          }
-          .width('100%')
-          .layoutWeight(1)
-          .justifyContent(FlexAlign.Center)
-          .alignItems(HorizontalAlign.Center)
-
-        // ── Current step ──────────────────────────────────────────────────────
-        } else {
-          Column() {
-
-            // Title — teal, no box
-            Text(this.steps[this.currentIdx]?.title ?? '')
-              .fontSize(13)
-              .fontWeight(FontWeight.Bold)
-              .fontColor('#00E5C8')
-              .textAlign(TextAlign.Center)
-              .width('86%')
-              .lineHeight(20)
-              .padding({ top: 10, bottom: 6 })
-
-            // Scrollable description — fills all remaining space
-            Scroll() {
-              Column() {
-                Text(this.steps[this.currentIdx]?.description ?? '')
-                  .fontSize(10)
-                  .fontColor('#C9D1D9')
-                  .textAlign(TextAlign.Center)
-                  .width('86%')
-                  .lineHeight(16)
-
-                // Bottom spacer so last line stays above the nav buttons
-                Text('').height(56)
-              }
-              .width('100%')
-              .alignItems(HorizontalAlign.Center)
-            }
-            .layoutWeight(1)
-            .width('100%')
-            .scrollBar(BarState.Off)
-            .edgeEffect(EdgeEffect.Spring)
-            .friction(0.85)
-
-            // ── Fixed < > nav buttons ──────────────────────────────────────
-            Row({ space: 32 }) {
-              // < Previous
-              Text('<')
-                .fontSize(20)
-                .fontColor('#FFFFFF')
-                .fontWeight(FontWeight.Bold)
-                .width(38)
-                .height(38)
-                .textAlign(TextAlign.Center)
-                .lineHeight(38)
-                .backgroundColor(this.currentIdx > 0 ? '#00C4AE' : '#1C2430')
-                .borderRadius(19)
-                .onClick(() => { if (this.currentIdx > 0) this.currentIdx -= 1; })
-
-              // > Next
-              Text('>')
-                .fontSize(20)
-                .fontColor('#FFFFFF')
-                .fontWeight(FontWeight.Bold)
-                .width(38)
-                .height(38)
-                .textAlign(TextAlign.Center)
-                .lineHeight(38)
-                .backgroundColor('#00C4AE')
-                .borderRadius(19)
-                .onClick(() => { this.currentIdx += 1; })
-            }
-            .width('100%')
-            .justifyContent(FlexAlign.Center)
-            .padding({ top: 6, bottom: 12 })
-
-          }
-          .width('100%')
-          .layoutWeight(1)
-          .alignItems(HorizontalAlign.Center)
+      } else if (this.steps.length === 0) {
+        Column() {
+          Text('No steps available')
+            .fontSize(13)
+            .fontColor('#8B949E')
         }
         .width('100%')
         .layoutWeight(1)
-        .padding({ left: 12, right: 12, top: 8, bottom: 8 })
-        .scrollBar(BarState.Off)
-        .edgeEffect(EdgeEffect.Spring)
-        .friction(0.85)
+        .justifyContent(FlexAlign.Center)
+        .alignItems(HorizontalAlign.Center)
+
+      } else if (this.currentIdx >= this.steps.length) {
+        Column({ space: 10 }) {
+          Text('✓')
+            .fontSize(24)
+            .fontColor('#0D1117')
+            .width(54)
+            .height(54)
+            .textAlign(TextAlign.Center)
+            .lineHeight(54)
+            .backgroundColor('#00E5C8')
+            .borderRadius(27)
+
+          Text('All Done')
+            .fontSize(16)
+            .fontWeight(FontWeight.Bold)
+            .fontColor('#FFFFFF')
+
+          Text('Arrival checklist complete')
+            .fontSize(10)
+            .fontColor('#8B949E')
+            .textAlign(TextAlign.Center)
+
+          Button('Back to Trip')
+            .onClick(() => router.back())
+            .backgroundColor('#21262D')
+            .fontColor('#8B949E')
+            .fontSize(10)
+            .width('62%')
+            .height(32)
+            .margin({ top: 6 })
+        }
+        .width('100%')
+        .layoutWeight(1)
+        .justifyContent(FlexAlign.Center)
+        .alignItems(HorizontalAlign.Center)
+
+      } else {
+        Column() {
+          Text(this.steps[this.currentIdx]?.title ?? '')
+            .fontSize(13)
+            .fontWeight(FontWeight.Bold)
+            .fontColor('#00E5C8')
+            .textAlign(TextAlign.Center)
+            .width('86%')
+            .lineHeight(20)
+            .padding({ top: 10, bottom: 6 })
+
+          Scroll() {
+            Column() {
+              Text(this.steps[this.currentIdx]?.description ?? '')
+                .fontSize(10)
+                .fontColor('#C9D1D9')
+                .textAlign(TextAlign.Center)
+                .width('86%')
+                .lineHeight(16)
+
+              Text('').height(56)
+            }
+            .width('100%')
+            .alignItems(HorizontalAlign.Center)
+          }
+          .layoutWeight(1)
+          .width('100%')
+          .scrollBar(BarState.Off)
+          .edgeEffect(EdgeEffect.Spring)
+          .friction(0.85)
+
+          Row({ space: 32 }) {
+            Text('<')
+              .fontSize(20)
+              .fontColor('#FFFFFF')
+              .fontWeight(FontWeight.Bold)
+              .width(38)
+              .height(38)
+              .textAlign(TextAlign.Center)
+              .lineHeight(38)
+              .backgroundColor(this.currentIdx > 0 ? '#00C4AE' : '#1C2430')
+              .borderRadius(19)
+              .onClick(() => {
+                if (this.currentIdx > 0) this.currentIdx -= 1
+              })
+
+            Text('>')
+              .fontSize(20)
+              .fontColor('#FFFFFF')
+              .fontWeight(FontWeight.Bold)
+              .width(38)
+              .height(38)
+              .textAlign(TextAlign.Center)
+              .lineHeight(38)
+              .backgroundColor('#00C4AE')
+              .borderRadius(19)
+              .onClick(() => {
+                this.currentIdx += 1
+              })
+          }
+          .width('100%')
+          .justifyContent(FlexAlign.Center)
+          .padding({ top: 6, bottom: 12 })
+        }
+        .width('100%')
+        .layoutWeight(1)
+        .alignItems(HorizontalAlign.Center)
       }
     }
     .width('100%')
