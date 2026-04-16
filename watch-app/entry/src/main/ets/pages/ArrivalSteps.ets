@@ -28,10 +28,6 @@ struct ArrivalSteps {
     });
   }
 
-  private get currentStep(): ArrivalStep | null {
-    return this.steps[this.currentIdx] ?? null;
-  }
-
   build() {
     Stack({ alignContent: Alignment.Center }) {
 
@@ -148,7 +144,7 @@ struct ArrivalSteps {
 
             // Step card
             Column({ space: 6 }) {
-              Text(this.currentStep?.title ?? '')
+              Text(this.steps[this.currentIdx]?.title ?? '')
                 .fontSize(13)
                 .fontWeight(FontWeight.Bold)
                 .fontColor('#FFFFFF')
@@ -162,7 +158,7 @@ struct ArrivalSteps {
                 .margin({ top: 2, bottom: 2 })
 
               Scroll() {
-                Text(this.currentStep?.description ?? '')
+                Text(this.steps[this.currentIdx]?.description ?? '')
                   .fontSize(10)
                   .fontColor('#C9D1D9')
                   .textAlign(TextAlign.Center)

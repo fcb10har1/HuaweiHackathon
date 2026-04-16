@@ -80,6 +80,11 @@ export class TranslationService {
         '助けていただけますか？',
         '英語を話せますか？',
       ],
+      suggestionTranslations: [
+        'Where is the station?',
+        'Could you help me?',
+        'Do you speak English?',
+      ],
       ttsAudioUrl: 'https://example.com/audio/result.mp3',
     };
   }

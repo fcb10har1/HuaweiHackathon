@@ -15,14 +15,6 @@ struct SpeechResult {
 
   @State selectedIdx: number = 0;
 
-  private get suggestions(): string[] {
-    return this.response?.replySuggestionsJapanese ?? [];
-  }
-
-  private get englishHints(): string[] {
-    return this.response?.suggestionTranslations ?? [];
-  }
-
   build() {
     Column() {
       // ── Header ──────────────────────────────────────────────────────────────
@@ -96,7 +88,7 @@ struct SpeechResult {
           }
 
           // ── REPLY SUGGESTIONS ─────────────────────────────────────────────
-          if (this.suggestions.length > 0) {
+          if (this.response.replySuggestionsJapanese && this.response.replySuggestionsJapanese.length > 0) {
             Column({ space: 8 }) {
               Text(`REPLY IN ${this.languageName.toUpperCase()}`)
                 .fontSize(9)
@@ -104,7 +96,7 @@ struct SpeechResult {
                 .letterSpacing(1.5)
 
               // Current reply — teal, prominent
-              Text(this.suggestions[this.selectedIdx] || this.englishHints[this.selectedIdx] || '')
+              Text(this.response.replySuggestionsJapanese[this.selectedIdx] || '')
                 .fontSize(13)
                 .fontWeight(FontWeight.Bold)
                 .fontColor('#00E5C8')
@@ -115,10 +107,12 @@ struct SpeechResult {
                 .backgroundColor('#0A1E1A')
                 .borderRadius(8)
 
-              // English hint below
-              if (this.englishHints[this.selectedIdx] &&
-                  this.suggestions[this.selectedIdx] !== this.englishHints[this.selectedIdx]) {
-                Text(this.englishHints[this.selectedIdx])
+              // English hint below (if available and different from local)
+              if (this.response.suggestionTranslations &&
+                  this.response.suggestionTranslations.length > this.selectedIdx &&
+                  this.response.suggestionTranslations[this.selectedIdx] &&
+                  this.response.replySuggestionsJapanese[this.selectedIdx] !== this.response.suggestionTranslations[this.selectedIdx]) {
+                Text(this.response.suggestionTranslations[this.selectedIdx])
                   .fontSize(9)
                   .fontColor('#6E7681')
                   .textAlign(TextAlign.Center)
@@ -126,7 +120,7 @@ struct SpeechResult {
               }
 
               // < > navigation
-              if (this.suggestions.length > 1) {
+              if (this.response.replySuggestionsJapanese.length > 1) {
                 Row({ space: 20 }) {
                   Button('<')
                     .onClick(() => { if (this.selectedIdx > 0) this.selectedIdx -= 1; })
@@ -138,16 +132,18 @@ struct SpeechResult {
                     .height(36)
                     .borderRadius(18)
 
-                  Text(`${this.selectedIdx + 1} / ${this.suggestions.length}`)
+                  Text(`${this.selectedIdx + 1} / ${this.response.replySuggestionsJapanese.length}`)
                     .fontSize(9)
                     .fontColor('#8B949E')
 
                   Button('>')
                     .onClick(() => {
-                      if (this.selectedIdx < this.suggestions.length - 1) this.selectedIdx += 1;
+                      if (this.selectedIdx < this.response.replySuggestionsJapanese.length - 1) {
+                        this.selectedIdx += 1;
+                      }
                     })
-                    .backgroundColor(this.selectedIdx < this.suggestions.length - 1 ? '#00C4AE' : '#1C2430')
-                    .fontColor(this.selectedIdx < this.suggestions.length - 1 ? '#0D1117' : '#444C56')
+                    .backgroundColor(this.selectedIdx < this.response.replySuggestionsJapanese.length - 1 ? '#00C4AE' : '#1C2430')
+                    .fontColor(this.selectedIdx < this.response.replySuggestionsJapanese.length - 1 ? '#0D1117' : '#444C56')
                     .fontSize(16)
                     .fontWeight(FontWeight.Bold)
                     .width(36)
