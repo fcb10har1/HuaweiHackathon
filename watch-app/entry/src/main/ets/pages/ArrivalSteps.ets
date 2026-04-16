@@ -1,3 +1,4 @@
+
 /**
  * ArrivalSteps.ets — Step-by-step arrival checklist loaded from bundled JSON.
  * Fully offline. Current step is prominently emphasized. One step at a time.

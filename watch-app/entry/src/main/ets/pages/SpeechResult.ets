@@ -3,6 +3,7 @@
  * and tap-friendly reply options in the local language.
  */
 import router from '@ohos.router';
+import http from '@ohos.net.http';
 import { TranslationResponse } from '../common/Types';
 
 @Entry
@@ -14,21 +15,53 @@ struct SpeechResult {
   private languageName: string = this.params['languageName'] ?? 'local language';
 
   @State selectedIdx: number = 0;
+  @State isPlayingAudio: boolean = false;
+  @State audioPlayError: string = '';
 
-  private get suggestions(): string[] {
-    return this.response.replySuggestionsJapanese ?? [];
+  private getSuggestions(): string[] {
+    const raw = this.response.replySuggestionsJapanese as Object;
+    return Array.isArray(raw) ? raw as string[] : [];
   }
 
-  private get englishTranslations(): string[] {
-    return this.response.suggestionTranslations ?? [];
+  private getEnglishTranslations(): string[] {
+    const raw = this.response.suggestionTranslations as Object;
+    return Array.isArray(raw) ? raw as string[] : [];
   }
 
   private get currentReply(): string {
-    return this.suggestions[this.selectedIdx] ?? '';
+    const suggestions = this.getSuggestions();
+    return suggestions[this.selectedIdx] ?? '';
   }
 
   private get currentEnglish(): string {
-    return this.englishTranslations[this.selectedIdx] ?? '';
+    const englishTranslations = this.getEnglishTranslations();
+    return englishTranslations[this.selectedIdx] ?? '';
+  }
+
+  private async playTtsAudio(): Promise<void> {
+    this.isPlayingAudio = true;
+    this.audioPlayError = '';
+    try {
+      const httpClient = http.createHttp();
+      const requestUrl: string = `http://10.0.2.2:5000/api/save-audio/${this.selectedIdx}`;
+      const response: http.HttpResponse = await httpClient.request(requestUrl, {
+        method: http.RequestMethod.POST,
+        expectDataType: http.HttpDataType.STRING,
+        connectTimeout: 30000,
+        readTimeout: 30000,
+      });
+      if (response.responseCode === 200) {
+        const result = JSON.parse(response.result as string) as Record<string, string>;
+        this.audioPlayError = `Saved: ${result['file'] ?? 'audio file'}`;
+      } else {
+        this.audioPlayError = 'Failed to play audio';
+      }
+      httpClient.destroy();
+    } catch (_) {
+      this.audioPlayError = 'Failed to play audio';
+    } finally {
+      this.isPlayingAudio = false;
+    }
   }
 
   build() {
@@ -70,6 +103,22 @@ struct SpeechResult {
                 .textAlign(TextAlign.Center)
                 .width('88%')
                 .lineHeight(19)
+
+              Button(this.isPlayingAudio ? 'Playing...' : '▶ Play Audio')
+                .onClick(() => this.playTtsAudio())
+                .enabled(!this.isPlayingAudio)
+                .backgroundColor(this.isPlayingAudio ? '#21262D' : '#238636')
+                .fontColor('#FFFFFF')
+                .fontSize(10)
+                .width('72%')
+                .height(30)
+                .margin({ top: 6 })
+
+              if (this.audioPlayError) {
+                Text(this.audioPlayError)
+                  .fontSize(8)
+                  .fontColor('#8B949E')
+              }
             }
             .width('100%')
             .padding({ top: 10, bottom: 10, left: 4, right: 4 })
@@ -80,7 +129,7 @@ struct SpeechResult {
           }
 
           // ── Reply suggestions ──────────────────────────────────────────────
-          if (this.suggestions.length > 0) {
+          if (this.getSuggestions().length > 0) {
             Column({ space: 6 }) {
               Text(`Reply in ${this.languageName}:`)
                 .fontSize(9)
@@ -109,7 +158,7 @@ struct SpeechResult {
               }
 
               // Pagination
-              if (this.suggestions.length > 1) {
+              if (this.getSuggestions().length > 1) {
                 Row({ space: 10 }) {
                   Button('‹')
                     .onClick(() => { if (this.selectedIdx > 0) this.selectedIdx -= 1; })
@@ -120,20 +169,20 @@ struct SpeechResult {
                     .height(30)
                     .enabled(this.selectedIdx > 0)
 
-                  Text(`${this.selectedIdx + 1} / ${this.suggestions.length}`)
+                  Text(`${this.selectedIdx + 1} / ${this.getSuggestions().length}`)
                     .fontSize(9)
                     .fontColor('#8B949E')
 
                   Button('›')
                     .onClick(() => {
-                      if (this.selectedIdx < this.suggestions.length - 1) this.selectedIdx += 1;
+                      if (this.selectedIdx < this.getSuggestions().length - 1) this.selectedIdx += 1;
                     })
-                    .backgroundColor(this.selectedIdx < this.suggestions.length - 1 ? '#21262D' : '#0D1117')
-                    .fontColor(this.selectedIdx < this.suggestions.length - 1 ? '#E6EDF3' : '#313940')
+                    .backgroundColor(this.selectedIdx < this.getSuggestions().length - 1 ? '#21262D' : '#0D1117')
+                    .fontColor(this.selectedIdx < this.getSuggestions().length - 1 ? '#E6EDF3' : '#313940')
                     .fontSize(16)
                     .width(38)
                     .height(30)
-                    .enabled(this.selectedIdx < this.suggestions.length - 1)
+                    .enabled(this.selectedIdx < this.getSuggestions().length - 1)
                 }
                 .width('100%')
                 .justifyContent(FlexAlign.Center)
