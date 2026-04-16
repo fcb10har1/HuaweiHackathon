@@ -12,12 +12,6 @@ struct ContextAlertPage {
   private alert: ContextAlert = JSON.parse(this.params['alertJson'] ?? '{}') as ContextAlert;
   private countryName: string = this.params['countryName'] ?? '';
 
-  private get bgColor(): string {
-    if (this.alert.riskLevel === 'LEGAL')     return '#1A0000';
-    if (this.alert.riskLevel === 'SENSITIVE') return '#1A1200';
-    return '#0D1117';
-  }
-
   build() {
     Column({ space: 12 }) {
       // ── Risk badge ───────────────────────────────────────────────────────────
@@ -67,7 +61,11 @@ struct ContextAlertPage {
     .height('100%')
     .justifyContent(FlexAlign.Center)
     .alignItems(HorizontalAlign.Center)
-    .backgroundColor(this.bgColor)
+    .backgroundColor(
+      this.alert.riskLevel === 'LEGAL'     ? '#1A0000' :
+      this.alert.riskLevel === 'SENSITIVE' ? '#1A1200' :
+      '#0D1117'
+    )
     .gesture(
       PanGesture({ direction: PanDirection.Right, distance: 50 })
         .onActionEnd(() => router.back())
