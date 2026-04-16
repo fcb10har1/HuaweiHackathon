@@ -3,6 +3,7 @@
  * and tap-friendly reply options in the local language.
  */
 import router from '@ohos.router';
+import http from '@ohos.net.http';
 import { TranslationResponse } from '../common/Types';
 
 @Entry
@@ -14,6 +15,8 @@ struct SpeechResult {
   private languageName: string = this.params['languageName'] ?? 'local language';
 
   @State selectedIdx: number = 0;
+  @State isPlayingAudio: boolean = false;
+  @State audioPlayError: string = '';
 
   private get suggestions(): string[] {
     return this.response.replySuggestionsJapanese ?? [];
@@ -29,6 +32,34 @@ struct SpeechResult {
 
   private get currentEnglish(): string {
     return this.englishTranslations[this.selectedIdx] ?? '';
+  }
+
+  private async playTtsAudio(): Promise<void> {
+    this.isPlayingAudio = true;
+    this.audioPlayError = '';
+
+    try {
+      const httpClient = http.createHttp();
+      const requestUrl: string = `http://10.0.2.2:5000/api/save-audio/${this.selectedIdx}`;
+      const response: http.HttpResponse = await httpClient.request(requestUrl, {
+        method: http.RequestMethod.POST,
+        expectDataType: http.HttpDataType.STRING,
+        connectTimeout: 30000,
+        readTimeout: 30000,
+      });
+
+      if (response.responseCode === 200) {
+        const result = JSON.parse(response.result as string) as Record<string, string>;
+        this.audioPlayError = `Saved: ${result['file'] ?? 'audio file'}`;
+      } else {
+        this.audioPlayError = 'Failed to play audio';
+      }
+      httpClient.destroy();
+    } catch (_) {
+      this.audioPlayError = 'Failed to play audio';
+    } finally {
+      this.isPlayingAudio = false;
+    }
   }
 
   build() {
@@ -70,6 +101,22 @@ struct SpeechResult {
                 .textAlign(TextAlign.Center)
                 .width('88%')
                 .lineHeight(19)
+
+              Button(this.isPlayingAudio ? 'Playing...' : '▶ Play Audio')
+                .onClick(() => this.playTtsAudio())
+                .enabled(!this.isPlayingAudio)
+                .backgroundColor(this.isPlayingAudio ? '#21262D' : '#238636')
+                .fontColor('#FFFFFF')
+                .fontSize(10)
+                .width('72%')
+                .height(30)
+                .margin({ top: 6 })
+
+              if (this.audioPlayError) {
+                Text(this.audioPlayError)
+                  .fontSize(8)
+                  .fontColor('#8B949E')
+              }
             }
             .width('100%')
             .padding({ top: 10, bottom: 10, left: 4, right: 4 })
