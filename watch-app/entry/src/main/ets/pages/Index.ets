@@ -2,7 +2,7 @@
  * Index.ets — Trip List (Home Screen)
  *
  * Empty state: "No Upcoming Trips" with centered teal add button.
- * Trips state: "My Trips" header + scrollable trip cards.
+ * Trips state: "My Trips" header + scrollable trip cards + teal add button at bottom.
  * Long-press a trip to delete. Tap to open.
  */
 import router from '@ohos.router';
@@ -55,7 +55,7 @@ struct Index {
   private statusColor(trip: Trip): string {
     const s = getTripStatus(trip);
     if (s === 'active')   return '#00E5C8';
-    if (s === 'upcoming') return '#4D9FFF';
+    if (s === 'upcoming') return '#00E5C8';  // teal for upcoming
     return '#6E7681';
   }
 
@@ -82,7 +82,7 @@ struct Index {
             .lineHeight(54)
             .backgroundColor('#00C4AE')
             .borderRadius(28)
-            .onClick(() => router.pushUrl({ url: 'pages/AddTripCountry' }))
+            .onClick(() => router.pushUrl({ url: 'pages/AddTripName' }))
             .margin({ top: 8 })
         }
         .width('100%')
@@ -90,31 +90,18 @@ struct Index {
         .justifyContent(FlexAlign.Center)
         .alignItems(HorizontalAlign.Center)
         .backgroundColor('#0D1117')
+
       } else {
         // ── Trips state ────────────────────────────────────────────────────────
         Column() {
-          // Header
-          Stack({ alignContent: Alignment.Center }) {
-            Text('My Trips')
-              .fontSize(15)
-              .fontWeight(FontWeight.Bold)
-              .fontColor('#E6EDF3')
-              .textAlign(TextAlign.Center)
-              .width('100%')
-
-            Row() {
-              Blank()
-              Text('+')
-                .fontSize(22)
-                .fontColor('#00C4AE')
-                .fontWeight(FontWeight.Bold)
-                .padding({ right: 14 })
-                .onClick(() => router.pushUrl({ url: 'pages/AddTripCountry' }))
-            }
+          // Header — title only, no + in header
+          Text('My Trips')
+            .fontSize(15)
+            .fontWeight(FontWeight.Bold)
+            .fontColor('#E6EDF3')
+            .textAlign(TextAlign.Center)
             .width('100%')
-          }
-          .width('100%')
-          .padding({ top: 12, bottom: 8 })
+            .padding({ top: 12, bottom: 8 })
 
           Divider().color('#21262D')
 
@@ -151,13 +138,17 @@ struct Index {
                   Row({ space: 10 }) {
                     Text(trip.flag).fontSize(22)
                     Column({ space: 3 }) {
-                      Text(trip.countryName)
+                      Text(trip.tripName || trip.countryName)
                         .fontSize(13)
                         .fontWeight(FontWeight.Bold)
                         .fontColor('#E6EDF3')
+                        .maxLines(1)
+                        .textOverflow({ overflow: TextOverflow.Ellipsis })
                       Text(`${formatDate(trip.startTimestamp)} – ${formatDate(trip.endTimestamp)}`)
-                        .fontSize(9)
+                        .fontSize(8)
                         .fontColor('#8B949E')
+                        .maxLines(1)
+                        .textOverflow({ overflow: TextOverflow.Ellipsis })
                     }
                     .alignItems(HorizontalAlign.Start)
                     .layoutWeight(1)
@@ -197,13 +188,28 @@ struct Index {
           }
           .width('100%')
           .layoutWeight(1)
-          .padding({ left: 18, right: 18, top: 8, bottom: 8 })
+          .padding({ left: 18, right: 18, top: 8, bottom: 4 })
           .scrollBar(BarState.Off)
           .edgeEffect(EdgeEffect.Spring)
           .friction(0.85)
+
+          // ── Bottom teal add button ───────────────────────────────────────────
+          Text('+')
+            .fontSize(28)
+            .fontColor('#0D1117')
+            .fontWeight(FontWeight.Bold)
+            .width(52)
+            .height(52)
+            .textAlign(TextAlign.Center)
+            .lineHeight(50)
+            .backgroundColor('#00C4AE')
+            .borderRadius(26)
+            .onClick(() => router.pushUrl({ url: 'pages/AddTripName' }))
+            .margin({ bottom: 14 })
         }
         .width('100%')
         .height('100%')
+        .alignItems(HorizontalAlign.Center)
         .backgroundColor('#0D1117')
       }
     }

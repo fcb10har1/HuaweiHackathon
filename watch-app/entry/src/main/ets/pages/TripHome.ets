@@ -148,54 +148,132 @@ struct TripHome {
           .fontColor('#6E7681')
           .margin({ bottom: 10 })
 
-        // Action buttons — outlined circles with label below
-        Row({ space: 24 }) {
-          // Arrival Steps
-          Column({ space: 6 }) {
-            Button('Steps')
-              .onClick(() => {
-                router.pushUrl({
-                  url: 'pages/ArrivalSteps',
-                  params: { tripJson: this.params['tripJson'] },
-                });
-              })
-              .backgroundColor('#0D1825')
-              .fontColor('#4D9FFF')
-              .fontSize(11)
-              .fontWeight(FontWeight.Bold)
-              .width(56)
-              .height(56)
-              .borderRadius(28)
-              .border({ width: 1.5, color: '#4D9FFF', style: BorderStyle.Solid })
-            Text('Arrival')
+        // Action buttons — teal neon-glow circles with icon shapes
+        Row({ space: 28 }) {
+
+          // ── Arrival Steps ──────────────────────────────────────────────────
+          Column({ space: 8 }) {
+            Stack({ alignContent: Alignment.Center }) {
+              // Glow circle background
+              Column()
+                .width(72)
+                .height(72)
+                .borderRadius(36)
+                .backgroundColor('#071A15')
+                .border({ width: 1.5, color: '#00E5C8', style: BorderStyle.Solid })
+                .shadow({ radius: 18, color: '#00E5C850', offsetX: 0, offsetY: 0 })
+
+              // Document icon: rect outline + 3 lines
+              Stack({ alignContent: Alignment.Center }) {
+                // Document outline
+                Column()
+                  .width(26)
+                  .height(32)
+                  .borderRadius(4)
+                  .backgroundColor('transparent')
+                  .border({ width: 1.5, color: '#00E5C8', style: BorderStyle.Solid })
+
+                // Three horizontal lines inside
+                Column({ space: 5 }) {
+                  Row()
+                    .width(16).height(1.5)
+                    .backgroundColor('#00E5C8').borderRadius(1)
+                  Row()
+                    .width(16).height(1.5)
+                    .backgroundColor('#00E5C8').borderRadius(1)
+                  Row()
+                    .width(11).height(1.5)
+                    .backgroundColor('#00E5C8').borderRadius(1)
+                }
+              }
+            }
+            .onClick(() => {
+              router.pushUrl({
+                url: 'pages/ArrivalSteps',
+                params: { tripJson: this.params['tripJson'] },
+              });
+            })
+
+            Text('Arrival Steps')
               .fontSize(9)
               .fontColor('#8B949E')
+              .textAlign(TextAlign.Center)
           }
           .alignItems(HorizontalAlign.Center)
 
-          // Convo Assist
-          Column({ space: 6 }) {
-            Button('Convo')
-              .onClick(() => {
-                router.pushUrl({
-                  url: 'pages/ConvoAssist',
-                  params: {
-                    tripJson: this.params['tripJson'],
-                    currentVenueType: this.currentVenueType,
-                  },
-                });
-              })
-              .backgroundColor('#0A1A18')
-              .fontColor('#00E5C8')
-              .fontSize(11)
-              .fontWeight(FontWeight.Bold)
-              .width(56)
-              .height(56)
-              .borderRadius(28)
-              .border({ width: 1.5, color: '#00E5C8', style: BorderStyle.Solid })
-            Text('Translate')
+          // ── Convo Assist ───────────────────────────────────────────────────
+          Column({ space: 8 }) {
+            Stack({ alignContent: Alignment.Center }) {
+              // Glow circle background
+              Column()
+                .width(72)
+                .height(72)
+                .borderRadius(36)
+                .backgroundColor('#071A15')
+                .border({ width: 1.5, color: '#00E5C8', style: BorderStyle.Solid })
+                .shadow({ radius: 18, color: '#00E5C850', offsetX: 0, offsetY: 0 })
+
+              // Microphone icon
+              Column({ space: 0 }) {
+                // Mic capsule (rounded rect outline)
+                Column()
+                  .width(16)
+                  .height(22)
+                  .borderRadius(8)
+                  .backgroundColor('transparent')
+                  .border({ width: 1.5, color: '#00E5C8', style: BorderStyle.Solid })
+
+                // Mic stand arc — left arm, bottom curve, right arm
+                Row({ space: 0 }) {
+                  // Left arm
+                  Column()
+                    .width(1.5).height(8)
+                    .backgroundColor('#00E5C8')
+                  // Bottom curve (approximated as a rounded bottom column)
+                  Column()
+                    .width(14).height(8)
+                    .borderRadius({ topLeft: 0, topRight: 0, bottomLeft: 7, bottomRight: 7 })
+                    .backgroundColor('transparent')
+                    .border({ width: 1.5, color: '#00E5C8', style: BorderStyle.Solid })
+                    .margin({ left: -1.5 })
+                  // Right arm
+                  Column()
+                    .width(1.5).height(8)
+                    .backgroundColor('#00E5C8')
+                    .margin({ left: -1.5 })
+                }
+                .alignItems(VerticalAlign.Top)
+                .margin({ top: 2 })
+
+                // Vertical stem
+                Column()
+                  .width(1.5).height(5)
+                  .backgroundColor('#00E5C8')
+                  .alignSelf(ItemAlign.Center)
+
+                // Base line
+                Column()
+                  .width(14).height(1.5)
+                  .backgroundColor('#00E5C8')
+                  .borderRadius(1)
+                  .alignSelf(ItemAlign.Center)
+              }
+              .alignItems(HorizontalAlign.Center)
+            }
+            .onClick(() => {
+              router.pushUrl({
+                url: 'pages/ConvoAssist',
+                params: {
+                  tripJson: this.params['tripJson'],
+                  currentVenueType: this.currentVenueType,
+                },
+              });
+            })
+
+            Text('Convo')
               .fontSize(9)
               .fontColor('#8B949E')
+              .textAlign(TextAlign.Center)
           }
           .alignItems(HorizontalAlign.Center)
         }

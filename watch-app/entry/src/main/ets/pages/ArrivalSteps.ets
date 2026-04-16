@@ -142,74 +142,74 @@ struct ArrivalSteps {
         } else {
           Column() {
 
-            // Step card
-            Column({ space: 6 }) {
-              Text(this.steps[this.currentIdx]?.title ?? '')
-                .fontSize(13)
-                .fontWeight(FontWeight.Bold)
-                .fontColor('#FFFFFF')
-                .textAlign(TextAlign.Center)
-                .width('90%')
-                .lineHeight(19)
-                .maxLines(2)
-                .textOverflow({ overflow: TextOverflow.Ellipsis })
+            // Title — teal, no box
+            Text(this.steps[this.currentIdx]?.title ?? '')
+              .fontSize(13)
+              .fontWeight(FontWeight.Bold)
+              .fontColor('#00E5C8')
+              .textAlign(TextAlign.Center)
+              .width('86%')
+              .lineHeight(20)
+              .padding({ top: 10, bottom: 6 })
 
-              Divider().color('#2A3B50').width('60%').strokeWidth(0.5)
-                .margin({ top: 2, bottom: 2 })
-
-              Scroll() {
+            // Scrollable description — fills all remaining space
+            Scroll() {
+              Column() {
                 Text(this.steps[this.currentIdx]?.description ?? '')
                   .fontSize(10)
                   .fontColor('#C9D1D9')
                   .textAlign(TextAlign.Center)
-                  .width('88%')
-                  .lineHeight(15)
+                  .width('86%')
+                  .lineHeight(16)
+
+                // Bottom spacer so last line stays above the nav buttons
+                Text('').height(56)
               }
-              .height(78)
               .width('100%')
-              .scrollBar(BarState.Off)
+              .alignItems(HorizontalAlign.Center)
             }
-            .width('78%')
-            .padding({ left: 12, right: 12, top: 12, bottom: 12 })
-            .backgroundColor('#161B22')
-            .borderRadius(14)
-            .alignItems(HorizontalAlign.Center)
-            .border({ width: 1, color: '#00E5C8', style: BorderStyle.Solid })
-            .margin({ top: 10 })
+            .layoutWeight(1)
+            .width('100%')
+            .scrollBar(BarState.Off)
+            .edgeEffect(EdgeEffect.Spring)
+            .friction(0.85)
 
-            // < > navigation buttons
-            Row({ space: 28 }) {
-              // Back <
-              Button('<')
-                .onClick(() => { if (this.currentIdx > 0) this.currentIdx -= 1; })
+            // ── Fixed < > nav buttons ──────────────────────────────────────
+            Row({ space: 32 }) {
+              // < Previous
+              Text('<')
+                .fontSize(20)
+                .fontColor('#FFFFFF')
+                .fontWeight(FontWeight.Bold)
+                .width(38)
+                .height(38)
+                .textAlign(TextAlign.Center)
+                .lineHeight(38)
                 .backgroundColor(this.currentIdx > 0 ? '#00C4AE' : '#1C2430')
-                .fontColor(this.currentIdx > 0 ? '#0D1117' : '#3A4450')
-                .fontSize(18)
-                .fontWeight(FontWeight.Bold)
-                .width(46)
-                .height(46)
-                .borderRadius(23)
+                .borderRadius(19)
+                .onClick(() => { if (this.currentIdx > 0) this.currentIdx -= 1; })
 
-              // Next >
-              Button('>')
-                .onClick(() => { this.currentIdx += 1; })
-                .backgroundColor('#00C4AE')
-                .fontColor('#0D1117')
-                .fontSize(18)
+              // > Next
+              Text('>')
+                .fontSize(20)
+                .fontColor('#FFFFFF')
                 .fontWeight(FontWeight.Bold)
-                .width(46)
-                .height(46)
-                .borderRadius(23)
+                .width(38)
+                .height(38)
+                .textAlign(TextAlign.Center)
+                .lineHeight(38)
+                .backgroundColor('#00C4AE')
+                .borderRadius(19)
+                .onClick(() => { this.currentIdx += 1; })
             }
             .width('100%')
             .justifyContent(FlexAlign.Center)
-            .margin({ top: 14, bottom: 8 })
+            .padding({ top: 6, bottom: 12 })
 
           }
           .width('100%')
           .layoutWeight(1)
           .alignItems(HorizontalAlign.Center)
-          .justifyContent(FlexAlign.SpaceBetween)
         }
       }
       .width('100%')
