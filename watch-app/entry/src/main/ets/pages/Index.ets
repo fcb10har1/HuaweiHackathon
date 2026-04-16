@@ -64,9 +64,6 @@ struct Index {
       if (this.trips.length === 0) {
         // ── Empty state ────────────────────────────────────────────────────────
         Column({ space: 10 }) {
-          Text('✈️')
-            .fontSize(36)
-
           Text('No Upcoming\nTrips')
             .fontSize(15)
             .fontWeight(FontWeight.Bold)
@@ -76,16 +73,17 @@ struct Index {
 
           // Circular teal add button
           Text('+')
-            .fontSize(30)
-            .fontColor('#FFFFFF')
+            .fontSize(28)
+            .fontColor('#0D1117')
+            .fontWeight(FontWeight.Bold)
             .width(56)
             .height(56)
             .textAlign(TextAlign.Center)
-            .lineHeight(56)
-            .backgroundColor('#00E5C8')
+            .lineHeight(54)
+            .backgroundColor('#00C4AE')
             .borderRadius(28)
             .onClick(() => router.pushUrl({ url: 'pages/AddTripCountry' }))
-            .margin({ top: 6 })
+            .margin({ top: 8 })
         }
         .width('100%')
         .height('100%')
@@ -96,24 +94,27 @@ struct Index {
         // ── Trips state ────────────────────────────────────────────────────────
         Column() {
           // Header
-          Row() {
+          Stack({ alignContent: Alignment.Center }) {
             Text('My Trips')
               .fontSize(15)
               .fontWeight(FontWeight.Bold)
               .fontColor('#E6EDF3')
-              .layoutWeight(1)
               .textAlign(TextAlign.Center)
-              .margin({ left: 36 })
+              .width('100%')
 
-            Text('+')
-              .fontSize(24)
-              .fontColor('#00E5C8')
-              .padding(8)
-              .onClick(() => router.pushUrl({ url: 'pages/AddTripCountry' }))
+            Row() {
+              Blank()
+              Text('+')
+                .fontSize(22)
+                .fontColor('#00C4AE')
+                .fontWeight(FontWeight.Bold)
+                .padding({ right: 14 })
+                .onClick(() => router.pushUrl({ url: 'pages/AddTripCountry' }))
+            }
+            .width('100%')
           }
           .width('100%')
-          .padding({ top: 10, bottom: 6 })
-          .alignItems(VerticalAlign.Center)
+          .padding({ top: 12, bottom: 8 })
 
           Divider().color('#21262D')
 
@@ -161,17 +162,21 @@ struct Index {
                     .alignItems(HorizontalAlign.Start)
                     .layoutWeight(1)
 
-                    Text(this.statusBadge(trip))
-                      .fontSize(8)
-                      .fontColor(this.statusColor(trip))
-                      .backgroundColor('#21262D')
-                      .padding({ left: 5, right: 5, top: 2, bottom: 2 })
-                      .borderRadius(4)
+                    Column({ space: 3 }) {
+                      Text(this.statusBadge(trip))
+                        .fontSize(7)
+                        .fontColor(this.statusColor(trip))
+                        .letterSpacing(0.5)
+                      Text('›')
+                        .fontSize(16)
+                        .fontColor('#8B949E')
+                    }
+                    .alignItems(HorizontalAlign.End)
                   }
                   .width('100%')
-                  .padding({ left: 12, right: 12, top: 10, bottom: 10 })
+                  .padding({ left: 14, right: 12, top: 12, bottom: 12 })
                   .backgroundColor('#161B22')
-                  .borderRadius(8)
+                  .borderRadius(10)
                   .alignItems(VerticalAlign.Center)
                   .onClick(() => this.openTrip(trip))
                   .gesture(

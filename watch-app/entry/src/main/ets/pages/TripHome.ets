@@ -148,33 +148,34 @@ struct TripHome {
           .fontColor('#6E7681')
           .margin({ bottom: 10 })
 
-        // Action icon buttons — outlined circle style
-        Row({ space: 22 }) {
+        // Action buttons — outlined circles with label below
+        Row({ space: 24 }) {
           // Arrival Steps
           Column({ space: 6 }) {
-            Button('📋')
+            Button('Steps')
               .onClick(() => {
                 router.pushUrl({
                   url: 'pages/ArrivalSteps',
                   params: { tripJson: this.params['tripJson'] },
                 });
               })
-              .backgroundColor('#121E2E')
-              .fontColor('#FFFFFF')
-              .fontSize(22)
-              .width(54)
-              .height(54)
-              .borderRadius(27)
+              .backgroundColor('#0D1825')
+              .fontColor('#4D9FFF')
+              .fontSize(11)
+              .fontWeight(FontWeight.Bold)
+              .width(56)
+              .height(56)
+              .borderRadius(28)
               .border({ width: 1.5, color: '#4D9FFF', style: BorderStyle.Solid })
-            Text('Steps')
-              .fontSize(10)
+            Text('Arrival')
+              .fontSize(9)
               .fontColor('#8B949E')
           }
           .alignItems(HorizontalAlign.Center)
 
           // Convo Assist
           Column({ space: 6 }) {
-            Button('🎤')
+            Button('Convo')
               .onClick(() => {
                 router.pushUrl({
                   url: 'pages/ConvoAssist',
@@ -184,15 +185,16 @@ struct TripHome {
                   },
                 });
               })
-              .backgroundColor('#0E1C1A')
-              .fontColor('#FFFFFF')
-              .fontSize(22)
-              .width(54)
-              .height(54)
-              .borderRadius(27)
+              .backgroundColor('#0A1A18')
+              .fontColor('#00E5C8')
+              .fontSize(11)
+              .fontWeight(FontWeight.Bold)
+              .width(56)
+              .height(56)
+              .borderRadius(28)
               .border({ width: 1.5, color: '#00E5C8', style: BorderStyle.Solid })
-            Text('Convo')
-              .fontSize(10)
+            Text('Translate')
+              .fontSize(9)
               .fontColor('#8B949E')
           }
           .alignItems(HorizontalAlign.Center)
