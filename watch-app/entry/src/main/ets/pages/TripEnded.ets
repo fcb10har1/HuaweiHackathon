@@ -32,7 +32,7 @@ struct TripEnded {
 
       Divider().color('#21262D').width('60%')
 
-      Text('Safe travels! 🎉')
+      Text('Safe travels!')
         .fontSize(14)
         .fontColor('#00E5C8')
         .fontWeight(FontWeight.Bold)

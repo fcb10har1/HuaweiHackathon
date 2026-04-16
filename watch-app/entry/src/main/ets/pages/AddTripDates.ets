@@ -109,16 +109,17 @@ struct AddTripDates {
           .width('100%')
           .layoutWeight(1)
 
-          Button('Next →')
+          Button('Next')
             .onClick(() => {
               if (this.endDate < this.startDate) {
                 this.endDate = new Date(this.startDate.getTime() + 7 * 24 * 60 * 60 * 1000);
               }
               this.step = 2;
             })
-            .backgroundColor('#1F6FEB')
-            .fontColor('#FFFFFF')
+            .backgroundColor('#00C4AE')
+            .fontColor('#0D1117')
             .fontSize(12)
+            .fontWeight(FontWeight.Bold)
             .width('75%')
             .margin({ bottom: 14 })
         }
@@ -146,11 +147,12 @@ struct AddTripDates {
           .width('100%')
           .layoutWeight(1)
 
-          Button('Next →')
+          Button('Next')
             .onClick(() => { this.step = 3; })
-            .backgroundColor('#1F6FEB')
-            .fontColor('#FFFFFF')
+            .backgroundColor('#00C4AE')
+            .fontColor('#0D1117')
             .fontSize(12)
+            .fontWeight(FontWeight.Bold)
             .width('75%')
             .margin({ bottom: 14 })
         }
@@ -167,36 +169,45 @@ struct AddTripDates {
             .fontColor('#8B949E')
             .margin({ top: 8 })
 
-          Column({ space: 8 }) {
-            Row({ space: 8 }) {
-              Text('START').fontSize(9).fontColor('#8B949E').width(42)
+          Column({ space: 10 }) {
+            Column({ space: 3 }) {
+              Text('DEPARTURE')
+                .fontSize(8)
+                .fontColor('#8B949E')
+                .letterSpacing(1.5)
               Text(formatDate(this.startDate.getTime()))
-                .fontSize(12)
+                .fontSize(13)
                 .fontColor('#E6EDF3')
                 .fontWeight(FontWeight.Bold)
             }
-            .alignItems(VerticalAlign.Center)
+            .alignItems(HorizontalAlign.Center)
 
-            Row({ space: 8 }) {
-              Text('END').fontSize(9).fontColor('#8B949E').width(42)
+            Divider().color('#2A3B50').width('60%').strokeWidth(0.5)
+
+            Column({ space: 3 }) {
+              Text('RETURN')
+                .fontSize(8)
+                .fontColor('#8B949E')
+                .letterSpacing(1.5)
               Text(formatDate(this.endDate.getTime()))
-                .fontSize(12)
+                .fontSize(13)
                 .fontColor('#E6EDF3')
                 .fontWeight(FontWeight.Bold)
             }
-            .alignItems(VerticalAlign.Center)
+            .alignItems(HorizontalAlign.Center)
           }
           .backgroundColor('#161B22')
-          .padding({ left: 14, right: 14, top: 12, bottom: 12 })
-          .borderRadius(8)
-          .width('84%')
-          .alignItems(HorizontalAlign.Start)
+          .padding({ left: 14, right: 14, top: 14, bottom: 14 })
+          .borderRadius(12)
+          .width('80%')
+          .alignItems(HorizontalAlign.Center)
 
-          Button(this.saving ? 'Saving...' : 'Save Trip ✓')
+          Button(this.saving ? 'Saving...' : 'Save Trip')
             .onClick(() => this.saveTrip())
             .backgroundColor(this.saving ? '#21262D' : '#00C4AE')
-            .fontColor('#FFFFFF')
+            .fontColor(this.saving ? '#8B949E' : '#0D1117')
             .fontSize(13)
+            .fontWeight(FontWeight.Bold)
             .width('75%')
         }
         .width('100%')

@@ -1,6 +1,7 @@
 /**
  * ArrivalSteps.ets — Step-by-step arrival checklist.
- * Fully offline. Progress arc ring around watch face edge. One step at a time.
+ * Teal arc ring around watch face edge tracks progress.
+ * < > circle buttons for navigation. No emoji.
  */
 import router from '@ohos.router';
 import common from '@ohos.app.ability.common';
@@ -31,63 +32,56 @@ struct ArrivalSteps {
     return this.steps[this.currentIdx] ?? null;
   }
 
-  private get isLastStep(): boolean {
-    return this.currentIdx >= this.steps.length - 1;
-  }
-
-  private get progressValue(): number {
-    if (this.steps.length === 0) return 0;
-    return Math.min(this.currentIdx, this.steps.length);
-  }
-
   build() {
     Stack({ alignContent: Alignment.Center }) {
 
-      // ── Teal progress arc ring — drawn at screen edge ──────────────────────
+      // ── Teal progress arc ring ─────────────────────────────────────────────
       if (!this.loading && this.steps.length > 0) {
         Progress({
-          value: this.progressValue,
+          value: Math.min(this.currentIdx, this.steps.length),
           total: this.steps.length,
           type:  ProgressType.Ring,
         })
           .width('100%')
           .height('100%')
-          .style({ strokeWidth: 5 })
+          .style({ strokeWidth: 4 })
           .color('#00E5C8')
-          .backgroundColor('#1C2430')
+          .backgroundColor('#1A2230')
       }
 
-      // ── Content (transparent bg, ring shows at edge) ────────────────────────
+      // ── Content column (transparent — ring shows at edges) ─────────────────
       Column() {
+
         // Header
         Row() {
           Text('←')
             .fontSize(13)
             .fontColor('#8B949E')
             .onClick(() => router.back())
-            .padding({ left: 10, right: 6 })
+            .padding({ left: 12, right: 6 })
           Text(
-            this.loading                          ? 'Arrival Steps' :
-            this.steps.length === 0               ? 'Arrival Steps' :
-            this.currentIdx >= this.steps.length  ? 'Complete'      :
-            `${this.currentIdx + 1} / ${this.steps.length}`
+            this.loading                         ? 'Arrival Steps' :
+            this.steps.length === 0              ? 'Arrival Steps' :
+            this.currentIdx >= this.steps.length ? 'Complete'      :
+            `${this.currentIdx + 1} of ${this.steps.length}`
           )
             .fontSize(11)
             .fontColor('#8B949E')
+            .letterSpacing(0.5)
             .layoutWeight(1)
             .textAlign(TextAlign.Center)
-            .margin({ right: 28 })
+            .margin({ right: 30 })
         }
         .width('100%')
-        .height(30)
+        .height(32)
         .alignItems(VerticalAlign.Center)
 
-        Divider().color('#21262D').height(0.5)
+        Divider().color('#21262D').strokeWidth(0.5)
 
-        // ── Loading ────────────────────────────────────────────────────────────
+        // ── Loading ──────────────────────────────────────────────────────────
         if (this.loading) {
           Column() {
-            LoadingProgress().color('#00E5C8').width(36).height(36)
+            LoadingProgress().color('#00E5C8').width(32).height(32)
             Text('Loading steps...')
               .fontSize(11)
               .fontColor('#8B949E')
@@ -98,116 +92,132 @@ struct ArrivalSteps {
           .justifyContent(FlexAlign.Center)
           .alignItems(HorizontalAlign.Center)
 
-        // ── No steps ──────────────────────────────────────────────────────────
+        // ── No steps ────────────────────────────────────────────────────────
         } else if (this.steps.length === 0) {
           Column() {
-            Text('😕').fontSize(30)
             Text('No steps available')
-              .fontSize(12)
+              .fontSize(13)
               .fontColor('#8B949E')
-              .margin({ top: 8 })
           }
           .width('100%')
           .layoutWeight(1)
           .justifyContent(FlexAlign.Center)
           .alignItems(HorizontalAlign.Center)
 
-        // ── Complete ───────────────────────────────────────────────────────────
+        // ── Complete ─────────────────────────────────────────────────────────
         } else if (this.currentIdx >= this.steps.length) {
-          Column({ space: 8 }) {
-            Text('✅').fontSize(40)
-            Text('All Done!')
+          Column({ space: 10 }) {
+            // Teal checkmark circle — no emoji
+            Text('✓')
+              .fontSize(24)
+              .fontColor('#0D1117')
+              .width(54)
+              .height(54)
+              .textAlign(TextAlign.Center)
+              .lineHeight(54)
+              .backgroundColor('#00E5C8')
+              .borderRadius(27)
+
+            Text('All Done')
               .fontSize(16)
               .fontWeight(FontWeight.Bold)
-              .fontColor('#00E5C8')
-            Text('Arrival complete')
+              .fontColor('#FFFFFF')
+
+            Text('Arrival checklist complete')
               .fontSize(10)
               .fontColor('#8B949E')
-            Button('← Back')
+              .textAlign(TextAlign.Center)
+
+            Button('Back to Trip')
               .onClick(() => router.back())
               .backgroundColor('#21262D')
               .fontColor('#8B949E')
               .fontSize(10)
-              .width('60%')
-              .height(30)
-              .margin({ top: 8 })
+              .width('62%')
+              .height(32)
+              .margin({ top: 6 })
           }
           .width('100%')
           .layoutWeight(1)
           .justifyContent(FlexAlign.Center)
           .alignItems(HorizontalAlign.Center)
 
-        // ── Current step ───────────────────────────────────────────────────────
+        // ── Current step ──────────────────────────────────────────────────────
         } else {
-          Column({ space: 0 }) {
-            // Step card — prominent
+          Column() {
+
+            // Step card
             Column({ space: 6 }) {
               Text(this.currentStep?.title ?? '')
                 .fontSize(13)
                 .fontWeight(FontWeight.Bold)
-                .fontColor('#E6EDF3')
+                .fontColor('#FFFFFF')
                 .textAlign(TextAlign.Center)
                 .width('90%')
                 .lineHeight(19)
+                .maxLines(2)
+                .textOverflow({ overflow: TextOverflow.Ellipsis })
 
-              Divider().color('#2A3B50').width('65%').height(0.5)
+              Divider().color('#2A3B50').width('60%').strokeWidth(0.5)
                 .margin({ top: 2, bottom: 2 })
 
               Scroll() {
                 Text(this.currentStep?.description ?? '')
                   .fontSize(10)
                   .fontColor('#C9D1D9')
-                  .textAlign(TextAlign.Start)
-                  .width('90%')
+                  .textAlign(TextAlign.Center)
+                  .width('88%')
                   .lineHeight(15)
               }
-              .maxHeight(86)
+              .height(78)
               .width('100%')
               .scrollBar(BarState.Off)
             }
-            .width('84%')
-            .padding({ left: 10, right: 10, top: 12, bottom: 12 })
+            .width('78%')
+            .padding({ left: 12, right: 12, top: 12, bottom: 12 })
             .backgroundColor('#161B22')
-            .borderRadius(12)
+            .borderRadius(14)
             .alignItems(HorizontalAlign.Center)
             .border({ width: 1, color: '#00E5C8', style: BorderStyle.Solid })
-            .margin({ top: 8 })
+            .margin({ top: 10 })
 
-            // Nav buttons
-            Column({ space: 6 }) {
-              Button(this.isLastStep ? '✓ Complete' : 'Next ›')
-                .onClick(() => { this.currentIdx += 1; })
-                .backgroundColor(this.isLastStep ? '#00C4AE' : '#00C4AE')
-                .fontColor('#0D1117')
-                .fontSize(11)
+            // < > navigation buttons
+            Row({ space: 28 }) {
+              // Back <
+              Button('<')
+                .onClick(() => { if (this.currentIdx > 0) this.currentIdx -= 1; })
+                .backgroundColor(this.currentIdx > 0 ? '#00C4AE' : '#1C2430')
+                .fontColor(this.currentIdx > 0 ? '#0D1117' : '#3A4450')
+                .fontSize(18)
                 .fontWeight(FontWeight.Bold)
-                .width('60%')
-                .height(34)
+                .width(46)
+                .height(46)
+                .borderRadius(23)
 
-              if (this.currentIdx > 0) {
-                Button('‹ Back')
-                  .onClick(() => { this.currentIdx -= 1; })
-                  .backgroundColor('#21262D')
-                  .fontColor('#8B949E')
-                  .fontSize(10)
-                  .width('48%')
-                  .height(26)
-              }
+              // Next >
+              Button('>')
+                .onClick(() => { this.currentIdx += 1; })
+                .backgroundColor('#00C4AE')
+                .fontColor('#0D1117')
+                .fontSize(18)
+                .fontWeight(FontWeight.Bold)
+                .width(46)
+                .height(46)
+                .borderRadius(23)
             }
             .width('100%')
-            .alignItems(HorizontalAlign.Center)
-            .padding({ top: 10, bottom: 8 })
+            .justifyContent(FlexAlign.Center)
+            .margin({ top: 14, bottom: 8 })
+
           }
           .width('100%')
           .layoutWeight(1)
           .alignItems(HorizontalAlign.Center)
           .justifyContent(FlexAlign.SpaceBetween)
-          .padding({ left: 6, right: 6 })
         }
       }
       .width('100%')
       .height('100%')
-      // No backgroundColor — Stack's dark bg + ring shows at edges
     }
     .width('100%')
     .height('100%')
