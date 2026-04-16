@@ -21,7 +21,7 @@ export const LLM_MODEL: string = 'gpt-4o-mini';
 // ── Backend API (for demo file-based translation) ────────────────────────────
 // Note: Use 10.0.2.2 for emulator (special IP to reach host machine from emulator)
 // Use localhost:5000 for physical device with backend on same network
-export const TRANSLATION_API_BASE_URL: string = 'http://10.0.2.2:5000';
+export const TRANSLATION_API_BASE_URL: string = 'http://10.91.150.122:5000';
 export const TRANSLATION_API_ENDPOINT: string = '/api/translate';
 export const USE_MOCK_TRANSLATION: boolean = false;  // Set to false when backend is ready
 

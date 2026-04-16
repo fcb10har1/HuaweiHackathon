@@ -2,11 +2,12 @@
   "apiType": "stageMode",
   "buildOption": {
     "arkOptions": {
-      // Set your API keys here. They are injected at build time and accessed
-      // in Config.ets via: import BuildProfile from 'BuildProfile'
+      // API keys are injected at build time via BuildProfile.
+      // Run `python setup-env.py` from the project root to generate the real
+      // build-profile.json5 from your local .env file.
       "buildProfileFields": {
-        "OPENAI_API_KEY": "",           // ← Paste your OpenAI key locally, do NOT commit
-        "GOOGLE_PLACES_API_KEY": ""     // ← Paste your Google Places key locally, do NOT commit
+        "OPENAI_API_KEY": "",
+        "GOOGLE_PLACES_API_KEY": ""
       }
     },
     "resOptions": {

@@ -55,12 +55,12 @@ try:
     OPENAI_AVAILABLE = True
     OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', '')
     if OPENAI_API_KEY:
-        print(f"[Backend] ✓ OpenAI API key loaded")
+        print("[Backend] [OK] OpenAI API key loaded")
     else:
-        print("[Backend] ⚠ OPENAI_API_KEY environment variable not set - will use fallback suggestions")
+        print("[Backend] [WARN] OPENAI_API_KEY environment variable not set - will use fallback suggestions")
         OPENAI_AVAILABLE = False
 except ImportError:
-    print("[Backend] ⚠ OpenAI module not installed - will use fallback suggestions")
+    print("[Backend] [WARN] OpenAI module not installed - will use fallback suggestions")
     OPENAI_AVAILABLE = False
 
 def generate_tts_audio(text, language_code='ja'):
@@ -103,13 +103,13 @@ def transcribe_audio(filename):
 
     filepath = os.path.join(SCRIPT_DIR, filename)
     if not os.path.exists(filepath):
-        print(f"[Backend] ⚠ Audio file not found: {filepath}")
+        print(f"[Backend] [WARN] Audio file not found: {filepath}")
         return None, None
 
     try:
         from openai import OpenAI
         client = OpenAI(api_key=OPENAI_API_KEY)
-        print(f"[Backend] 🎙 Transcribing with Whisper: {filepath}")
+        print(f"[Backend] [MIC] Transcribing with Whisper: {filepath}")
         with open(filepath, 'rb') as f:
             result = client.audio.transcriptions.create(
                 model="whisper-1",
@@ -117,10 +117,10 @@ def transcribe_audio(filename):
             )
         transcript = result.text.strip()
         language = result.language if hasattr(result, 'language') else None
-        print(f"[Backend] ✓ Whisper transcript: {transcript} (detected language: {language})")
+        print(f"[Backend] [OK] Whisper transcript: {transcript} (detected language: {language})")
         return transcript, language
     except Exception as e:
-        print(f"[Backend] ❌ Whisper transcription failed: {e}")
+        print(f"[Backend] [ERR] Whisper transcription failed: {e}")
         return None, None
 
 
@@ -133,7 +133,7 @@ def get_ai_suggestions(transcript, language_code, target_language):
         return SUGGESTION_REPLIES.get(language_code, SUGGESTION_REPLIES['ja']), ['I am from Japan', 'America', 'India']
     
     try:
-        print(f"[Backend] 🤖 Calling OpenAI for {target_language}...")
+        print(f"[Backend] [AI] Calling OpenAI for {target_language}...")
         from openai import OpenAI
         
         client = OpenAI(api_key=OPENAI_API_KEY)
@@ -155,7 +155,7 @@ def get_ai_suggestions(transcript, language_code, target_language):
         import json
         suggestions = json.loads(reply_text)
         if isinstance(suggestions, list) and len(suggestions) >= 3:
-            print(f"[Backend] ✓ Using AI suggestions: {suggestions[:3]}")
+            print(f"[Backend] [OK] Using AI suggestions: {suggestions[:3]}")
             
             # Now translate each suggestion to English
             print(f"[Backend] Translating suggestions to English...")
@@ -181,7 +181,7 @@ def get_ai_suggestions(transcript, language_code, target_language):
             return SUGGESTION_REPLIES.get(language_code, SUGGESTION_REPLIES['ja']), ['I am from Japan', 'America', 'India']
         
     except Exception as e:
-        print(f"[Backend] ❌ OpenAI error: {type(e).__name__}: {str(e)}")
+        print(f"[Backend] [ERR] OpenAI error: {type(e).__name__}: {str(e)}")
         print(f"[Backend] Falling back to hardcoded suggestions")
         return SUGGESTION_REPLIES.get(language_code, SUGGESTION_REPLIES['ja']), ['I am from Japan', 'America', 'India']
 
@@ -203,7 +203,7 @@ def translate():
     }
     """
     filename = request.args.get('filename', 'japanese_sample.wav')
-    print(f"\n[Backend] 🌐 Processing translation request")
+    print(f"\n[Backend]  Processing translation request")
     print(f"[Backend] Filename: {filename}")
 
     # Determine language from filename (used as fallback if Whisper fails)
@@ -238,9 +238,9 @@ def translate():
                 max_tokens=100
             )
             translation = trans_resp.choices[0].message.content.strip()
-            print(f"[Backend] ✓ Translation: {translation}")
+            print(f"[Backend] [OK] Translation: {translation}")
         except Exception as e:
-            print(f"[Backend] ⚠ Translation failed, using fallback: {e}")
+            print(f"[Backend] [WARN] Translation failed, using fallback: {e}")
             translation = fallback_translation
     else:
         print(f"[Backend] Using fallback transcript for demo")
@@ -260,10 +260,10 @@ def translate():
         audio = generate_tts_audio(suggestion, language_code)
         if audio:
             suggestion_audios.append(audio)
-            print(f"[Backend] ✓ TTS generated for suggestion {i+1}")
+            print(f"[Backend] [OK] TTS generated for suggestion {i+1}")
         else:
             suggestion_audios.append(f'data:audio/wav;base64,{MINIMAL_WAV_BASE64}')
-            print(f"[Backend] ⚠ TTS failed for suggestion {i+1}, using fallback")
+            print(f"[Backend] [WARN] TTS failed for suggestion {i+1}, using fallback")
     
     # Create response with BOTH text suggestions AND audio AND translations
     # NOTE: Always use 'replySuggestionsJapanese' key for app compatibility (app expects this exact key)
@@ -281,7 +281,7 @@ def translate():
     global LAST_SUGGESTION_AUDIOS
     LAST_SUGGESTION_AUDIOS = suggestion_audios
     
-    print(f"[Backend] ✓ Response ready")
+    print(f"[Backend] [OK] Response ready")
     return jsonify(response)
 
 
@@ -296,7 +296,7 @@ def save_audio(index):
     print(f"[Backend] [DEBUG] save_audio called with index={index}, audios count={len(LAST_SUGGESTION_AUDIOS)}")
     
     if not LAST_SUGGESTION_AUDIOS or index >= len(LAST_SUGGESTION_AUDIOS):
-        print(f"[Backend] ⚠ Audio not found: index={index}, count={len(LAST_SUGGESTION_AUDIOS)}")
+        print(f"[Backend] [WARN] Audio not found: index={index}, count={len(LAST_SUGGESTION_AUDIOS)}")
         return jsonify({'error': 'Audio not found', 'status': 'failed', 'debug': {'index': index, 'count': len(LAST_SUGGESTION_AUDIOS)}}), 404
     
     audio_base64_uri = LAST_SUGGESTION_AUDIOS[index]
@@ -311,12 +311,12 @@ def save_audio(index):
             else:
                 ext = 'wav'
         else:
-            print(f"[Backend] ⚠ Invalid audio format for index={index}")
+            print(f"[Backend] [WARN] Invalid audio format for index={index}")
             return jsonify({'error': 'Invalid audio format'}), 400
         
         # Ensure NewRecordings directory exists
         if not os.path.exists(RECORDINGS_PATH):
-            print(f"[Backend] ⚠ Recordings path does not exist: {RECORDINGS_PATH}")
+            print(f"[Backend] [WARN] Recordings path does not exist: {RECORDINGS_PATH}")
             return jsonify({'error': f'Recordings path not found: {RECORDINGS_PATH}', 'status': 'failed'}), 500
         
         # Decode and save to NewRecordings
@@ -329,7 +329,7 @@ def save_audio(index):
         with open(filepath, 'wb') as f:
             f.write(audio_bytes)
         
-        print(f"[Backend] ✓ Audio saved to: {filepath}")
+        print(f"[Backend] [OK] Audio saved to: {filepath}")
         return jsonify({
             'status': 'success',
             'file': filename,
@@ -339,7 +339,7 @@ def save_audio(index):
     
     except Exception as e:
         import traceback
-        print(f"[Backend] ⚠ Failed to save audio: {e}")
+        print(f"[Backend] [WARN] Failed to save audio: {e}")
         print(f"[Backend] [STACKTRACE] {traceback.format_exc()}")
         return jsonify({'error': str(e), 'status': 'failed', 'debug': {'exception': str(type(e).__name__)}}), 500
 
