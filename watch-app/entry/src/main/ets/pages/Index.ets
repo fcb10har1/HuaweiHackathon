@@ -78,11 +78,10 @@ struct Index {
               .height(34)
               .borderRadius(17)
               .backgroundColor('#00C4AE')
-            Text('+')
-              .fontSize(18)
-              .fontColor('#0D1117')
-              .fontWeight(FontWeight.Bold)
-              .margin({ bottom: 2 })
+            Stack({ alignContent: Alignment.Center }) {
+              Row().width(14).height(2.5).backgroundColor('#0D1117').borderRadius(1)
+              Column().width(2.5).height(14).backgroundColor('#0D1117').borderRadius(1)
+            }
           }
           .onClick(() => router.pushUrl({ url: 'pages/AddTripName' }))
           .margin({ top: 8 })
@@ -219,11 +218,10 @@ struct Index {
               .height(34)
               .borderRadius(17)
               .backgroundColor('#00C4AE')
-            Text('+')
-              .fontSize(18)
-              .fontColor('#0D1117')
-              .fontWeight(FontWeight.Bold)
-              .margin({ bottom: 2 })
+            Stack({ alignContent: Alignment.Center }) {
+              Row().width(14).height(2.5).backgroundColor('#0D1117').borderRadius(1)
+              Column().width(2.5).height(14).backgroundColor('#0D1117').borderRadius(1)
+            }
           }
           .onClick(() => router.pushUrl({ url: 'pages/AddTripName' }))
           .margin({ bottom: 14 })

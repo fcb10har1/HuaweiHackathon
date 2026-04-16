@@ -110,15 +110,32 @@ struct ArrivalSteps {
         // ── All done ─────────────────────────────────────────────────────────
         } else if (this.currentIdx >= this.steps.length) {
           Column({ space: 8 }) {
-            Text('✓')
-              .fontSize(22)
-              .fontColor('#0D1117')
-              .width(44)
-              .height(44)
-              .textAlign(TextAlign.Center)
-              .lineHeight(44)
-              .backgroundColor('#00E5C8')
-              .borderRadius(22)
+            Stack({ alignContent: Alignment.Center }) {
+              // Teal circle background
+              Column()
+                .width(52).height(52)
+                .borderRadius(26)
+                .backgroundColor('#00E5C8')
+
+              // Checkmark — two rotated bars meeting at the knee
+              Stack() {
+                // Short left arm (down-left stroke)
+                Column()
+                  .width(3.5).height(11)
+                  .backgroundColor('#0D1117')
+                  .borderRadius(2)
+                  .rotate({ angle: -42 })
+                  .translate({ x: -7, y: 4 })
+                // Long right arm (up-right stroke)
+                Column()
+                  .width(3.5).height(20)
+                  .backgroundColor('#0D1117')
+                  .borderRadius(2)
+                  .rotate({ angle: 38 })
+                  .translate({ x: 5, y: -2 })
+              }
+              .width(44).height(44)
+            }
 
             Text('All Done')
               .fontSize(13)
@@ -188,27 +205,29 @@ struct ArrivalSteps {
 
             // ── < > navigation ───────────────────────────────────────────────
             Row({ space: 24 }) {
-              Text('<')
-                .fontSize(16)
-                .fontColor('#FFFFFF')
-                .fontWeight(FontWeight.Bold)
-                .width(32).height(32)
-                .textAlign(TextAlign.Center)
-                .lineHeight(32)
-                .backgroundColor(this.currentIdx > 0 ? '#00C4AE' : '#1C2430')
-                .borderRadius(16)
-                .onClick(() => this.goPrev())
+              Stack({ alignContent: Alignment.Center }) {
+                Column()
+                  .width(32).height(32)
+                  .borderRadius(16)
+                  .backgroundColor(this.currentIdx > 0 ? '#00C4AE' : '#1C2430')
+                Text('<')
+                  .fontSize(16)
+                  .fontColor('#FFFFFF')
+                  .fontWeight(FontWeight.Bold)
+              }
+              .onClick(() => this.goPrev())
 
-              Text('>')
-                .fontSize(16)
-                .fontColor('#FFFFFF')
-                .fontWeight(FontWeight.Bold)
-                .width(32).height(32)
-                .textAlign(TextAlign.Center)
-                .lineHeight(32)
-                .backgroundColor('#00C4AE')
-                .borderRadius(16)
-                .onClick(() => this.goNext())
+              Stack({ alignContent: Alignment.Center }) {
+                Column()
+                  .width(32).height(32)
+                  .borderRadius(16)
+                  .backgroundColor('#00C4AE')
+                Text('>')
+                  .fontSize(16)
+                  .fontColor('#FFFFFF')
+                  .fontWeight(FontWeight.Bold)
+              }
+              .onClick(() => this.goNext())
             }
             .width('100%')
             .justifyContent(FlexAlign.Center)
