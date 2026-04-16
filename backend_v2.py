@@ -39,6 +39,62 @@ print(f"[Backend] Using recordings folder: {RECORDINGS_PATH}")
 # Minimal valid WAV file (silence, 100ms @ 16kHz)
 MINIMAL_WAV_BASE64 = "UklGRiYAAABXQVZFZm10IBAAAAABAAEAQB8AAAB9AAACABAAZGF0YQIAAAAAAA=="
 
+# Hardcoded useful travel phrases shown in ConvoAssist.
+# The frontend contract stays the same; only the backend phrase source changes.
+USEFUL_PHRASE_SETS = {
+    'ja': [
+        {"local": "\u3053\u3093\u306b\u3061\u306f", "english": "Hello"},
+        {"local": "\u3055\u3088\u3046\u306a\u3089", "english": "Goodbye"},
+        {"local": "\u304a\u9858\u3044\u3057\u307e\u3059", "english": "Please"},
+        {"local": "\u3042\u308a\u304c\u3068\u3046\u3054\u3056\u3044\u307e\u3059", "english": "Thank you"},
+        {"local": "\u306f\u3044", "english": "Yes"},
+        {"local": "\u3044\u3044\u3048", "english": "No"},
+        {"local": "\u3059\u307f\u307e\u305b\u3093", "english": "Excuse me"},
+        {"local": "\u7533\u3057\u8a33\u3042\u308a\u307e\u305b\u3093", "english": "Sorry"},
+        {"local": "\u82f1\u8a9e\u3092\u8a71\u305b\u307e\u3059\u304b\uff1f", "english": "Do you speak English?"},
+        {"local": "\u304a\u624b\u6d17\u3044\u306f\u3069\u3053\u3067\u3059\u304b\uff1f", "english": "Where is the bathroom?"},
+        {"local": "\u3044\u304f\u3089\u3067\u3059\u304b\uff1f", "english": "How much does this cost?"},
+        {"local": "\u301c\u3092\u304a\u9858\u3044\u3057\u307e\u3059", "english": "I would like..."},
+        {"local": "\u52a9\u3051\u3066\uff01", "english": "Help!"},
+        {"local": "\u308f\u304b\u308a\u307e\u305b\u3093", "english": "I don't understand"},
+        {"local": "\u65e5\u672c\u8a9e\u3092\u8a71\u305b\u307e\u305b\u3093", "english": "I don't speak Japanese"},
+    ],
+    'th': [
+        {"local": "\u0e2a\u0e27\u0e31\u0e2a\u0e14\u0e35", "english": "Hello"},
+        {"local": "\u0e25\u0e32\u0e01\u0e48\u0e2d\u0e19", "english": "Goodbye"},
+        {"local": "\u0e01\u0e23\u0e38\u0e13\u0e32", "english": "Please"},
+        {"local": "\u0e02\u0e2d\u0e1a\u0e04\u0e38\u0e13", "english": "Thank you"},
+        {"local": "\u0e43\u0e0a\u0e48", "english": "Yes"},
+        {"local": "\u0e44\u0e21\u0e48", "english": "No"},
+        {"local": "\u0e02\u0e2d\u0e42\u0e17\u0e29", "english": "Excuse me"},
+        {"local": "\u0e02\u0e2d\u0e42\u0e17\u0e29", "english": "Sorry"},
+        {"local": "\u0e04\u0e38\u0e13\u0e1e\u0e39\u0e14\u0e20\u0e32\u0e29\u0e32\u0e2d\u0e31\u0e07\u0e01\u0e24\u0e29\u0e44\u0e14\u0e49\u0e44\u0e2b\u0e21", "english": "Do you speak English?"},
+        {"local": "\u0e2b\u0e49\u0e2d\u0e07\u0e19\u0e49\u0e33\u0e2d\u0e22\u0e39\u0e48\u0e17\u0e35\u0e48\u0e44\u0e2b\u0e19", "english": "Where is the bathroom?"},
+        {"local": "\u0e2d\u0e31\u0e19\u0e19\u0e35\u0e49\u0e23\u0e32\u0e04\u0e32\u0e40\u0e17\u0e48\u0e32\u0e44\u0e2b\u0e23\u0e48", "english": "How much does this cost?"},
+        {"local": "\u0e09\u0e31\u0e19\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23...", "english": "I would like..."},
+        {"local": "\u0e0a\u0e48\u0e27\u0e22\u0e14\u0e49\u0e27\u0e22!", "english": "Help!"},
+        {"local": "\u0e09\u0e31\u0e19\u0e44\u0e21\u0e48\u0e40\u0e02\u0e49\u0e32\u0e43\u0e08", "english": "I don't understand"},
+        {"local": "\u0e09\u0e31\u0e19\u0e1e\u0e39\u0e14\u0e20\u0e32\u0e29\u0e32\u0e44\u0e17\u0e22\u0e44\u0e21\u0e48\u0e44\u0e14\u0e49", "english": "I don't speak Thai"},
+    ],
+    'id': [
+        {"local": "Halo", "english": "Hello"},
+        {"local": "Selamat tinggal", "english": "Goodbye"},
+        {"local": "Tolong", "english": "Please"},
+        {"local": "Terima kasih", "english": "Thank you"},
+        {"local": "Ya", "english": "Yes"},
+        {"local": "Tidak", "english": "No"},
+        {"local": "Permisi", "english": "Excuse me"},
+        {"local": "Maaf", "english": "Sorry"},
+        {"local": "Apakah Anda bisa berbahasa Inggris?", "english": "Do you speak English?"},
+        {"local": "Di mana kamar mandi?", "english": "Where is the bathroom?"},
+        {"local": "Berapa harganya?", "english": "How much does this cost?"},
+        {"local": "Saya mau...", "english": "I would like..."},
+        {"local": "Tolong!", "english": "Help!"},
+        {"local": "Saya tidak mengerti", "english": "I don't understand"},
+        {"local": "Saya tidak bisa berbahasa Indonesia", "english": "I don't speak Indonesian"},
+    ],
+}
+
 # Hardcoded suggestion replies (fallback when no OpenAI key)
 SUGGESTION_REPLIES = {
     'ja': [
@@ -134,67 +190,17 @@ def transcribe_audio(filename):
 
 def get_ai_suggestions(transcript, language_code, target_language):
     """
-    Generate AI-powered reply suggestions + English translations in one API call.
-    Uses JSON mode to guarantee parseable output.
-    Falls back to hardcoded phrases if OpenAI is unavailable.
+    Return a fixed set of useful travel phrases for the target language.
+    This keeps ConvoAssist consistent across demos and countries.
     """
-    fallback_suggestions = SUGGESTION_REPLIES.get(language_code, SUGGESTION_REPLIES['ja'])
-    fallback_translations = {
-        'ja': ['Thank you very much', 'Sorry, I do not understand', 'Could you say that again?'],
-        'th': ['Thank you', 'Sorry, I do not understand', 'Could you say that again?'],
-        'id': ['Thank you', 'Sorry, I do not understand', 'Could you say that again?'],
-    }
-    fallback_trans = fallback_translations.get(language_code, fallback_translations['ja'])
+    phrase_set = USEFUL_PHRASE_SETS.get(language_code, USEFUL_PHRASE_SETS['ja'])
+    suggestions = [phrase["local"] for phrase in phrase_set]
+    translations = [phrase["english"] for phrase in phrase_set]
 
-    if not OPENAI_API_KEY:
-        print("[Backend] No API key - using fallback suggestions")
-        return fallback_suggestions, fallback_trans
-
-    try:
-        print(f"[Backend] [AI] Generating suggestions + translations for {target_language}...")
-        from openai import OpenAI
-        import json as _json
-
-        client = OpenAI(api_key=OPENAI_API_KEY)
-
-        prompt = (
-            f'A traveler is speaking with a local. The local said in {target_language}: "{transcript}"\n'
-            f'Generate 3 short, practical {target_language} replies the traveler could say back.\n'
-            f'For each reply include the {target_language} phrase and its English translation.\n'
-            f'Respond ONLY with valid JSON: '
-            f'{{"replies":[{{"local":"phrase","english":"translation"}},'
-            f'{{"local":"phrase","english":"translation"}},'
-            f'{{"local":"phrase","english":"translation"}}]}}'
-        )
-
-        response = client.chat.completions.create(
-            model='gpt-3.5-turbo',
-            response_format={'type': 'json_object'},
-            messages=[
-                {'role': 'system', 'content': 'You are a travel language assistant. Always respond with valid JSON only.'},
-                {'role': 'user', 'content': prompt},
-            ],
-            temperature=0.7,
-            max_tokens=200,
-        )
-
-        content = _json.loads(response.choices[0].message.content)
-        replies = content.get('replies', [])
-
-        if isinstance(replies, list) and len(replies) >= 3:
-            suggestions = [r['local'] for r in replies[:3]]
-            translations = [r['english'] for r in replies[:3]]
-            print(f"[Backend] [OK] AI suggestions ready")
-            for s, t in zip(suggestions, translations):
-                print(f"[Backend]   {s}  ->  {t}")
-            return suggestions, translations
-
-        print("[Backend] Unexpected JSON shape, using fallback")
-        return fallback_suggestions, fallback_trans
-
-    except Exception as e:
-        print(f"[Backend] [ERR] get_ai_suggestions: {type(e).__name__}: {e}")
-        return fallback_suggestions, fallback_trans
+    print(f"[Backend] [OK] Using {len(suggestions)} hardcoded useful phrases for {target_language}")
+    for s, t in zip(suggestions, translations):
+        print(f"[Backend]   {s}  ->  {t}")
+    return suggestions, translations
 
 
 @app.route('/health', methods=['GET'])
